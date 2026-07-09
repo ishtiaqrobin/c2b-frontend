@@ -18,26 +18,11 @@ export default function Home() {
 
       <ScrollRevealText text="I'm Ishtiaq Robin, with over 3+ years of experience in design & development with strong focus on producing high quality & impactful digital experiences. I have worked with some of the most innovative industry leaders to help build their top-notch products." />
 
-      <SelectedProjects />
-      <ExpertiseSection />
-      <Testimonials />
+      {/* <SelectedProjects /> */}
+      {/* <ExpertiseSection /> */}
+      {/* <Testimonials /> */}
       <CtaSection />
 
-      {/* Previous Section */}
-      {/* <EducationSection /> */}
-      {/* <ExperienceSection /> */}
-      {/* <SkillsSection /> */}
-      {/* <ServiceSection /> */}
-      {/* <GallerySection /> */}
-      {/* <ProjectSection /> */}
-      {/* Certificate Section */}
-      {/* <CertificateSection /> */}
-      {/* Appointments Section */}
-      {/* <AppointmentsSection /> */}
-      {/* <VideoSection /> */}
-      {/* <TestimonialSection /> */}
-      {/* <ContactSection /> */}
-      {/* <CTASection /> */}
     </div>
   );
 }

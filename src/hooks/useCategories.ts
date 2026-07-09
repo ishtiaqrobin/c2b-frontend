@@ -2,16 +2,16 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { categoryService } from "@/services/category.service";
-import { Category } from "@/types/category.type";
+import { ICategory } from "@/types/category.type";
 
 export function useCategories() {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<ICategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchCategories = useCallback(async () => {
     setIsLoading(true);
-    const { data, error } = await categoryService.getAllCategories();
+    const { data, error } = await categoryService.getAll();
 
     if (error) {
       setError(error.message);

@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { env } from "@/env";
-import { User } from "@/types/user.type";
+import type { ApiResponse } from "@/types/api.type";
+import type { IUser } from "@/types/user.type";
 
 const API_URL = env.NEXT_PUBLIC_API_URL;
 
@@ -9,26 +9,20 @@ interface ServiceError {
 }
 
 export const userService = {
+  /** GET /users/me — Current authenticated user */
   getMe: async function (
     token: string,
-  ): Promise<{ data: User | null; error: ServiceError | null }> {
+  ): Promise<{ data: IUser | null; error: ServiceError | null }> {
     try {
       const res = await fetch(`${API_URL}/users/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
         credentials: "include",
         cache: "no-store",
       });
-
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-
-      const response = await res.json();
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      const response: ApiResponse<IUser> = await res.json();
       return { data: response.data, error: null };
     } catch (err) {
-      console.error("Error fetching user profile:", err);
       return {
         data: null,
         error: {
@@ -39,23 +33,17 @@ export const userService = {
     }
   },
 
-  /**
-   * Update user profile
-   */
+  /** PUT /users/profile — Update profile (JSON or FormData) */
   updateProfile: async function (
     token: string,
-    payload: any,
-  ): Promise<{ data: User | null; error: ServiceError | null }> {
+    payload: Record<string, unknown> | FormData,
+  ): Promise<{ data: IUser | null; error: ServiceError | null }> {
     try {
       const isFormData = payload instanceof FormData;
-
       const headers: Record<string, string> = {
         Authorization: `Bearer ${token}`,
       };
-
-      if (!isFormData) {
-        headers["Content-Type"] = "application/json";
-      }
+      if (!isFormData) headers["Content-Type"] = "application/json";
 
       const res = await fetch(`${API_URL}/users/profile`, {
         method: "PUT",
@@ -63,18 +51,15 @@ export const userService = {
         credentials: "include",
         body: isFormData ? payload : JSON.stringify(payload),
       });
-
       if (!res.ok) {
         const errorData = await res.json();
         throw new Error(
           errorData.message || `HTTP error! status: ${res.status}`,
         );
       }
-
-      const response = await res.json();
+      const response: ApiResponse<IUser> = await res.json();
       return { data: response.data, error: null };
     } catch (err) {
-      console.error("Error updating profile:", err);
       return {
         data: null,
         error: {

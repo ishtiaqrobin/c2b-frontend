@@ -4,7 +4,7 @@ import "./globals.css";
 import Providers from "./Providers";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Chatbot } from "@/components/layout/Chatbot";
+// import { Chatbot } from "@/components/layout/Chatbot";
 import MobileBottomBar from "@/components/layout/MobileBottomBar";
 
 // ─── Satoshi (Root / Body Font) ───────────────────────────────────────────────
@@ -127,7 +127,7 @@ export default function RootLayout({
           <MobileBottomBar />
           {/* <MobileBar /> */}
 
-          <Chatbot />
+          {/* <Chatbot /> */}
           <Analytics />
           <SpeedInsights />
 

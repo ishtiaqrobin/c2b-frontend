@@ -2,124 +2,77 @@ import { Route } from "@/types";
 import {
   LayoutDashboard,
   Users,
-  Calendar,
+  ShoppingBag,
   FolderKanban,
-  UserCog,
-  TrendingUp,
-  Landmark,
-  Settings,
+  Store,
+  CreditCard,
+  ShoppingCart,
+  MapPin,
   Image,
-  GraduationCap,
-  Briefcase,
-  Wrench,
-  Video,
-  MessageSquare,
-  Cpu,
-  ChartColumn,
+  Newspaper,
+  Bell,
+  ShieldCheck,
+  TrendingUp,
+  FileText,
+  Package,
+  UserCog,
 } from "lucide-react";
-
-import { IoIosStats } from "react-icons/io";
 
 export const adminRoutes: Route[] = [
   {
-    title: "Admin Dashboard",
+    title: "Overview",
+    items: [
+      { title: "Dashboard", url: "/admin-dashboard", icon: LayoutDashboard },
+      {
+        title: "Analytics",
+        url: "/admin-dashboard/analytics",
+        icon: TrendingUp,
+      },
+    ],
+  },
+  {
+    title: "Commerce",
     items: [
       {
-        title: "Dashboard",
-        url: "/admin-dashboard",
-        icon: LayoutDashboard,
-      },
-      {
-        title: "About",
-        url: "/admin-dashboard/about",
-        icon: UserCog,
-      },
-      {
-        title: "Education",
-        url: "/admin-dashboard/education",
-        icon: GraduationCap,
-      },
-      {
-        title: "Chatbot",
-        url: "/admin-dashboard/chatbot",
-        icon: MessageSquare,
-      },
-      {
-        title: "Blogs",
-        url: "/admin-dashboard/blogs",
-        icon: FolderKanban,
-      },
-      {
-        title: "Comments",
-        url: "/admin-dashboard/comments",
-        icon: MessageSquare,
-      },
-      {
-        title: "Experience",
-        url: "/admin-dashboard/experience",
-        icon: Briefcase,
-      },
-      {
-        title: "Certificates",
-        url: "/admin-dashboard/certificates",
-        icon: Landmark,
-      },
-      {
-        title: "Skills",
-        url: "/admin-dashboard/skills",
-        icon: Cpu,
-      },
-      {
-        title: "Services",
-        url: "/admin-dashboard/services",
-        icon: Wrench,
-      },
-      {
-        title: "Contact",
-        url: "/admin-dashboard/contact",
-        icon: Calendar,
-      },
-      {
-        title: "Gallery",
-        url: "/admin-dashboard/gallery",
-        icon: Image,
-      },
-      {
-        title: "Projects",
-        url: "/admin-dashboard/projects",
-        icon: FolderKanban,
-      },
-      {
-        title: "Videos",
-        url: "/admin-dashboard/video",
-        icon: Video,
-      },
-      {
-        title: "Reviews",
-        url: "/admin-dashboard/reviews",
-        icon: MessageSquare,
-      },
-      {
-        title: "Category",
+        title: "Categories",
         url: "/admin-dashboard/categories",
         icon: FolderKanban,
       },
+      { title: "Products", url: "/admin-dashboard/products", icon: Package },
+      { title: "Stores", url: "/admin-dashboard/stores", icon: Store },
+      { title: "Orders", url: "/admin-dashboard/orders", icon: ShoppingBag },
+      { title: "Payments", url: "/admin-dashboard/payments", icon: CreditCard },
+      { title: "Cart", url: "/admin-dashboard/cart", icon: ShoppingCart },
+    ],
+  },
+  {
+    title: "Content",
+    items: [
+      { title: "Banners", url: "/admin-dashboard/banners", icon: Image },
+      { title: "News", url: "/admin-dashboard/news", icon: Newspaper },
+    ],
+  },
+  {
+    title: "Verification",
+    items: [{ title: "eKYC", url: "/admin-dashboard/ekyc", icon: ShieldCheck }],
+  },
+  {
+    title: "Communication",
+    items: [
       {
-        title: "Appointments",
-        url: "/admin-dashboard/appointments",
-        icon: Calendar,
+        title: "Notifications",
+        url: "/admin-dashboard/notifications",
+        icon: Bell,
       },
-      {
-        title: "Users",
-        url: "/admin-dashboard/users",
-        icon: Users,
-      },
-
-      {
-        title: "Profile",
-        url: "/admin-dashboard/profile",
-        icon: UserCog,
-      },
+      { title: "Reports", url: "/admin-dashboard/reports", icon: FileText },
+    ],
+  },
+  {
+    title: "Management",
+    items: [
+      { title: "Users", url: "/admin-dashboard/users", icon: Users },
+      { title: "Addresses", url: "/admin-dashboard/addresses", icon: MapPin },
+      { title: "Profile", url: "/admin-dashboard/profile", icon: UserCog },
     ],
   },
 ];

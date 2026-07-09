@@ -1,6 +1,6 @@
 import { env } from "@/env";
 import type { ApiResponse } from "@/types/api.type";
-import type { ICategory } from "@/types/category.type";
+import type { IStore } from "@/types/store.type";
 
 const API_URL = env.NEXT_PUBLIC_API_URL;
 
@@ -8,20 +8,16 @@ interface ServiceError {
   message: string;
 }
 
-export const categoryService = {
-  /** GET /categories — List categories */
-  getAll: async function (
-    token?: string,
-    query?: {
-      page?: string;
-      limit?: string;
-      search?: string;
-      parentId?: string;
-      isActive?: string;
-      locale?: string;
-    },
-  ): Promise<{
-    data: ICategory[] | null;
+export const storeService = {
+  /** GET /stores — List stores */
+  getAll: async function (query?: {
+    page?: string;
+    limit?: string;
+    search?: string;
+    isActive?: string;
+    locale?: string;
+  }): Promise<{
+    data: IStore[] | null;
     meta?: { page: number; limit: number; total: number } | null;
     error: ServiceError | null;
   }> {
@@ -30,110 +26,77 @@ export const categoryService = {
       if (query?.page) params.set("page", query.page);
       if (query?.limit) params.set("limit", query.limit);
       if (query?.search) params.set("search", query.search);
-      if (query?.parentId) params.set("parentId", query.parentId);
       if (query?.isActive) params.set("isActive", query.isActive);
       if (query?.locale) params.set("locale", query.locale);
-
-      const headers: Record<string, string> = {};
-      if (token) headers["Authorization"] = `Bearer ${token}`;
-
-      const url = `${API_URL}/categories${params.toString() ? `?${params.toString()}` : ""}`;
+      const url = `${API_URL}/stores${params.toString() ? `?${params.toString()}` : ""}`;
       const res = await fetch(url, {
-        headers,
         credentials: "include",
         cache: "no-store",
       });
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-      const response: ApiResponse<ICategory[]> = await res.json();
+      const response: ApiResponse<IStore[]> = await res.json();
       return { data: response.data, meta: response.meta ?? null, error: null };
     } catch (err) {
       return {
         data: null,
         error: {
-          message:
-            err instanceof Error ? err.message : "Error fetching categories",
+          message: err instanceof Error ? err.message : "Error fetching stores",
         },
       };
     }
   },
 
-  /** GET /categories/tree — Get category tree */
-  getTree: async function (): Promise<{
-    data: ICategory[] | null;
-    error: ServiceError | null;
-  }> {
-    try {
-      const res = await fetch(`${API_URL}/categories/tree`, {
-        credentials: "include",
-        cache: "no-store",
-      });
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-      const response: ApiResponse<ICategory[]> = await res.json();
-      return { data: response.data, error: null };
-    } catch (err) {
-      return {
-        data: null,
-        error: {
-          message:
-            err instanceof Error ? err.message : "Error fetching category tree",
-        },
-      };
-    }
-  },
-
-  /** GET /categories/:id — Get by ID */
+  /** GET /stores/:id */
   getById: async function (
     id: string,
-  ): Promise<{ data: ICategory | null; error: ServiceError | null }> {
+  ): Promise<{ data: IStore | null; error: ServiceError | null }> {
     try {
-      const res = await fetch(`${API_URL}/categories/${id}`, {
+      const res = await fetch(`${API_URL}/stores/${id}`, {
         credentials: "include",
         cache: "no-store",
       });
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-      const response: ApiResponse<ICategory> = await res.json();
+      const response: ApiResponse<IStore> = await res.json();
       return { data: response.data, error: null };
     } catch (err) {
       return {
         data: null,
         error: {
-          message:
-            err instanceof Error ? err.message : "Error fetching category",
+          message: err instanceof Error ? err.message : "Error fetching store",
         },
       };
     }
   },
 
-  /** GET /categories/slug/:slug — Get by slug */
+  /** GET /stores/slug/:slug */
   getBySlug: async function (
     slug: string,
-  ): Promise<{ data: ICategory | null; error: ServiceError | null }> {
+  ): Promise<{ data: IStore | null; error: ServiceError | null }> {
     try {
-      const res = await fetch(`${API_URL}/categories/slug/${slug}`, {
+      const res = await fetch(`${API_URL}/stores/slug/${slug}`, {
         credentials: "include",
         cache: "no-store",
       });
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-      const response: ApiResponse<ICategory> = await res.json();
+      const response: ApiResponse<IStore> = await res.json();
       return { data: response.data, error: null };
     } catch (err) {
       return {
         data: null,
         error: {
-          message:
-            err instanceof Error ? err.message : "Error fetching category",
+          message: err instanceof Error ? err.message : "Error fetching store",
         },
       };
     }
   },
 
-  /** POST /categories — Create category */
+  /** POST /stores */
   create: async function (
     token: string,
     payload: Record<string, unknown>,
-  ): Promise<{ data: ICategory | null; error: ServiceError | null }> {
+  ): Promise<{ data: IStore | null; error: ServiceError | null }> {
     try {
-      const res = await fetch(`${API_URL}/categories`, {
+      const res = await fetch(`${API_URL}/stores`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -146,27 +109,26 @@ export const categoryService = {
         const err = await res.json();
         throw new Error(err.message || `HTTP error! status: ${res.status}`);
       }
-      const response: ApiResponse<ICategory> = await res.json();
+      const response: ApiResponse<IStore> = await res.json();
       return { data: response.data, error: null };
     } catch (err) {
       return {
         data: null,
         error: {
-          message:
-            err instanceof Error ? err.message : "Error creating category",
+          message: err instanceof Error ? err.message : "Error creating store",
         },
       };
     }
   },
 
-  /** PATCH /categories/:id — Update category */
+  /** PATCH /stores/:id */
   update: async function (
     token: string,
     id: string,
     payload: Record<string, unknown>,
-  ): Promise<{ data: ICategory | null; error: ServiceError | null }> {
+  ): Promise<{ data: IStore | null; error: ServiceError | null }> {
     try {
-      const res = await fetch(`${API_URL}/categories/${id}`, {
+      const res = await fetch(`${API_URL}/stores/${id}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -179,26 +141,25 @@ export const categoryService = {
         const err = await res.json();
         throw new Error(err.message || `HTTP error! status: ${res.status}`);
       }
-      const response: ApiResponse<ICategory> = await res.json();
+      const response: ApiResponse<IStore> = await res.json();
       return { data: response.data, error: null };
     } catch (err) {
       return {
         data: null,
         error: {
-          message:
-            err instanceof Error ? err.message : "Error updating category",
+          message: err instanceof Error ? err.message : "Error updating store",
         },
       };
     }
   },
 
-  /** DELETE /categories/:id — Soft delete */
+  /** DELETE /stores/:id */
   delete: async function (
     token: string,
     id: string,
   ): Promise<{ data: null; error: ServiceError | null }> {
     try {
-      const res = await fetch(`${API_URL}/categories/${id}`, {
+      const res = await fetch(`${API_URL}/stores/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
         credentials: "include",
@@ -212,8 +173,7 @@ export const categoryService = {
       return {
         data: null,
         error: {
-          message:
-            err instanceof Error ? err.message : "Error deleting category",
+          message: err instanceof Error ? err.message : "Error deleting store",
         },
       };
     }

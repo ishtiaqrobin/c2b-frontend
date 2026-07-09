@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { GoogleAuthButton } from "./GoogleAuthButton";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -188,9 +187,6 @@ export function RegisterForm({ ...props }: React.ComponentProps<"div">) {
         </span>
         <div className="flex-1 h-px bg-zinc-200 dark:bg-zinc-800" />
       </div> */}
-
-      {/* Google Auth */}
-      <GoogleAuthButton className="mt-6 w-full" mode="signup" />
 
       {/* Footer */}
       <p className="text-sm text-center text-text-primary mt-6">

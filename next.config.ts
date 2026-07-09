@@ -16,8 +16,12 @@ const nextConfig: NextConfig = {
         source: "/api/auth/:path*",
         destination: `${process.env.NEXT_PUBLIC_AUTH_URL}/:path*`,
       },
+      {
+        // Proxy API v1 requests to the backend
+        source: "/api/v1/:path*",
+        destination: `${process.env.BACKEND_URL}/api/v1/:path*`,
+      },
     ];
-
   },
   images: {
     remotePatterns: [
@@ -32,7 +36,8 @@ const nextConfig: NextConfig = {
     ],
   },
   compiler: {
-    removeConsole: process.env.NODE_ENV === "production" ? { exclude: ["error"] } : false,
+    removeConsole:
+      process.env.NODE_ENV === "production" ? { exclude: ["error"] } : false,
   },
 };
 

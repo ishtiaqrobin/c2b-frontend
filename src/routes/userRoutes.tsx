@@ -1,25 +1,42 @@
 import { Route } from "@/types";
-import { Calendar, LayoutDashboard, User, ShoppingBag, MessageSquare } from "lucide-react";
+import {
+  LayoutDashboard,
+  User,
+  ShoppingBag,
+  MapPin,
+  ShieldCheck,
+  Bell,
+  CreditCard,
+} from "lucide-react";
 
 export const userRoutes: Route[] = [
   {
-    title: "User Dashboard",
+    title: "Dashboard",
+    items: [
+      { title: "Overview", url: "/user-dashboard", icon: LayoutDashboard },
+      { title: "Profile", url: "/user-dashboard/profile", icon: User },
+    ],
+  },
+  {
+    title: "Orders",
+    items: [
+      { title: "My Orders", url: "/user-dashboard/orders", icon: ShoppingBag },
+      { title: "Addresses", url: "/user-dashboard/addresses", icon: MapPin },
+    ],
+  },
+  {
+    title: "Verification",
+    items: [{ title: "eKYC", url: "/user-dashboard/ekyc", icon: ShieldCheck }],
+  },
+  {
+    title: "More",
     items: [
       {
-        title: "Dashboard",
-        url: "/user-dashboard",
-        icon: LayoutDashboard,
+        title: "Notifications",
+        url: "/user-dashboard/notifications",
+        icon: Bell,
       },
-      {
-        title: "Profile",
-        url: "/user-dashboard/profile",
-        icon: User,
-      },
-      {
-        title: "My Review",
-        url: "/user-dashboard/review",
-        icon: MessageSquare,
-      },
+      { title: "Payments", url: "/user-dashboard/payments", icon: CreditCard },
     ],
   },
 ];

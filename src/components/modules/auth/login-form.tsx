@@ -2,13 +2,12 @@
 
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
-import { User } from "@/types";
+import { IUser } from "@/types";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { GoogleAuthButton } from "./GoogleAuthButton";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -47,11 +46,6 @@ export function LoginForm({ ...props }: React.ComponentProps<"div">) {
       });
 
       if (error) {
-        // better-auth throws this specific code (status 403) when
-        // requireEmailVerification is true and the user hasn't verified yet.
-        // It also auto-sends a fresh OTP via sendOnSignIn, so we just need
-        // to send the user to the verify page to consume it.
-
         if (error.code === "EMAIL_NOT_VERIFIED") {
           toast.info("Please verify your email.");
           router.push(
@@ -66,10 +60,15 @@ export function LoginForm({ ...props }: React.ComponentProps<"div">) {
 
       toast.success("Login successful!");
 
-      const userRole = (data?.user as User)?.role;
+      const userData = data?.user as unknown as IUser | undefined;
 
-      if (userRole === "ADMIN") {
+      if (userData?.userType === "STAFF" || userData?.isSuperOwner) {
         router.push("/admin-dashboard");
+      } else if (
+        userData?.userType === "CUSTOMER" ||
+        userData?.userType === "MERCHANT"
+      ) {
+        router.push("/user-dashboard");
       } else {
         router.push("/");
       }
@@ -189,9 +188,6 @@ export function LoginForm({ ...props }: React.ComponentProps<"div">) {
         </span>
         <div className="flex-1 h-px bg-zinc-200 dark:bg-zinc-800" />
       </div> */}
-
-      {/* Google Auth */}
-      <GoogleAuthButton className="mt-6 w-full" mode="login" />
 
       {/* Footer */}
       <p className="text-sm text-center text-text-primary mt-6">

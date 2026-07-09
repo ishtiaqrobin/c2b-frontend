@@ -6,43 +6,65 @@ export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   let isAuthenticated = false;
-  let isAdmin = false;
+  let isStaffOrSuperOwner = false;
+  let needPasswordChange = false;
 
   try {
-    // ✅ getSession() নয় — Edge runtime এ next/headers কাজ করে না
-    // ✅ getSessionFromRequest(request) — request থেকে cookie forward করে
     const { data } = await sessionService.getSessionFromRequest(request);
 
     if (data?.user) {
       isAuthenticated = true;
-      isAdmin = data.user.role === Roles.admin;
+      // STAFF and SUPER_OWNER have admin dashboard access
+      isStaffOrSuperOwner =
+        data.user.userType === Roles.STAFF || data.user.isSuperOwner === true;
+      needPasswordChange = data.user.needPasswordChange === true;
     }
   } catch (error) {
     console.error("Session fetch error in middleware:", error);
   }
 
-  //* Redirect if authenticated user tries to access /login
-  if (pathname === "/login" || pathname === "/register") {
-    if (isAuthenticated) {
-      return NextResponse.redirect(new URL("/admin-dashboard", request.url));
+  // Redirect to login if unauthenticated and trying to access dashboards
+  if (!isAuthenticated) {
+    if (
+      pathname.startsWith("/admin-dashboard") ||
+      pathname.startsWith("/user-dashboard")
+    ) {
+      return NextResponse.redirect(new URL("/login", request.url));
     }
     return NextResponse.next();
   }
 
-  //* User is not authenticated at all
-  if (!isAuthenticated) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  // Redirect if authenticated user tries to access /login or /register
+  if (pathname === "/login" || pathname === "/register") {
+    return NextResponse.redirect(
+      new URL(
+        isStaffOrSuperOwner ? "/admin-dashboard" : "/user-dashboard",
+        request.url,
+      ),
+    );
   }
 
-  //* User is authenticated and role = ADMIN
-  //* User can not visit user dashboard
-  if (isAdmin && pathname.startsWith("/user-dashboard")) {
+  // If user needs password change, force them to profile page
+  if (
+    needPasswordChange &&
+    !pathname.includes("/profile") &&
+    !pathname.startsWith("/api/")
+  ) {
+    const dashboardBase = isStaffOrSuperOwner
+      ? "/admin-dashboard"
+      : "/user-dashboard";
+    return NextResponse.redirect(
+      new URL(`${dashboardBase}/profile`, request.url),
+    );
+  }
+
+  // Staff/SuperOwner can not visit user dashboard
+  if (isStaffOrSuperOwner && pathname.startsWith("/user-dashboard")) {
     return NextResponse.redirect(new URL("/admin-dashboard", request.url));
   }
 
-  //* User is authenticated and role = USER
-  //* User can not visit admin dashboard
-  if (!isAdmin && pathname.startsWith("/admin-dashboard")) {
+  // Regular customers can not visit admin dashboard
+  if (!isStaffOrSuperOwner && pathname.startsWith("/admin-dashboard")) {
     return NextResponse.redirect(new URL("/user-dashboard", request.url));
   }
 

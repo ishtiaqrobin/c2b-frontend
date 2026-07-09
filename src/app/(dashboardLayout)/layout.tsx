@@ -85,9 +85,12 @@ export default function DashboardLayout({
           </header>
           {/* ✅ data-lenis-prevent — Lenis এই area-তে scroll capture করবে না */}
           <div className="flex-1 overflow-y-auto p-4 md:p-6" data-lenis-prevent>
-            {userState?.role === "ADMIN" && admin}
-            {userState?.role === "USER" && user}
-            {!userState?.role && children}
+            {(userState?.userType === "STAFF" || userState?.isSuperOwner) &&
+              admin}
+            {(userState?.userType === "CUSTOMER" ||
+              userState?.userType === "MERCHANT") &&
+              user}
+            {!userState?.userType && children}
           </div>
         </SidebarInset>
       </div>

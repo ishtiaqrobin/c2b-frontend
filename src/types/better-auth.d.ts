@@ -1,8 +1,9 @@
 declare module "better-auth" {
   interface User {
-    role: "STUDENT" | "TUTOR" | "ADMIN";
-    phone?: string | null;
-    isActive: boolean;
-    isBanned: boolean;
+    userType: "CUSTOMER" | "MERCHANT" | "STAFF";
+    accountType?: "INDIVIDUAL" | "CORPORATION" | null;
+    isSuperOwner: boolean;
+    isDeleted: boolean;
+    deletedAt?: Date | null;
   }
 }

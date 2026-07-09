@@ -3,10 +3,13 @@
 
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
+import { env } from "@/env";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { LogOutIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+
+const API_URL = env.NEXT_PUBLIC_API_URL;
 
 interface LogoutButtonProps {
   variant?: "default" | "outline" | "ghost" | "destructive";
@@ -18,7 +21,6 @@ interface LogoutButtonProps {
 export function LogoutButton({
   variant = "outline",
   className,
-  // showIcon = false,
   size = "sm",
 }: LogoutButtonProps) {
   const router = useRouter();
@@ -28,11 +30,17 @@ export function LogoutButton({
     setIsLoading(true);
 
     try {
+      // 1. Call server-side logout to revoke session in DB
+      await fetch(`${API_URL}/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      // 2. Call better-auth client-side sign out
       await authClient.signOut({
         fetchOptions: {
           onSuccess: () => {
             toast.success("Logged out successfully");
-            // Force refresh and redirect
             router.refresh();
             setTimeout(() => {
               window.location.href = "/";

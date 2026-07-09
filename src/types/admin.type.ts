@@ -1,83 +1,86 @@
-export interface AdminStats {
-  // Users
-  grandTotalUsers: number;
-  totalUsers: number;
-  totalAdmins: number;
-  totalVerifiedUsers: number;
-  totalUnverifiedUsers: number;
+import type { IUser } from "./user.type";
 
-  // Core Portfolio
-  totalProjects: number;
-  totalSkills: number;
-  totalCategories: number;
-  totalServices: number;
-  totalExperiences: number;
-  totalEducations: number;
-  totalCertificates: number;
-  totalReviews: number;
-  totalGallery: number;
-  totalVideos: number;
-  totalTimelines: number;
-
-  // Blog
-  totalBlogs: number;
-  totalPublishedBlogs: number;
-  totalDraftBlogs: number;
-  totalBlogTags: number;
-  totalBlogComments: number;
-
-  // Contacts & Appointments
-  totalContacts: number;
-  totalUnreadContacts: number;
-  totalAppointments: number;
-  totalPendingAppointments: number;
-
-  // Store
-  totalProducts: number;
-  totalOrders: number;
-  totalPaidOrders: number;
-
-  // Analytics & Engagement
-  totalPageViews: number;
-  // totalChatbotLogs: number;
-
-  // Open Source & Packages
-  totalNpmPackages: number;
-  totalOpenSourceContributions: number;
-
-  // RSS
-  totalRssSubscribers: number;
-
-  // Translations
-  totalTranslations: number;
-}
-
-export interface PublicStats {
-  totalStudents: number;
-  totalTutors: number;
-  totalCategories: number;
-  avgRating: number;
-  studentImages: string[];
-}
-
-export interface AdminUser {
+export interface IAdminProfile {
   id: string;
-  name: string;
-  email: string;
-  role: string;
-  phone: string | null;
-  image: string | null;
+  userId: string;
+  displayName?: string | null;
   isActive: boolean;
-  isBanned: boolean;
+  user?: IUser;
+}
+
+export interface IAuditLog {
+  id: string;
+  adminId?: string | null;
+  action: string;
+  entityType: string;
+  entityId: string;
+  description?: string | null;
+  before?: Record<string, unknown> | null;
+  after?: Record<string, unknown> | null;
+  ipAddress?: string | null;
+  createdAt: string;
+  admin?: IAdminProfile | null;
+}
+
+export interface IAdminTask {
+  id: string;
+  adminId?: string | null;
+  orderId?: string | null;
+  storeId?: string | null;
+  title?: string | null;
+  description?: string | null;
+  isDone: boolean;
+  dueAt?: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface AdminBooking {
-  id: string;
-  studentId: string;
-  tutorId: string;
-  sessionDate: string;
+export interface IPromoteStaffPayload {
+  userId: string;
+  displayName?: string;
+  roleId?: string;
+  storeId?: string | null;
+}
+
+export interface IAssignRolePayload {
+  roleId: string;
+  storeId?: string | null;
+}
+
+export interface IListUsersQuery {
+  page?: number;
+  limit?: number;
+  search?: string;
+  userType?: "CUSTOMER" | "STAFF";
+  isDeleted?: boolean;
+}
+
+export interface IReviewEkycPayload {
+  status: "VERIFIED" | "REJECTED";
+  rejectReason?: string;
+}
+
+export interface IAdminStats {
+  totalUsers: number;
+  totalCustomers: number;
+  totalStaff: number;
+  totalMerchants: number;
+  totalOrders: number;
+  totalPendingOrders: number;
+  totalCompletedOrders: number;
+  totalCancelledOrders: number;
+  totalPayments: number;
+  totalPaidAmount: number;
+  totalPendingPayments: number;
+  totalProducts: number;
+  totalCategories: number;
+  totalStores: number;
+  totalBanners: number;
+  totalNews: number;
+  totalEkycPending: number;
+  totalEkycVerified: number;
+  totalEkycRejected: number;
+}
   startTime: string;
   endTime: string;
   duration: number;

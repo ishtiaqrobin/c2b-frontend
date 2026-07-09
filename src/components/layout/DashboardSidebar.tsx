@@ -1,29 +1,19 @@
 "use client";
 
-import * as React from "react";
-import { Sidebar as SidebarPrimitive } from "@/components/ui/sidebar";
 import { adminRoutes } from "@/routes/adminRoutes";
 import { userRoutes } from "@/routes/userRoutes";
 import { useAuth } from "@/hooks/useAuth";
-import {
-  ChartColumn,
-  Gift,
-  Home,
-  Settings,
-  ShoppingCart,
-  TrendingUp,
-} from "lucide-react";
+import { ChartColumn, Home, Settings, TrendingUp } from "lucide-react";
 import { AppSidebar } from "./AppSidebar";
 
-export function DashboardSidebar(
-  props: React.ComponentProps<typeof SidebarPrimitive>,
-) {
+export function DashboardSidebar() {
   const { user } = useAuth();
-  const isAdmin = user?.role === "ADMIN";
+  const isStaffOrSuperOwner =
+    user?.userType === "STAFF" || user?.isSuperOwner === true;
 
-  const routes = isAdmin ? adminRoutes : userRoutes;
+  const routes = isStaffOrSuperOwner ? adminRoutes : userRoutes;
 
-  const quickActions = isAdmin
+  const quickActions = isStaffOrSuperOwner
     ? {
         title: "Quick Actions",
         items: [

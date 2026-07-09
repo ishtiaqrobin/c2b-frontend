@@ -1,14 +1,12 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
-import { User } from "@/types";
+import { IUser } from "@/types";
 import { useRouter } from "next/navigation";
 
 export function useAuth() {
   const router = useRouter();
   const { data: sessionData, isPending: isLoading } = authClient.useSession();
-
-  console.log(sessionData);
 
   const logout = async () => {
     try {
@@ -22,7 +20,9 @@ export function useAuth() {
     }
   };
 
-  const user = sessionData?.user ? (sessionData.user as User) : null;
+  const user = sessionData?.user
+    ? (sessionData.user as unknown as IUser)
+    : null;
   const session = sessionData?.session || null;
   const isAuthenticated = !!user && !!session;
 
