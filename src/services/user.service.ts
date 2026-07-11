@@ -9,6 +9,35 @@ interface ServiceError {
 }
 
 export const userService = {
+  /** POST /users/register — Register a new user (Individual or Corporation) */
+  register: async function (
+    payload: Record<string, unknown>,
+  ): Promise<{ data: IUser | null; error: ServiceError | null }> {
+    try {
+      const res = await fetch(`${API_URL}/users/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(
+          errorData.message || `Registration failed (HTTP ${res.status})`,
+        );
+      }
+      const response: ApiResponse<IUser> = await res.json();
+      return { data: response.data, error: null };
+    } catch (err) {
+      return {
+        data: null,
+        error: {
+          message: err instanceof Error ? err.message : "Registration failed",
+        },
+      };
+    }
+  },
+
   /** GET /users/me — Current authenticated user */
   getMe: async function (
     token: string,

@@ -7,36 +7,30 @@ import { Label } from "@/components/ui/label";
 import IndividualRegisterForm from "./IndividualRegisterForm";
 import CorporationRegisterForm from "./CorporationRegisterForm";
 
+type RegistrationType = "individual" | "corporation";
+
 export default function MemberRegistration() {
-  // State to track selection. Default is undefined (nothing selected)
-  const [registrationType, setRegistrationType] = useState<
-    "individual" | "corporation" | undefined
-  >();
+  const [registrationType, setRegistrationType] =
+    useState<RegistrationType | null>(null);
 
   return (
-    <div className="max-w-5xl mx-auto p-4 md:p-8 font-sans">
-      <h1 className="text-3xl md:text-4xl font-bold text-center mb-10 text-slate-900">
-        New Member Registration
-      </h1>
-
-      {/* Main Classification Card */}
-      <Card className="bg-slate-50/60 border-slate-200 shadow-sm p-0">
+    <div className="w-full max-w-3xl mx-auto">
+      {/* Classification Card */}
+      <Card className="bg-slate-50/60 border-slate-200 shadow-sm p-0 mb-6">
         <CardContent className="p-6 md:p-8 flex flex-col md:flex-row md:items-start justify-between gap-6">
-          {/* Label Area */}
           <div className="space-y-1">
             <Label className="text-base md:text-lg font-semibold text-slate-800">
-              Individual corporation classification
+              Account Type
             </Label>
             <span className="text-xs text-red-500 font-medium block">
               Required
             </span>
           </div>
 
-          {/* Radio Group Area */}
           <RadioGroup
-            value={registrationType}
+            value={registrationType ?? ""}
             onValueChange={(value) =>
-              setRegistrationType(value as "individual" | "corporation")
+              setRegistrationType(value as RegistrationType)
             }
             className="flex flex-col sm:flex-row gap-6 md:mt-1"
           >
@@ -50,7 +44,7 @@ export default function MemberRegistration() {
                 htmlFor="individual"
                 className="cursor-pointer text-slate-700 text-base font-medium"
               >
-                individual
+                Individual
               </Label>
             </div>
 
@@ -69,11 +63,11 @@ export default function MemberRegistration() {
             </div>
           </RadioGroup>
         </CardContent>
-
-        {/* Conditional Form Rendering */}
-        {registrationType === "individual" && <IndividualRegisterForm />}
-        {registrationType === "corporation" && <CorporationRegisterForm />}
       </Card>
+
+      {/* Conditional Form Rendering */}
+      {registrationType === "individual" && <IndividualRegisterForm />}
+      {registrationType === "corporation" && <CorporationRegisterForm />}
     </div>
   );
 }
