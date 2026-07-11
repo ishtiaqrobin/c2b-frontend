@@ -46,6 +46,31 @@ export const newsService = {
     }
   },
 
+  /** GET /news/latest — Get latest news (public) */
+  getLatest: async function (locale?: string): Promise<{
+    data: INews[] | null;
+    error: ServiceError | null;
+  }> {
+    try {
+      const params = locale ? `?locale=${locale}` : "";
+      const res = await fetch(`${API_URL}/news/latest${params}`, {
+        credentials: "include",
+        cache: "no-store",
+      });
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      const response: ApiResponse<INews[]> = await res.json();
+      return { data: response.data, error: null };
+    } catch (err) {
+      return {
+        data: null,
+        error: {
+          message:
+            err instanceof Error ? err.message : "Error fetching latest news",
+        },
+      };
+    }
+  },
+
   /** GET /news/:id */
   getById: async function (
     id: string,

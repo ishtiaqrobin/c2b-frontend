@@ -1,9 +1,9 @@
-export type * from "./routes.type";
+// export type * from "./routes.type";
 export type * from "./api.type";
 export type * from "./enums";
 export type * from "./user.type";
 export type * from "./admin.type";
-export type * from "./address.type";
+// export type * from "./address.type";
 export type * from "./banner.type";
 export type * from "./cart.type";
 export type * from "./category.type";
@@ -14,3 +14,4 @@ export type * from "./order.type";
 export type * from "./payment.type";
 export type * from "./product.type";
 export type * from "./store.type";
+export type * from "./settings.type";

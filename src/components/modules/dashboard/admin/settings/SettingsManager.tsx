@@ -27,11 +27,12 @@ import {
   Globe,
   Save,
   Search,
+  Newspaper,
   LucideIcon,
 } from "lucide-react";
 import { ISettings } from "@/types";
-import { updateSettingsAction } from "@/actions/setting.action";
 import { toast } from "sonner";
+import { updateSettingsAction } from "@/actions/setting.action";
 
 interface SettingsManagerProps {
   settings: ISettings | null;
@@ -110,6 +111,9 @@ export function SettingsManager({
       // SEO
       metaDescription: str("metaDescription"),
       metaKeywords: str("metaKeywords"),
+
+      // News
+      latestNewsCount: Number(fd.get("latestNewsCount")) || 10,
     };
 
     setLoading(true);
@@ -341,6 +345,33 @@ export function SettingsManager({
                   placeholder="3+ Years of professional experience"
                   className="rounded-xl h-10"
                 />
+              </div>
+            </div>
+          </div>
+
+          <Separator />
+
+          {/* ── News Configuration ──────────────────────────────── */}
+          <div>
+            <SectionHeading>News Configuration</SectionHeading>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <FieldLabel htmlFor="latestNewsCount" icon={Newspaper}>
+                  Latest News Count
+                </FieldLabel>
+                <Input
+                  id="latestNewsCount"
+                  name="latestNewsCount"
+                  type="number"
+                  min={1}
+                  max={100}
+                  defaultValue={settings?.latestNewsCount ?? 10}
+                  placeholder="10"
+                  className="rounded-xl h-10"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Number of latest news items to show on the homepage (1–100)
+                </p>
               </div>
             </div>
           </div>
