@@ -37,6 +37,7 @@ export const settingService = {
   updateSettings: async function (
     token: string,
     payload: Record<string, unknown>,
+    cookieHeader?: string,
   ): Promise<{ data: ISettings | null; error: ServiceError | null }> {
     try {
       const res = await fetch(`${API_URL}/settings`, {
@@ -44,6 +45,7 @@ export const settingService = {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          ...(cookieHeader ? { Cookie: cookieHeader } : {}),
         },
         credentials: "include",
         body: JSON.stringify(payload),

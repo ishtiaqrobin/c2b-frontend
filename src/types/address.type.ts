@@ -1,7 +1,9 @@
+export type AddressType = "HOME" | "SHIPPING" | "RETURN" | "COMPANY";
+
 export interface IAddress {
   id: string;
   userId: string;
-  type: "HOME" | "SHIPPING" | "RETURN" | "COMPANY";
+  type: AddressType;
   label?: string | null;
   recipientName?: string | null;
   telephone?: string | null;
@@ -23,6 +25,7 @@ export interface IDistrict {
   code: string;
   nameEn: string;
   nameBn: string;
+  divisionId?: number;
 }
 
 export interface IDivision {
@@ -33,7 +36,7 @@ export interface IDivision {
 }
 
 export interface IAddressCreatePayload {
-  type?: "HOME" | "SHIPPING" | "RETURN" | "COMPANY";
+  type?: AddressType;
   label?: string;
   recipientName?: string;
   telephone?: string;
@@ -46,7 +49,7 @@ export interface IAddressCreatePayload {
 }
 
 export interface IAddressUpdatePayload {
-  type?: "HOME" | "SHIPPING" | "RETURN" | "COMPANY";
+  type?: AddressType;
   label?: string;
   recipientName?: string;
   telephone?: string;

@@ -1,10 +1,13 @@
+import type { ICategory } from "./category.type";
+
+export type { ICategory };
+
 export interface IProduct {
   id: string;
   slug: string;
   categoryId: string;
   imageUrl?: string | null;
   imagePublicId?: string | null;
-  updateDate: string;
   isActive: boolean;
   isDeleted: boolean;
   deletedAt?: string | null;
@@ -13,6 +16,7 @@ export interface IProduct {
   category?: ICategory;
   translations?: IProductTranslation[];
   variants?: IProductVariant[];
+  _count?: { variants: number };
 }
 
 export interface IProductTranslation {
@@ -46,7 +50,7 @@ export interface IProductVariant {
 export interface IVariantDeduction {
   id: string;
   variantId: string;
-  condition: string;
+  condition: "NEW" | "USED";
   amount: number;
   sortOrder: number;
   isActive: boolean;
@@ -67,7 +71,7 @@ export interface IDeductionTranslation {
 export interface IPriceHistory {
   id: string;
   variantId: string;
-  condition: string;
+  condition: "NEW" | "USED";
   oldPrice?: number | null;
   newPrice?: number | null;
   changedBy?: string | null;
@@ -121,7 +125,7 @@ export interface IVariantUpdatePayload {
 }
 
 export interface IDeductionCreatePayload {
-  condition: string;
+  condition: "NEW" | "USED";
   amount: number;
   sortOrder?: number;
   isActive?: boolean;
@@ -129,7 +133,7 @@ export interface IDeductionCreatePayload {
 }
 
 export interface IDeductionUpdatePayload {
-  condition?: string;
+  condition?: "NEW" | "USED";
   amount?: number;
   sortOrder?: number;
   isActive?: boolean;
@@ -137,6 +141,6 @@ export interface IDeductionUpdatePayload {
 }
 
 export interface IPriceUpdatePayload {
-  condition: string;
+  condition: "NEW" | "USED";
   newPrice: number;
 }

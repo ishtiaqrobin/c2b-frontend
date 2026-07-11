@@ -7,48 +7,41 @@ import type {
   IAddressUpdatePayload,
 } from "@/types/address.type";
 
-export async function createAddressAction(
-  token: string,
-  payload: IAddressCreatePayload,
-) {
-  const { data, error } = await addressService.create(
-    token,
-    payload as unknown as Record<string, unknown>,
-  );
+export async function createAddressAction(payload: IAddressCreatePayload) {
+  const { data, error } = await addressService.create(payload);
   if (error) return { success: false, message: error.message };
+  revalidatePath("/admin-dashboard/addresses");
   revalidatePath("/user-dashboard/addresses");
-  revalidateTag("addresses", "max");
+  revalidateTag("addresses");
   return { success: true, message: "Address created successfully", data };
 }
 
 export async function updateAddressAction(
-  token: string,
   id: string,
   payload: IAddressUpdatePayload,
 ) {
-  const { data, error } = await addressService.update(
-    token,
-    id,
-    payload as unknown as Record<string, unknown>,
-  );
+  const { data, error } = await addressService.update(id, payload);
   if (error) return { success: false, message: error.message };
+  revalidatePath("/admin-dashboard/addresses");
   revalidatePath("/user-dashboard/addresses");
-  revalidateTag("addresses", "max");
+  revalidateTag("addresses");
   return { success: true, message: "Address updated successfully", data };
 }
 
-export async function deleteAddressAction(token: string, id: string) {
-  const { error } = await addressService.delete(token, id);
+export async function deleteAddressAction(id: string) {
+  const { error } = await addressService.delete(id);
   if (error) return { success: false, message: error.message };
+  revalidatePath("/admin-dashboard/addresses");
   revalidatePath("/user-dashboard/addresses");
-  revalidateTag("addresses", "max");
+  revalidateTag("addresses");
   return { success: true, message: "Address deleted successfully" };
 }
 
-export async function setDefaultAddressAction(token: string, id: string) {
-  const { data, error } = await addressService.setDefault(token, id);
+export async function setDefaultAddressAction(id: string) {
+  const { data, error } = await addressService.setDefault(id);
   if (error) return { success: false, message: error.message };
+  revalidatePath("/admin-dashboard/addresses");
   revalidatePath("/user-dashboard/addresses");
-  revalidateTag("addresses", "max");
-  return { success: true, message: "Default address set", data };
+  revalidateTag("addresses");
+  return { success: true, message: "Default address updated", data };
 }
