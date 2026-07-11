@@ -1,7 +1,7 @@
-import CategoriesClient from "@/components/modules/dashboard/admin/category/CategoriesClient";
-import { categoryService } from "@/services/category.service";
+import { bannerService } from "@/services/banner.service";
+import BannersClient from "@/components/modules/dashboard/admin/banners/BannersClient";
 
-export default async function AdminCategoriesPage({
+export default async function AdminBannersPage({
   searchParams,
 }: {
   searchParams: Promise<{ isActive?: string }>;
@@ -11,12 +11,12 @@ export default async function AdminCategoriesPage({
   const showInactive = params.isActive === "false";
   const fetchParams = showInactive ? {} : { isActive: "true" };
 
-  const { data: categories } = await categoryService.getAll(fetchParams);
+  const { data: banners } = await bannerService.getAll(fetchParams);
 
   return (
     <div className="space-y-6 min-h-screen">
-      <CategoriesClient
-        categories={categories || []}
+      <BannersClient
+        banners={banners || []}
         showInactiveDefault={showInactive}
       />
     </div>

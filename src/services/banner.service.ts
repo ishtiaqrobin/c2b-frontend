@@ -1,6 +1,10 @@
 import { env } from "@/env";
 import type { ApiResponse } from "@/types/api.type";
-import type { IBanner } from "@/types/banner.type";
+import type {
+  IBanner,
+  IBannerListQuery,
+  IBannerFormValues,
+} from "@/types/banner.type";
 
 const API_URL = env.NEXT_PUBLIC_API_URL;
 
@@ -8,79 +12,106 @@ interface ServiceError {
   message: string;
 }
 
+type ServiceResult<T> =
+  | { data: T; error: null }
+  | { data: null; error: ServiceError };
+
+const errorFrom = (err: unknown, fallback: string): ServiceError => ({
+  message: err instanceof Error ? err.message : fallback,
+});
+
+/**
+ * Server-only fetch that forwards the session cookie so the backend's
+ * checkAuth middleware can identify the user.  Use this for any endpoint
+ * that requires authentication (POST/PATCH/DELETE on banners, etc.).
+ */
+async function fetchWithCookies(
+  url: string,
+  options: RequestInit = {},
+): Promise<Response> {
+  const { cookies } = await import("next/headers");
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.toString();
+
+  return fetch(url, {
+    ...options,
+    headers: {
+      ...options.headers,
+      ...(cookieHeader ? { Cookie: cookieHeader } : {}),
+    },
+    credentials: "include",
+  });
+}
+
+/** Builds the multipart FormData the backend's multer middleware expects. */
+export const buildBannerFormData = (values: IBannerFormValues): FormData => {
+  const formData = new FormData();
+  if (values.image) formData.append("image", values.image);
+  if (values.categoryId) formData.append("categoryId", values.categoryId);
+  if (values.linkUrl) formData.append("linkUrl", values.linkUrl);
+  if (values.sortOrder !== undefined)
+    formData.append("sortOrder", String(values.sortOrder));
+  if (values.isActive !== undefined)
+    formData.append("isActive", String(values.isActive));
+  return formData;
+};
+
 export const bannerService = {
-  /** GET /banners — List banners (public) */
-  getAll: async function (query?: {
-    page?: string;
-    limit?: string;
-    categoryId?: string;
-    isActive?: string;
-  }): Promise<{
+  /** GET /banners — list (public) */
+  getAll: async (
+    query?: IBannerListQuery,
+  ): Promise<{
     data: IBanner[] | null;
-    meta?: { page: number; limit: number; total: number } | null;
+    meta: { page: number; limit: number; total: number } | null;
     error: ServiceError | null;
-  }> {
+  }> => {
     try {
       const params = new URLSearchParams();
       if (query?.page) params.set("page", query.page);
       if (query?.limit) params.set("limit", query.limit);
       if (query?.categoryId) params.set("categoryId", query.categoryId);
       if (query?.isActive) params.set("isActive", query.isActive);
-      const url = `${API_URL}/banners${params.toString() ? `?${params.toString()}` : ""}`;
+
+      const url = `${API_URL}/banners${params.toString() ? `?${params}` : ""}`;
       const res = await fetch(url, {
         credentials: "include",
         cache: "no-store",
       });
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
       const response: ApiResponse<IBanner[]> = await res.json();
       return { data: response.data, meta: response.meta ?? null, error: null };
     } catch (err) {
       return {
         data: null,
-        error: {
-          message:
-            err instanceof Error ? err.message : "Error fetching banners",
-        },
+        meta: null,
+        error: errorFrom(err, "Error fetching banners"),
       };
     }
   },
 
-  /** GET /banners/:id */
-  getById: async function (
-    id: string,
-  ): Promise<{ data: IBanner | null; error: ServiceError | null }> {
+  /** GET /banners/:id — single (public) */
+  getById: async (id: string): Promise<ServiceResult<IBanner>> => {
     try {
       const res = await fetch(`${API_URL}/banners/${id}`, {
         credentials: "include",
         cache: "no-store",
       });
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
       const response: ApiResponse<IBanner> = await res.json();
       return { data: response.data, error: null };
     } catch (err) {
-      return {
-        data: null,
-        error: {
-          message: err instanceof Error ? err.message : "Error fetching banner",
-        },
-      };
+      return { data: null, error: errorFrom(err, "Error fetching banner") };
     }
   },
 
-  /** POST /banners — Create (admin) */
-  create: async function (
-    token: string,
-    payload: Record<string, unknown>,
-  ): Promise<{ data: IBanner | null; error: ServiceError | null }> {
+  /** POST /banners — create (admin), multipart upload */
+  create: async (formData: FormData): Promise<ServiceResult<IBanner>> => {
     try {
-      const res = await fetch(`${API_URL}/banners`, {
+      const res = await fetchWithCookies(`${API_URL}/banners`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(payload),
+        body: formData,
       });
       if (!res.ok) {
         const err = await res.json();
@@ -89,30 +120,19 @@ export const bannerService = {
       const response: ApiResponse<IBanner> = await res.json();
       return { data: response.data, error: null };
     } catch (err) {
-      return {
-        data: null,
-        error: {
-          message: err instanceof Error ? err.message : "Error creating banner",
-        },
-      };
+      return { data: null, error: errorFrom(err, "Error creating banner") };
     }
   },
 
-  /** PATCH /banners/:id — Update (admin) */
-  update: async function (
-    token: string,
+  /** PATCH /banners/:id — update (admin), multipart upload */
+  update: async (
     id: string,
-    payload: Record<string, unknown>,
-  ): Promise<{ data: IBanner | null; error: ServiceError | null }> {
+    formData: FormData,
+  ): Promise<ServiceResult<IBanner>> => {
     try {
-      const res = await fetch(`${API_URL}/banners/${id}`, {
+      const res = await fetchWithCookies(`${API_URL}/banners/${id}`, {
         method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(payload),
+        body: formData,
       });
       if (!res.ok) {
         const err = await res.json();
@@ -121,25 +141,17 @@ export const bannerService = {
       const response: ApiResponse<IBanner> = await res.json();
       return { data: response.data, error: null };
     } catch (err) {
-      return {
-        data: null,
-        error: {
-          message: err instanceof Error ? err.message : "Error updating banner",
-        },
-      };
+      return { data: null, error: errorFrom(err, "Error updating banner") };
     }
   },
 
-  /** DELETE /banners/:id — Soft delete (admin) */
-  delete: async function (
-    token: string,
+  /** DELETE /banners/:id — soft delete (admin) */
+  delete: async (
     id: string,
-  ): Promise<{ data: null; error: ServiceError | null }> {
+  ): Promise<{ data: null; error: ServiceError | null }> => {
     try {
-      const res = await fetch(`${API_URL}/banners/${id}`, {
+      const res = await fetchWithCookies(`${API_URL}/banners/${id}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-        credentials: "include",
       });
       if (!res.ok) {
         const err = await res.json();
@@ -147,12 +159,7 @@ export const bannerService = {
       }
       return { data: null, error: null };
     } catch (err) {
-      return {
-        data: null,
-        error: {
-          message: err instanceof Error ? err.message : "Error deleting banner",
-        },
-      };
+      return { data: null, error: errorFrom(err, "Error deleting banner") };
     }
   },
 };
