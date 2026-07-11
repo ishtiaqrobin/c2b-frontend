@@ -1,6 +1,6 @@
 import { env } from "@/env";
 import type { ApiResponse } from "@/types/api.type";
-import type { IAddress, IPrefecture } from "@/types/address.type";
+import type { IAddress, IDistrict, IDivision } from "@/types/address.type";
 
 const API_URL = env.NEXT_PUBLIC_API_URL;
 
@@ -155,25 +155,75 @@ export const addressService = {
     }
   },
 
-  /** GET /addresses/prefectures — List prefectures */
-  getPrefectures: async function (): Promise<{
-    data: IPrefecture[] | null;
+  /** GET /addresses/divisions — List divisions */
+  getDivisions: async function (): Promise<{
+    data: IDivision[] | null;
     error: ServiceError | null;
   }> {
     try {
-      const res = await fetch(`${API_URL}/addresses/prefectures`, {
+      const res = await fetch(`${API_URL}/addresses/divisions`, {
         credentials: "include",
         cache: "no-store",
       });
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-      const response: ApiResponse<IPrefecture[]> = await res.json();
+      const response: ApiResponse<IDivision[]> = await res.json();
       return { data: response.data, error: null };
     } catch (err) {
       return {
         data: null,
         error: {
           message:
-            err instanceof Error ? err.message : "Error fetching prefectures",
+            err instanceof Error ? err.message : "Error fetching divisions",
+        },
+      };
+    }
+  },
+
+  /** GET /addresses/districts — List districts (paginated) */
+  getDistricts: async function (): Promise<{
+    data: IDistrict[] | null;
+    error: ServiceError | null;
+  }> {
+    try {
+      const res = await fetch(`${API_URL}/addresses/districts`, {
+        credentials: "include",
+        cache: "no-store",
+      });
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      const response: ApiResponse<IDistrict[]> = await res.json();
+      return { data: response.data, error: null };
+    } catch (err) {
+      return {
+        data: null,
+        error: {
+          message:
+            err instanceof Error ? err.message : "Error fetching districts",
+        },
+      };
+    }
+  },
+
+  /** GET /addresses/divisions/:divisionId/districts — Districts by division */
+  getDistrictsByDivision: async function (
+    divisionId: number,
+  ): Promise<{ data: IDistrict[] | null; error: ServiceError | null }> {
+    try {
+      const res = await fetch(
+        `${API_URL}/addresses/divisions/${divisionId}/districts`,
+        {
+          credentials: "include",
+          cache: "no-store",
+        },
+      );
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      const response: ApiResponse<IDistrict[]> = await res.json();
+      return { data: response.data, error: null };
+    } catch (err) {
+      return {
+        data: null,
+        error: {
+          message:
+            err instanceof Error ? err.message : "Error fetching districts",
         },
       };
     }

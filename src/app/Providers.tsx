@@ -14,7 +14,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   // Dashboard route-এ Lenis smooth scroll disable
-  // নাহলে inner overflow-y-auto scroll কাজ করে না
+  // না হলে inner overflow-y-auto scroll কাজ করে না
   const isDashboard = pathname?.includes("dashboard");
 
   return (

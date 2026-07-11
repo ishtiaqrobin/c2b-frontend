@@ -6,7 +6,7 @@ export interface IAddress {
   recipientName?: string | null;
   telephone?: string | null;
   postCode: string;
-  prefectureId: number;
+  districtId: number;
   cityTownVillage: string;
   streetAddress: string;
   apartment?: string | null;
@@ -15,10 +15,17 @@ export interface IAddress {
   deletedAt?: string | null;
   createdAt: string;
   updatedAt: string;
-  prefecture?: IPrefecture;
+  district?: IDistrict;
 }
 
-export interface IPrefecture {
+export interface IDistrict {
+  id: number;
+  code: string;
+  nameEn: string;
+  nameBn: string;
+}
+
+export interface IDivision {
   id: number;
   code: string;
   nameEn: string;
@@ -31,7 +38,7 @@ export interface IAddressCreatePayload {
   recipientName?: string;
   telephone?: string;
   postCode: string;
-  prefectureId: number;
+  districtId: number;
   cityTownVillage: string;
   streetAddress: string;
   apartment?: string;
@@ -44,7 +51,7 @@ export interface IAddressUpdatePayload {
   recipientName?: string;
   telephone?: string;
   postCode?: string;
-  prefectureId?: number;
+  districtId?: number;
   cityTownVillage?: string;
   streetAddress?: string;
   apartment?: string;

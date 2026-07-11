@@ -84,7 +84,10 @@ export const API_ENDPOINTS = {
   },
   ADDRESSES: {
     MY: "/api/v1/addresses/my",
-    PREFECTURES: "/api/v1/addresses/prefectures",
+    DIVISIONS: "/api/v1/addresses/divisions",
+    DISTRICTS_BY_DIVISION: (divisionId: number) =>
+      `/api/v1/addresses/divisions/${divisionId}/districts`,
+    DISTRICTS: "/api/v1/addresses/districts",
     DEFAULT: (id: string) => `/api/v1/addresses/my/${id}/default`,
   },
   NEWS: {

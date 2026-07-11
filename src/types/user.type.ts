@@ -39,18 +39,26 @@ export interface IUser {
 export interface IIndividualProfile {
   id: string;
   userId: string;
-  qualifiedInvoiceStatus: string;
+  qualifiedInvoiceStatus: "NOT_APPLICABLE" | "TARGET_AUDIENCE";
   fullName: string;
   telephone: string;
   dateOfBirth: string;
   sex: "MALE" | "FEMALE" | "OTHER";
-  occupation?: string | null;
+  occupation?:
+    | "COMPANY_EMPLOYEE"
+    | "SELF_EMPLOYED"
+    | "PART_TIME_JOB"
+    | "STUDENT"
+    | "UNEMPLOYED"
+    | "HOUSEWIFE"
+    | "OTHERS"
+    | null;
   postCode: string;
-  prefectureId: number;
+  districtId: number;
   cityTownVillage: string;
   streetAddress: string;
   apartment?: string | null;
-  prefecture?: IPrefecture;
+  district?: IDistrict;
 }
 
 export interface ICorporationProfile {
@@ -60,7 +68,7 @@ export interface ICorporationProfile {
   companyName: string;
   companyTelephone: string;
   companyPostCode: string;
-  companyPrefectureId: number;
+  companyDistrictId: number;
   companyCityTownVillage: string;
   companyStreetAddress: string;
   companyApartment?: string | null;
@@ -68,18 +76,28 @@ export interface ICorporationProfile {
   contactTelephone: string;
   contactDateOfBirth: string;
   contactSex: "MALE" | "FEMALE" | "OTHER";
-  contactOccupation?: string | null;
+  contactOccupation?:
+    | "COMPANY_EMPLOYEE"
+    | "SELF_EMPLOYED"
+    | "PART_TIME_JOB"
+    | "STUDENT"
+    | "UNEMPLOYED"
+    | "HOUSEWIFE"
+    | "OTHERS"
+    | null;
   contactPostCode: string;
-  contactPrefectureId: number;
+  contactDistrictId: number;
   contactCityTownVillage: string;
   contactStreetAddress: string;
   contactApartment?: string | null;
   bankAccount: string;
+  bankAccountBranch: string;
+  bankAccountType: "SAVINGS" | "CURRENT";
   bankAccountNumber: string;
   bankAccountName: string;
 }
 
-export interface IPrefecture {
+export interface IDistrict {
   id: number;
   code: string;
   nameEn: string;
