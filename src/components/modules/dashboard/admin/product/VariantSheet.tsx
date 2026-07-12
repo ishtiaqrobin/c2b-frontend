@@ -183,7 +183,7 @@ export default function VariantSheet({
             </SheetDescription>
           </SheetHeader>
 
-          <div className="mt-4 space-y-4">
+          <div className="p-4 space-y-4">
             {/* Toolbar */}
             <div className="flex items-center justify-between">
               <p className="text-sm text-muted-foreground">

@@ -1,5 +1,5 @@
 import { sessionService } from "@/services/session.service";
-import { ReviewManager } from "@/components/modules/dashboard/user/ReviewManager";
+import { ReviewManager } from "@/components/modules/dashboard/user/review/ReviewManager";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
