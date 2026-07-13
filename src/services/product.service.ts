@@ -2,8 +2,7 @@ import { env } from "@/env";
 import type { ApiResponse } from "@/types/api.type";
 import type {
   IProduct,
-  IProductCreatePayload,
-  IProductUpdatePayload,
+  IProductFormValues,
   IProductVariant,
   IVariantCreatePayload,
   IVariantUpdatePayload,
@@ -111,15 +110,30 @@ export const productService = {
 
   // ==================== PRODUCT (ADMIN) ====================
 
+  /** Builds the multipart FormData the backend's multer middleware expects. */
+  buildProductFormData: (
+    values: IProductFormValues,
+  ): FormData => {
+    const formData = new FormData();
+    if (values.image) formData.append("image", values.image);
+    const data: Record<string, unknown> = {};
+    if (values.name !== undefined) data.name = values.name;
+    if (values.slug !== undefined) data.slug = values.slug;
+    if (values.categoryId !== undefined) data.categoryId = values.categoryId;
+    if (values.isActive !== undefined) data.isActive = values.isActive;
+    if (values.variants !== undefined) data.variants = values.variants;
+    formData.append("data", JSON.stringify(data));
+    return formData;
+  },
+
   /** POST /products — Create product */
   create: async function (
-    payload: IProductCreatePayload,
+    formData: FormData,
   ): Promise<ServiceResult<IProduct>> {
     try {
       const res = await fetchWithCookies(`${API_URL}/products`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: formData,
       });
       if (!res.ok) {
         const err = await res.json();
@@ -135,13 +149,12 @@ export const productService = {
   /** PATCH /products/:id — Update product */
   update: async function (
     id: string,
-    payload: IProductUpdatePayload,
+    formData: FormData,
   ): Promise<ServiceResult<IProduct>> {
     try {
       const res = await fetchWithCookies(`${API_URL}/products/${id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: formData,
       });
       if (!res.ok) {
         const err = await res.json();

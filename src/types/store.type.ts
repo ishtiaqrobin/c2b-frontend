@@ -9,6 +9,7 @@ export interface IStore {
   name: string;
   address?: string | null;
   businessHours?: IBusinessHour[];
+  _count?: { orders: number; userRoles: number };
 }
 
 export interface IBusinessHour {
@@ -38,6 +39,19 @@ export interface IStoreUpdatePayload {
   isActive?: boolean;
   name?: string;
   address?: string;
+  businessHours?: {
+    dayOfWeek: number;
+    openTime?: string;
+    closeTime?: string;
+    isClosed?: boolean;
+  }[];
+}
+
+export interface IStoreFormValues {
+  name: string;
+  slug: string;
+  address?: string;
+  isActive?: boolean;
   businessHours?: {
     dayOfWeek: number;
     openTime?: string;

@@ -7,12 +7,8 @@ import type {
   IStoreUpdatePayload,
 } from "@/types/store.type";
 
-export async function createStoreAction(
-  token: string,
-  payload: IStoreCreatePayload,
-) {
+export async function createStoreAction(payload: IStoreCreatePayload) {
   const { data, error } = await storeService.create(
-    token,
     payload as unknown as Record<string, unknown>,
   );
   if (error) return { success: false, message: error.message };
@@ -22,12 +18,10 @@ export async function createStoreAction(
 }
 
 export async function updateStoreAction(
-  token: string,
   id: string,
   payload: IStoreUpdatePayload,
 ) {
   const { data, error } = await storeService.update(
-    token,
     id,
     payload as unknown as Record<string, unknown>,
   );
@@ -37,8 +31,8 @@ export async function updateStoreAction(
   return { success: true, message: "Store updated successfully", data };
 }
 
-export async function deleteStoreAction(token: string, id: string) {
-  const { error } = await storeService.delete(token, id);
+export async function deleteStoreAction(id: string) {
+  const { error } = await storeService.delete(id);
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin-dashboard/stores");
   revalidateTag("stores", "max");

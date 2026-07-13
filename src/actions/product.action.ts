@@ -3,15 +3,13 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { productService } from "@/services/product.service";
 import type {
-  IProductCreatePayload,
-  IProductUpdatePayload,
   IVariantCreatePayload,
   IVariantUpdatePayload,
   IPriceUpdatePayload,
 } from "@/types/product.type";
 
-export async function createProductAction(payload: IProductCreatePayload) {
-  const { data, error } = await productService.create(payload);
+export async function createProductAction(formData: FormData) {
+  const { data, error } = await productService.create(formData);
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin-dashboard/products");
   revalidateTag("products");
@@ -20,9 +18,9 @@ export async function createProductAction(payload: IProductCreatePayload) {
 
 export async function updateProductAction(
   id: string,
-  payload: IProductUpdatePayload,
+  formData: FormData,
 ) {
-  const { data, error } = await productService.update(id, payload);
+  const { data, error } = await productService.update(id, formData);
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin-dashboard/products");
   revalidateTag("products");

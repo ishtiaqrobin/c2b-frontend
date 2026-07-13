@@ -25,7 +25,7 @@ export const productFormSchema = z.object({
       "Slug can only contain lowercase letters, numbers, and hyphens",
     ),
   categoryId: z.string().min(1, "Category is required"),
-  imageUrl: z.string().optional(),
+  image: z.instanceof(File, { message: "Image must be a file" }).optional(),
   isActive: z.boolean().optional(),
 });
 

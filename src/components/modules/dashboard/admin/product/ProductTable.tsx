@@ -72,9 +72,9 @@ export default function ProductTable({
   const handleToggleStatus = async (product: IProduct) => {
     setTogglingId(product.id);
     try {
-      const res = await updateProductAction(product.id, {
-        isActive: !product.isActive,
-      });
+      const fd = new FormData();
+      fd.append("data", JSON.stringify({ isActive: !product.isActive }));
+      const res = await updateProductAction(product.id, fd);
       if (!res.success) {
         toast.error(res.message);
         return;

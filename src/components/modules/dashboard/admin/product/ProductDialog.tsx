@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -21,7 +22,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { Loader2, Upload, X } from "lucide-react";
 import {
   productFormSchema,
   type ProductFormValues,
@@ -33,6 +36,8 @@ import {
   createProductAction,
   updateProductAction,
 } from "@/actions/product.action";
+import { useImageUpload } from "@/hooks/useImageUpload";
+import { productService } from "@/services/product.service";
 
 interface ProductDialogProps {
   open: boolean;
@@ -51,6 +56,17 @@ export default function ProductDialog({
   categories,
   onSuccess,
 }: ProductDialogProps) {
+  const [saving, setSaving] = useState(false);
+
+  const {
+    file: imageFile,
+    preview: imagePreview,
+    isCompressing,
+    handleFileChange,
+    reset: resetImage,
+    inputRef,
+  } = useImageUpload({});
+
   const {
     register,
     handleSubmit,
@@ -64,7 +80,7 @@ export default function ProductDialog({
       name: "",
       slug: "",
       categoryId: "",
-      imageUrl: "",
+      image: undefined,
       isActive: true,
     },
   });
@@ -81,52 +97,53 @@ export default function ProductDialog({
 
   // Populate form in edit mode
   useEffect(() => {
-    if (open && mode === "edit" && product) {
-      reset({
-        name: product.name || "",
-        slug: product.slug,
-        categoryId: product.categoryId,
-        imageUrl: product.imageUrl ?? "",
-        isActive: Boolean(product.isActive),
-      });
-    } else if (open && mode === "add") {
-      reset({
-        name: "",
-        slug: "",
-        categoryId: "",
-        imageUrl: "",
-        isActive: true,
-      });
+    if (open) {
+      if (mode === "edit" && product) {
+        reset({
+          name: product.name || "",
+          slug: product.slug,
+          categoryId: product.categoryId,
+          image: undefined,
+          isActive: Boolean(product.isActive),
+        });
+      } else if (mode === "add") {
+        reset({
+          name: "",
+          slug: "",
+          categoryId: "",
+          image: undefined,
+          isActive: true,
+        });
+        resetImage();
+      }
     }
-  }, [open, mode, product, reset]);
+  }, [open, mode, product, reset, resetImage]);
 
   const onSubmit = async (values: ProductFormValues) => {
     const toastId = toast.loading(
       mode === "add" ? "Creating product..." : "Updating product...",
     );
 
+    setSaving(true);
+
     try {
+      const fd = productService.buildProductFormData({
+        image: imageFile || undefined,
+        name: values.name.trim(),
+        slug: values.slug,
+        categoryId: values.categoryId,
+        isActive: values.isActive,
+      });
+
       if (mode === "add") {
-        const res = await createProductAction({
-          name: values.name.trim(),
-          slug: values.slug,
-          categoryId: values.categoryId,
-          imageUrl: values.imageUrl || undefined,
-          isActive: values.isActive,
-        });
+        const res = await createProductAction(fd);
         if (!res.success) {
           toast.error(res.message, { id: toastId });
           return;
         }
         toast.success("Product created successfully", { id: toastId });
       } else if (mode === "edit" && product?.id) {
-        const res = await updateProductAction(product.id, {
-          name: values.name.trim(),
-          slug: values.slug,
-          categoryId: values.categoryId,
-          imageUrl: values.imageUrl || undefined,
-          isActive: values.isActive,
-        });
+        const res = await updateProductAction(product.id, fd);
         if (!res.success) {
           toast.error(res.message, { id: toastId });
           return;
@@ -140,13 +157,19 @@ export default function ProductDialog({
       toast.error(err instanceof Error ? err.message : "Operation failed", {
         id: toastId,
       });
+    } finally {
+      setSaving(false);
     }
   };
 
   const handleClose = () => {
+    resetImage();
     reset();
     onOpenChange(false);
   };
+
+  const isEdit = mode === "edit";
+  const displayPreview = imagePreview || (isEdit && product?.imageUrl) || null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -229,28 +252,75 @@ export default function ProductDialog({
             )}
           </div>
 
-          {/* Image URL */}
+          {/* Image Upload */}
           <div className="space-y-1.5">
-            <label
-              htmlFor="imageUrl"
-              className="text-sm font-medium text-gray-800"
+            <Label
+              htmlFor="image"
+              className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase"
             >
-              Image URL{" "}
-              <span className="text-muted-foreground font-normal">
-                (optional)
-              </span>
-            </label>
-            <Input
-              id="imageUrl"
-              {...register("imageUrl")}
-              className="bg-white"
-              placeholder="https://example.com/image.jpg"
-            />
-            {errors.imageUrl && (
-              <p className="text-xs text-destructive">
-                {errors.imageUrl.message}
-              </p>
+              Image{" "}
+              {isEdit
+                ? "(leave empty to keep current)"
+                : "(optional)"}
+            </Label>
+
+            {displayPreview ? (
+              <div className="relative h-40 rounded-xl overflow-hidden border">
+                <Image
+                  src={displayPreview}
+                  alt="Product preview"
+                  fill
+                  className="object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    resetImage();
+                    if (inputRef.current) inputRef.current.value = "";
+                  }}
+                  className="absolute top-2 right-2 h-6 w-6 rounded-full bg-black/60 flex items-center justify-center hover:bg-black/80 transition-colors"
+                >
+                  <X className="h-3 w-3 text-white" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-40 rounded-xl border-2 border-dashed border-muted-foreground/30 bg-muted/10">
+                <div className="text-center text-muted-foreground">
+                  <Upload className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-xs">No image selected</p>
+                </div>
+              </div>
             )}
+
+            <input
+              ref={inputRef}
+              id="image"
+              name="image"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileChange}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={isCompressing}
+              onClick={() => inputRef.current?.click()}
+              className="w-full mt-1"
+            >
+              {isCompressing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Compressing...
+                </>
+              ) : (
+                <>
+                  <Upload className="mr-2 h-4 w-4" />
+                  {displayPreview ? "Change Image" : "Select Image"}
+                </>
+              )}
+            </Button>
           </div>
 
           {/* Is Active */}
@@ -275,14 +345,16 @@ export default function ProductDialog({
               variant="outline"
               className="hover:cursor-pointer"
               onClick={handleClose}
+              disabled={saving}
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || saving || isCompressing}
               className="hover:cursor-pointer"
             >
+              {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {mode === "add" ? "Create Product" : "Save Changes"}
             </Button>
           </DialogFooter>

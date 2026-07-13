@@ -8,6 +8,32 @@ interface ServiceError {
   message: string;
 }
 
+type ServiceResult<T> =
+  | { data: T; error: null }
+  | { data: null; error: ServiceError };
+
+const errorFrom = (err: unknown, fallback: string): ServiceError => ({
+  message: err instanceof Error ? err.message : fallback,
+});
+
+async function fetchWithCookies(
+  url: string,
+  options: RequestInit = {},
+): Promise<Response> {
+  const { cookies } = await import("next/headers");
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.toString();
+
+  return fetch(url, {
+    ...options,
+    headers: {
+      ...options.headers,
+      ...(cookieHeader ? { Cookie: cookieHeader } : {}),
+    },
+    credentials: "include",
+  });
+}
+
 export const storeService = {
   /** GET /stores — List stores */
   getAll: async function (query?: {
@@ -37,9 +63,7 @@ export const storeService = {
     } catch (err) {
       return {
         data: null,
-        error: {
-          message: err instanceof Error ? err.message : "Error fetching stores",
-        },
+        error: errorFrom(err, "Error fetching stores"),
       };
     }
   },
@@ -59,9 +83,7 @@ export const storeService = {
     } catch (err) {
       return {
         data: null,
-        error: {
-          message: err instanceof Error ? err.message : "Error fetching store",
-        },
+        error: errorFrom(err, "Error fetching store"),
       };
     }
   },
@@ -81,26 +103,19 @@ export const storeService = {
     } catch (err) {
       return {
         data: null,
-        error: {
-          message: err instanceof Error ? err.message : "Error fetching store",
-        },
+        error: errorFrom(err, "Error fetching store"),
       };
     }
   },
 
-  /** POST /stores */
+  /** POST /stores — Create store */
   create: async function (
-    token: string,
     payload: Record<string, unknown>,
-  ): Promise<{ data: IStore | null; error: ServiceError | null }> {
+  ): Promise<ServiceResult<IStore>> {
     try {
-      const res = await fetch(`${API_URL}/stores`, {
+      const res = await fetchWithCookies(`${API_URL}/stores`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
       if (!res.ok) {
@@ -112,27 +127,20 @@ export const storeService = {
     } catch (err) {
       return {
         data: null,
-        error: {
-          message: err instanceof Error ? err.message : "Error creating store",
-        },
+        error: errorFrom(err, "Error creating store"),
       };
     }
   },
 
-  /** PATCH /stores/:id */
+  /** PATCH /stores/:id — Update store */
   update: async function (
-    token: string,
     id: string,
     payload: Record<string, unknown>,
-  ): Promise<{ data: IStore | null; error: ServiceError | null }> {
+  ): Promise<ServiceResult<IStore>> {
     try {
-      const res = await fetch(`${API_URL}/stores/${id}`, {
+      const res = await fetchWithCookies(`${API_URL}/stores/${id}`, {
         method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
       if (!res.ok) {
@@ -144,23 +152,18 @@ export const storeService = {
     } catch (err) {
       return {
         data: null,
-        error: {
-          message: err instanceof Error ? err.message : "Error updating store",
-        },
+        error: errorFrom(err, "Error updating store"),
       };
     }
   },
 
-  /** DELETE /stores/:id */
+  /** DELETE /stores/:id — Soft delete */
   delete: async function (
-    token: string,
     id: string,
   ): Promise<{ data: null; error: ServiceError | null }> {
     try {
-      const res = await fetch(`${API_URL}/stores/${id}`, {
+      const res = await fetchWithCookies(`${API_URL}/stores/${id}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-        credentials: "include",
       });
       if (!res.ok) {
         const err = await res.json();
@@ -170,9 +173,7 @@ export const storeService = {
     } catch (err) {
       return {
         data: null,
-        error: {
-          message: err instanceof Error ? err.message : "Error deleting store",
-        },
+        error: errorFrom(err, "Error deleting store"),
       };
     }
   },

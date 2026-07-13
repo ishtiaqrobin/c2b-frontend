@@ -64,6 +64,19 @@ export interface IPriceHistory {
   createdAt: string;
 }
 
+/**
+ * Shape used by the product create/edit form.
+ * `image` is required when creating a new product and optional when editing.
+ */
+export interface IProductFormValues {
+  image?: File;
+  name: string;
+  slug: string;
+  categoryId: string;
+  isActive?: boolean;
+  variants?: IVariantCreatePayload[];
+}
+
 // ====== Create/Update Payloads ======
 
 export interface IProductCreatePayload {
