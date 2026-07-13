@@ -49,7 +49,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 
+import { useCategories } from "@/hooks/useCategories";
 import { bannerService } from "@/services/banner.service";
 import type { IBanner } from "@/types/banner.type";
 
@@ -117,13 +126,18 @@ function BannerForm({
   previewUrl,
   onFileSelect,
   onClearPreview,
+  categoryId,
+  onCategoryChange,
 }: {
   item: IBanner | null;
   previewUrl: string | null;
   onFileSelect: (file: File) => void;
   onClearPreview: () => void;
+  categoryId: string;
+  onCategoryChange: (value: string) => void;
 }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { categories } = useCategories();
 
   return (
     <div className="space-y-4">
@@ -168,6 +182,24 @@ function BannerForm({
           placeholder="https://example.com/promo"
           className="rounded-xl h-10"
         />
+      </div>
+
+      {/* Category */}
+      <div className="space-y-1.5">
+        <FieldLabel htmlFor="categoryId">Category (optional)</FieldLabel>
+        <Select value={categoryId} onValueChange={onCategoryChange}>
+          <SelectTrigger id="categoryId" className="rounded-xl h-10">
+            <SelectValue placeholder="No category (general banner)" />
+          </SelectTrigger>
+          <SelectContent className="rounded-xl" position="popper">
+            <SelectItem value="_none">No category (general banner)</SelectItem>
+            {categories.map((cat) => (
+              <SelectItem key={cat.id} value={cat.id}>
+                {cat.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Sort Order */}
@@ -219,9 +251,15 @@ export function BannersManager({
   // File state for create/edit
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [createCategoryId, setCreateCategoryId] = useState("_none");
+  const [editCategoryId, setEditCategoryId] = useState("_none");
 
   // ── Helpers ───────────────────────────────────────────────────────
-  const buildFormData = (form: HTMLFormElement, hasFile: boolean) => {
+  const buildFormData = (
+    form: HTMLFormElement,
+    hasFile: boolean,
+    categoryId: string,
+  ) => {
     const fd = new FormData(form);
 
     // Only append file if one was selected
@@ -229,6 +267,11 @@ export function BannersManager({
       fd.set("image", selectedFile);
     } else if (!hasFile) {
       fd.delete("image");
+    }
+
+    // Append category if set (skip _none sentinel value)
+    if (categoryId && categoryId !== "_none") {
+      fd.set("categoryId", categoryId);
     }
 
     // Convert switch value to string "true"/"false" for backend
@@ -263,7 +306,7 @@ export function BannersManager({
     if (!selectedFile) return toast.error("Banner image is required");
 
     setLoading(true);
-    const formData = buildFormData(e.currentTarget, true);
+    const formData = buildFormData(e.currentTarget, true, createCategoryId);
     const { error } = await bannerService.create(formData);
 
     if (error) {
@@ -283,7 +326,7 @@ export function BannersManager({
     if (!selectedItem) return;
 
     setLoading(true);
-    const formData = buildFormData(e.currentTarget, !!selectedFile);
+    const formData = buildFormData(e.currentTarget, !!selectedFile, editCategoryId);
     const { error } = await bannerService.update(selectedItem.id, formData);
 
     if (error) {
@@ -396,6 +439,7 @@ export function BannersManager({
               <TableHeader>
                 <TableRow>
                   <TableHead>Image</TableHead>
+                  <TableHead>Category</TableHead>
                   <TableHead>Sort Order</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Link</TableHead>
@@ -421,6 +465,19 @@ export function BannersManager({
                           className="object-cover"
                         />
                       </div>
+                    </TableCell>
+
+                    {/* Category */}
+                    <TableCell>
+                      {item.category ? (
+                        <Badge variant="outline" className="text-xs font-mono">
+                          {item.category.slug}
+                        </Badge>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">
+                          General
+                        </span>
+                      )}
                     </TableCell>
 
                     {/* Sort Order */}
@@ -473,6 +530,7 @@ export function BannersManager({
                           <DropdownMenuItem
                             onClick={() => {
                               setSelectedItem(item);
+                              setEditCategoryId(item.categoryId || "_none");
                               resetFileState();
                               setEditDialog(true);
                             }}
@@ -497,7 +555,7 @@ export function BannersManager({
                 {banners.length === 0 && (
                   <TableRow>
                     <TableCell
-                      colSpan={6}
+                      colSpan={7}
                       className="text-center py-12 text-muted-foreground"
                     >
                       <ImageIcon className="h-10 w-10 mx-auto mb-3 opacity-30" />
@@ -520,6 +578,7 @@ export function BannersManager({
         onOpenChange={(open) => {
           if (!open) {
             resetFileState();
+            setCreateCategoryId("_none");
           }
           setCreateDialog(open);
         }}
@@ -538,6 +597,8 @@ export function BannersManager({
               previewUrl={previewUrl}
               onFileSelect={handleFileSelect}
               onClearPreview={handleClearPreview}
+              categoryId={createCategoryId}
+              onCategoryChange={setCreateCategoryId}
             />
 
             <DialogFooter>
@@ -547,6 +608,7 @@ export function BannersManager({
                 onClick={() => {
                   setCreateDialog(false);
                   resetFileState();
+                  setCreateCategoryId("_none");
                 }}
                 disabled={loading}
               >
@@ -568,6 +630,7 @@ export function BannersManager({
           if (!open) {
             setSelectedItem(null);
             resetFileState();
+            setEditCategoryId("_none");
           }
           setEditDialog(open);
         }}
@@ -587,6 +650,8 @@ export function BannersManager({
               previewUrl={previewUrl}
               onFileSelect={handleFileSelect}
               onClearPreview={handleClearPreview}
+              categoryId={editCategoryId}
+              onCategoryChange={setEditCategoryId}
             />
 
             <DialogFooter>
@@ -597,6 +662,7 @@ export function BannersManager({
                   setEditDialog(false);
                   setSelectedItem(null);
                   resetFileState();
+                  setEditCategoryId("_none");
                 }}
                 disabled={loading}
               >

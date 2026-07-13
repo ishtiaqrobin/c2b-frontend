@@ -13,7 +13,10 @@ export const categoryFormSchema = z.object({
       /^[a-z0-9-]+$/,
       "Slug can only contain lowercase letters, numbers, and hyphens",
     ),
-  isActive: z.boolean().optional(),
+  image: z.instanceof(File, { message: "Image must be a file" }).optional(),
+  isPopular: z.boolean().optional().default(false),
+  sortOrder: z.coerce.number().int().min(0).optional().default(0),
+  isActive: z.boolean().optional().default(true),
 });
 
 export type CategoryFormValues = z.infer<typeof categoryFormSchema>;

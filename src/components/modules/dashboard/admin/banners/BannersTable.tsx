@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import type { IBanner } from "@/types/banner.type";
+import { Badge } from "@/components/ui/badge";
 import {
   updateBannerAction,
   deleteBannerAction,
@@ -134,6 +135,7 @@ export default function BannersTable({
           <TableHeader>
             <TableRow>
               <TableHead>Image</TableHead>
+              <TableHead>Category</TableHead>
               <TableHead>Link URL</TableHead>
               <TableHead>Sort Order</TableHead>
               <TableHead>Status</TableHead>
@@ -146,6 +148,9 @@ export default function BannersTable({
                 <TableRow key={`skeleton-${idx}`} className="align-middle">
                   <TableCell>
                     <Skeleton className="w-20 h-12 rounded" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-16" />
                   </TableCell>
                   <TableCell>
                     <Skeleton className="h-4 w-32" />
@@ -164,7 +169,7 @@ export default function BannersTable({
             ) : banners.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={5}
+                  colSpan={6}
                   className="text-center py-8 text-gray-600"
                 >
                   {searchQuery
@@ -184,6 +189,17 @@ export default function BannersTable({
                         className="object-cover"
                       />
                     </div>
+                  </TableCell>
+                  <TableCell>
+                    {banner.category ? (
+                      <Badge variant="outline" className="text-xs font-mono">
+                        {banner.category.slug}
+                      </Badge>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">
+                        General
+                      </span>
+                    )}
                   </TableCell>
                   <TableCell>
                     {banner.linkUrl ? (

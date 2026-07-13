@@ -14,10 +14,18 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { Loader2, Upload, X, Eye } from "lucide-react";
 
 import { useImageUpload } from "@/hooks/useImageUpload";
+import { useCategories } from "@/hooks/useCategories";
 import { buildBannerFormData } from "@/services/banner.service";
 import {
   createBannerAction,
@@ -35,6 +43,7 @@ interface BannerDialogProps {
 }
 
 interface FormState {
+  categoryId: string;
   linkUrl: string;
   sortOrder: number;
   isActive: boolean;
@@ -48,11 +57,14 @@ export default function BannerDialog({
   onSuccess,
 }: BannerDialogProps) {
   const [form, setForm] = useState<FormState>({
+    categoryId: "_none",
     linkUrl: "",
     sortOrder: 0,
     isActive: true,
   });
   const [saving, setSaving] = useState(false);
+
+  const { categories } = useCategories();
 
   const {
     file: imageFile,
@@ -68,19 +80,25 @@ export default function BannerDialog({
     if (open) {
       if (mode === "edit" && banner) {
         setForm({
+          categoryId: banner.categoryId || "_none",
           linkUrl: banner.linkUrl || "",
           sortOrder: banner.sortOrder ?? 0,
           isActive: banner.isActive,
         });
       } else {
-        setForm({ linkUrl: "", sortOrder: 0, isActive: true });
+        setForm({
+          categoryId: "_none",
+          linkUrl: "",
+          sortOrder: 0,
+          isActive: true,
+        });
       }
     }
   }, [open, mode, banner]);
 
   const handleClose = () => {
     resetImage();
-    setForm({ linkUrl: "", sortOrder: 0, isActive: true });
+    setForm({ categoryId: "_none", linkUrl: "", sortOrder: 0, isActive: true });
     onOpenChange(false);
   };
 
@@ -116,6 +134,7 @@ export default function BannerDialog({
       // Build FormData for the backend (multipart upload)
       const fd = buildBannerFormData({
         image: imageFile || undefined,
+        categoryId: form.categoryId === "_none" ? null : form.categoryId,
         linkUrl: form.linkUrl || undefined,
         sortOrder: form.sortOrder,
         isActive: form.isActive,
@@ -160,7 +179,7 @@ export default function BannerDialog({
           <DialogDescription>
             {isEdit
               ? "Update the banner details. Leave image empty to keep the current one."
-              : "Upload a new homepage banner image."}
+              : "Upload a new banner image. Optionally assign it to a category."}
           </DialogDescription>
         </DialogHeader>
 
@@ -253,6 +272,36 @@ export default function BannerDialog({
               placeholder="https://example.com/promo"
               className="rounded-xl h-10"
             />
+          </div>
+
+          {/* Category */}
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="categoryId"
+              className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase"
+            >
+              Category (optional)
+            </Label>
+            <Select
+              value={form.categoryId}
+              onValueChange={(value) =>
+                setForm((prev) => ({ ...prev, categoryId: value }))
+              }
+            >
+              <SelectTrigger id="categoryId" className="rounded-xl h-10">
+                <SelectValue placeholder="No category (general banner)" />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl" position="popper">
+                <SelectItem value="_none">
+                  No category (general banner)
+                </SelectItem>
+                {categories.map((cat) => (
+                  <SelectItem key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Sort Order */}

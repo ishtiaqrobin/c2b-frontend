@@ -8,6 +8,7 @@ import { z } from "zod";
  */
 export const bannerFormSchema = z.object({
   image: z.instanceof(File, { message: "Image must be a file" }).optional(),
+  categoryId: z.string().optional(),
   linkUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   sortOrder: z.coerce.number().int().min(0).optional().default(0),
   isActive: z

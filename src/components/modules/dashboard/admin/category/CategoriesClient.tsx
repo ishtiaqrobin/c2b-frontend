@@ -5,7 +5,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Plus, RefreshCw } from "lucide-react";
+import { Plus, RefreshCw, Star, Trash2 } from "lucide-react";
 import type { ICategory } from "@/types/category.type";
 import CategoryTable from "./CategoryTable";
 import CategoryDialog from "./CategoryDialog";
@@ -15,11 +15,13 @@ const PAGE_SIZE = 10;
 interface CategoriesClientProps {
   categories: ICategory[];
   showInactiveDefault: boolean;
+  showPopularDefault?: boolean;
 }
 
 export default function CategoriesClient({
   categories,
   showInactiveDefault,
+  showPopularDefault = false,
 }: CategoriesClientProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -40,6 +42,17 @@ export default function CategoriesClient({
       params.set("isActive", "false");
     } else {
       params.delete("isActive");
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
+  const handleTogglePopular = (checked: boolean) => {
+    setPage(1);
+    const params = new URLSearchParams(searchParams.toString());
+    if (checked) {
+      params.set("isPopular", "true");
+    } else {
+      params.delete("isPopular");
     }
     router.push(`${pathname}?${params.toString()}`);
   };
@@ -113,23 +126,47 @@ export default function CategoriesClient({
             <Button className="hover:cursor-pointer" onClick={handleAdd}>
               <Plus size={16} className="mr-2" /> Add Category
             </Button>
+            <Button
+              variant="outline"
+              className="hover:cursor-pointer"
+              onClick={() => router.push("/admin-dashboard/categories/trash")}
+            >
+              <Trash2 size={16} className="mr-2" /> Trash
+            </Button>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        <Switch
-          id="show-inactive"
-          checked={showInactiveDefault}
-          onCheckedChange={handleToggleInactive}
-          className="hover:cursor-pointer"
-        />
-        <label
-          htmlFor="show-inactive"
-          className="text-sm font-medium hover:cursor-pointer"
-        >
-          Show inactive categories
-        </label>
+      <div className="flex flex-wrap items-center gap-4">
+        <div className="flex items-center gap-2">
+          <Switch
+            id="show-inactive"
+            checked={showInactiveDefault}
+            onCheckedChange={handleToggleInactive}
+            className="hover:cursor-pointer"
+          />
+          <label
+            htmlFor="show-inactive"
+            className="text-sm font-medium hover:cursor-pointer"
+          >
+            Show inactive
+          </label>
+        </div>
+        <div className="flex items-center gap-2">
+          <Switch
+            id="show-popular"
+            checked={showPopularDefault}
+            onCheckedChange={handleTogglePopular}
+            className="hover:cursor-pointer"
+          />
+          <label
+            htmlFor="show-popular"
+            className="text-sm font-medium hover:cursor-pointer flex items-center gap-1"
+          >
+            <Star className="h-3.5 w-3.5 text-yellow-500" />
+            Popular only
+          </label>
+        </div>
       </div>
 
       <CategoryTable
