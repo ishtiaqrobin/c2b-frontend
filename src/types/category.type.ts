@@ -9,17 +9,10 @@ export interface ICategory {
   deletedAt?: string | null;
   createdAt: string;
   updatedAt: string;
-  translations?: ICategoryTranslation[];
+  name: string;
   children?: ICategory[];
   parent?: ICategory | null;
   notice?: ICategoryNotice | null;
-}
-
-export interface ICategoryTranslation {
-  id: string;
-  categoryId: string;
-  locale: "EN" | "BN";
-  name: string;
 }
 
 export interface ICategoryCreatePayload {
@@ -28,7 +21,7 @@ export interface ICategoryCreatePayload {
   isPopular?: boolean;
   sortOrder?: number;
   isActive?: boolean;
-  translations: { locale: "EN" | "BN"; name: string }[];
+  name: string;
 }
 
 export interface ICategoryUpdatePayload {
@@ -37,28 +30,21 @@ export interface ICategoryUpdatePayload {
   isPopular?: boolean;
   sortOrder?: number;
   isActive?: boolean;
-  translations?: { locale: "EN" | "BN"; name: string }[];
+  name?: string;
 }
 
 export interface ICategoryNotice {
   id: string;
   categoryId: string;
   updatedAt: string;
-  translations?: ICategoryNoticeTranslation[];
-}
-
-export interface ICategoryNoticeTranslation {
-  id: string;
-  noticeId: string;
-  locale: "EN" | "BN";
   body: string;
 }
 
 export interface INoticeCreatePayload {
   categoryId: string;
-  translations: { locale: "EN" | "BN"; body: string }[];
+  body: string;
 }
 
 export interface INoticeUpdatePayload {
-  translations: { locale: "EN" | "BN"; body: string }[];
+  body: string;
 }

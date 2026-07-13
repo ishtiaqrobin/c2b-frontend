@@ -65,7 +65,7 @@ export default function NewsClient({ news, showInactiveDefault }: NewsClientProp
     if (!query.trim()) return news;
     const q = query.toLowerCase();
     return news.filter((item) =>
-      item.translations?.some((t) => t.title?.toLowerCase().includes(q)),
+      item.title?.toLowerCase().includes(q),
     );
   }, [news, query]);
 

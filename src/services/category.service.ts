@@ -50,7 +50,6 @@ export const categoryService = {
     search?: string;
     parentId?: string;
     isActive?: string;
-    locale?: string;
   }): Promise<{
     data: ICategory[] | null;
     meta?: { page: number; limit: number; total: number } | null;
@@ -63,7 +62,6 @@ export const categoryService = {
       if (query?.search) params.set("search", query.search);
       if (query?.parentId) params.set("parentId", query.parentId);
       if (query?.isActive) params.set("isActive", query.isActive);
-      if (query?.locale) params.set("locale", query.locale);
 
       const url = `${API_URL}/categories${params.toString() ? `?${params.toString()}` : ""}`;
       const res = await fetch(url, {

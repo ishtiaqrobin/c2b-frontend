@@ -12,14 +12,10 @@ export { generateSlug };
 // ---------- Product form ----------
 
 export const productFormSchema = z.object({
-  nameEn: z
+  name: z
     .string()
-    .min(1, "English name is required")
+    .min(1, "Name is required")
     .max(300, "Name must be less than 300 characters"),
-  nameBn: z
-    .string()
-    .max(300, "Name must be less than 300 characters")
-    .optional(),
   slug: z
     .string()
     .min(1, "Slug is required")

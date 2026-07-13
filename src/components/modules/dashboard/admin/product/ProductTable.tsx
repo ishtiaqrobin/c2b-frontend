@@ -91,10 +91,7 @@ export default function ProductTable({
   };
 
   const confirmDelete = (product: IProduct) => {
-    const name =
-      product.translations?.find((t) => t.locale === "EN")?.name ||
-      product.slug;
-    setDeleting({ open: true, productId: product.id, name });
+    setDeleting({ open: true, productId: product.id, name: product.name || product.slug });
   };
 
   const cancelDelete = () =>
@@ -116,13 +113,9 @@ export default function ProductTable({
     }
   };
 
-  const productName = (p: IProduct) =>
-    p.translations?.find((t) => t.locale === "EN")?.name ||
-    p.translations?.[0]?.name ||
-    p.slug;
+  const productName = (p: IProduct) => p.name || p.slug;
 
-  const categoryName = (p: IProduct) =>
-    p.category?.translations?.[0]?.name ?? p.category?.slug ?? "—";
+  const categoryName = (p: IProduct) => p.category?.name ?? p.category?.slug ?? "—";
 
   return (
     <>
@@ -191,18 +184,9 @@ export default function ProductTable({
 
                   {/* Name */}
                   <TableCell>
-                    <div>
-                      <p className="font-medium line-clamp-1">
-                        {productName(product)}
-                      </p>
-                      {product.translations?.find((t) => t.locale === "BN")
-                        ?.name && (
-                        <p className="text-xs text-muted-foreground line-clamp-1">
-                          {product.translations.find((t) => t.locale === "BN")
-                            ?.name}
-                        </p>
-                      )}
-                    </div>
+                    <p className="font-medium line-clamp-1">
+                      {productName(product)}
+                    </p>
                   </TableCell>
 
                   {/* Slug */}

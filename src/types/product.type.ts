@@ -14,16 +14,9 @@ export interface IProduct {
   createdAt: string;
   updatedAt: string;
   category?: ICategory;
-  translations?: IProductTranslation[];
+  name: string;
   variants?: IProductVariant[];
   _count?: { variants: number };
-}
-
-export interface IProductTranslation {
-  id: string;
-  productId: string;
-  locale: "EN" | "BN";
-  name: string;
 }
 
 export interface IProductVariant {
@@ -58,13 +51,6 @@ export interface IVariantDeduction {
   deletedAt?: string | null;
   createdAt: string;
   updatedAt: string;
-  translations?: IDeductionTranslation[];
-}
-
-export interface IDeductionTranslation {
-  id: string;
-  deductionId: string;
-  locale: "EN" | "BN";
   label: string;
 }
 
@@ -86,7 +72,7 @@ export interface IProductCreatePayload {
   imageUrl?: string;
   imagePublicId?: string;
   isActive?: boolean;
-  translations: { locale: "EN" | "BN"; name: string }[];
+  name: string;
   variants?: IVariantCreatePayload[];
 }
 
@@ -96,7 +82,7 @@ export interface IProductUpdatePayload {
   imageUrl?: string;
   imagePublicId?: string;
   isActive?: boolean;
-  translations?: { locale: "EN" | "BN"; name: string }[];
+  name?: string;
 }
 
 export interface IVariantCreatePayload {
@@ -129,7 +115,7 @@ export interface IDeductionCreatePayload {
   amount: number;
   sortOrder?: number;
   isActive?: boolean;
-  translations: { locale: "EN" | "BN"; label: string }[];
+  label: string;
 }
 
 export interface IDeductionUpdatePayload {
@@ -137,7 +123,7 @@ export interface IDeductionUpdatePayload {
   amount?: number;
   sortOrder?: number;
   isActive?: boolean;
-  translations?: { locale: "EN" | "BN"; label: string }[];
+  label?: string;
 }
 
 export interface IPriceUpdatePayload {

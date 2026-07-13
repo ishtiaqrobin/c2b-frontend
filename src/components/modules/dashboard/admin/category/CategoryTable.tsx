@@ -86,9 +86,7 @@ export default function CategoryTable({
   };
 
   const confirmDelete = (category: ICategory) => {
-    const name =
-      category.translations?.[0]?.name || category.slug || "this category";
-    setDeleting({ open: true, categoryId: category.id, name });
+    setDeleting({ open: true, categoryId: category.id, name: category.name || category.slug || "this category" });
   };
 
   const cancelDelete = () => {
@@ -111,8 +109,7 @@ export default function CategoryTable({
     }
   };
 
-  const categoryName = (cat: ICategory) =>
-    cat.translations?.[0]?.name || cat.slug || "—";
+  const categoryName = (cat: ICategory) => cat.name || cat.slug || "—";
 
   return (
     <>

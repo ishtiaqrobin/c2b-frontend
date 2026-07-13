@@ -161,10 +161,7 @@ export default function VariantSheet({
     }
   };
 
-  const productName =
-    product?.translations?.find((t) => t.locale === "EN")?.name ??
-    product?.slug ??
-    "Product";
+  const productName = product?.name ?? product?.slug ?? "Product";
 
   return (
     <>

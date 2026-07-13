@@ -45,10 +45,8 @@ export default function NewsDialog({
   } = useForm<NewsFormValues>({
     resolver: zodResolver(newsFormSchema),
     defaultValues: {
-      titleEn: "",
-      titleBn: "",
-      bodyEn: "",
-      bodyBn: "",
+      title: "",
+      body: "",
       publishedAt: "",
       isActive: true,
     },
@@ -58,13 +56,9 @@ export default function NewsDialog({
 
   useEffect(() => {
     if (open && mode === "edit" && news) {
-      const enT = news.translations?.find((t) => t.locale === "EN");
-      const bnT = news.translations?.find((t) => t.locale === "BN");
       reset({
-        titleEn: enT?.title || "",
-        titleBn: bnT?.title || "",
-        bodyEn: enT?.body || "",
-        bodyBn: bnT?.body || "",
+        title: news.title || "",
+        body: news.body || "",
         publishedAt: news.publishedAt ? news.publishedAt.substring(0, 16) : "",
         isActive: Boolean(news.isActive),
       });
@@ -74,10 +68,8 @@ export default function NewsDialog({
         .toISOString()
         .substring(0, 16);
       reset({
-        titleEn: "",
-        titleBn: "",
-        bodyEn: "",
-        bodyBn: "",
+        title: "",
+        body: "",
         publishedAt: localIso,
         isActive: true,
       });
@@ -89,24 +81,6 @@ export default function NewsDialog({
       mode === "add" ? "Creating news..." : "Updating news...",
     );
 
-    const translations: { locale: "EN" | "BN"; title: string; body?: string }[] =
-      [
-        {
-          locale: "EN",
-          title: values.titleEn.trim(),
-          body: values.bodyEn?.trim() || undefined,
-        },
-        ...(values.titleBn?.trim()
-          ? [
-              {
-                locale: "BN" as const,
-                title: values.titleBn.trim(),
-                body: values.bodyBn?.trim() || undefined,
-              },
-            ]
-          : []),
-      ];
-
     const publishedAt = values.publishedAt
       ? new Date(values.publishedAt).toISOString()
       : undefined;
@@ -116,7 +90,8 @@ export default function NewsDialog({
         const res = await createNewsAction({
           publishedAt,
           isActive: values.isActive,
-          translations,
+          title: values.title.trim(),
+          body: values.body?.trim() || undefined,
         });
         if (!res.success) {
           toast.error(res.message, { id: toastId });
@@ -127,7 +102,8 @@ export default function NewsDialog({
         const res = await updateNewsAction(news.id, {
           publishedAt,
           isActive: values.isActive,
-          translations,
+          title: values.title.trim(),
+          body: values.body?.trim() || undefined,
         });
         if (!res.success) {
           toast.error(res.message, { id: toastId });
@@ -166,86 +142,44 @@ export default function NewsDialog({
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Title EN */}
+          {/* Title */}
           <div className="space-y-1.5">
             <label
-              htmlFor="titleEn"
+              htmlFor="title"
               className="text-sm font-medium text-gray-800"
             >
-              Title (English) <span className="text-red-500">*</span>
+              Title <span className="text-red-500">*</span>
             </label>
             <Input
-              id="titleEn"
-              {...register("titleEn")}
+              id="title"
+              {...register("title")}
               className="bg-white"
-              placeholder="Enter news title in English"
+              placeholder="Enter news title"
             />
-            {errors.titleEn && (
+            {errors.title && (
               <p className="text-xs text-destructive">
-                {errors.titleEn.message}
+                {errors.title.message}
               </p>
             )}
           </div>
 
-          {/* Body EN */}
+          {/* Body */}
           <div className="space-y-1.5">
             <label
-              htmlFor="bodyEn"
+              htmlFor="body"
               className="text-sm font-medium text-gray-800"
             >
-              Body (English)
+              Body
             </label>
             <Textarea
-              id="bodyEn"
-              {...register("bodyEn")}
+              id="body"
+              {...register("body")}
               className="bg-white min-h-[100px]"
-              placeholder="Enter news body in English"
+              placeholder="Enter news body"
             />
-            {errors.bodyEn && (
+            {errors.body && (
               <p className="text-xs text-destructive">
-                {errors.bodyEn.message}
-              </p>
-            )}
-          </div>
-
-          {/* Title BN */}
-          <div className="space-y-1.5">
-            <label
-              htmlFor="titleBn"
-              className="text-sm font-medium text-gray-800"
-            >
-              Title (Bangla)
-            </label>
-            <Input
-              id="titleBn"
-              {...register("titleBn")}
-              className="bg-white"
-              placeholder="Enter news title in Bangla"
-            />
-            {errors.titleBn && (
-              <p className="text-xs text-destructive">
-                {errors.titleBn.message}
-              </p>
-            )}
-          </div>
-
-          {/* Body BN */}
-          <div className="space-y-1.5">
-            <label
-              htmlFor="bodyBn"
-              className="text-sm font-medium text-gray-800"
-            >
-              Body (Bangla)
-            </label>
-            <Textarea
-              id="bodyBn"
-              {...register("bodyBn")}
-              className="bg-white min-h-[100px]"
-              placeholder="Enter news body in Bangla"
-            />
-            {errors.bodyBn && (
-              <p className="text-xs text-destructive">
-                {errors.bodyBn.message}
+                {errors.body.message}
               </p>
             )}
           </div>

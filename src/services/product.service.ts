@@ -53,7 +53,6 @@ export const productService = {
     search?: string;
     categoryId?: string;
     isActive?: string;
-    locale?: string;
   }): Promise<{
     data: IProduct[] | null;
     meta?: { page: number; limit: number; total: number } | null;
@@ -66,7 +65,6 @@ export const productService = {
       if (query?.search) params.set("search", query.search);
       if (query?.categoryId) params.set("categoryId", query.categoryId);
       if (query?.isActive) params.set("isActive", query.isActive);
-      if (query?.locale) params.set("locale", query.locale);
       const url = `${API_URL}/products${params.toString() ? `?${params.toString()}` : ""}`;
       const res = await fetch(url, { credentials: "include", cache: "no-store" });
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);

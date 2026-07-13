@@ -39,7 +39,6 @@ export const newsService = {
   getAll: async function (query?: {
     page?: string;
     limit?: string;
-    locale?: string;
     isActive?: string;
     search?: string;
   }): Promise<{
@@ -51,7 +50,6 @@ export const newsService = {
       const params = new URLSearchParams();
       if (query?.page) params.set("page", query.page);
       if (query?.limit) params.set("limit", query.limit);
-      if (query?.locale) params.set("locale", query.locale);
       if (query?.isActive) params.set("isActive", query.isActive);
       if (query?.search) params.set("search", query.search);
       const url = `${API_URL}/news${params.toString() ? `?${params.toString()}` : ""}`;
@@ -68,13 +66,12 @@ export const newsService = {
   },
 
   /** GET /news/latest — Get latest news (public) */
-  getLatest: async function (locale?: string): Promise<{
+  getLatest: async function (): Promise<{
     data: INews[] | null;
     error: ServiceError | null;
   }> {
     try {
-      const params = locale ? `?locale=${locale}` : "";
-      const res = await fetch(`${API_URL}/news/latest${params}`, {
+      const res = await fetch(`${API_URL}/news/latest`, {
         credentials: "include",
         cache: "no-store",
       });

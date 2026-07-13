@@ -61,8 +61,7 @@ export default function ProductDialog({
   } = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
     defaultValues: {
-      nameEn: "",
-      nameBn: "",
+      name: "",
       slug: "",
       categoryId: "",
       imageUrl: "",
@@ -70,24 +69,21 @@ export default function ProductDialog({
     },
   });
 
-  const nameEn = watch("nameEn");
+  const nameVal = watch("name");
   const isActive = watch("isActive");
 
-  // Auto-generate slug from English name in add mode
+  // Auto-generate slug from name in add mode
   useEffect(() => {
     if (mode === "add" && !dirtyFields.slug) {
-      setValue("slug", generateSlug(nameEn || ""), { shouldValidate: false });
+      setValue("slug", generateSlug(nameVal || ""), { shouldValidate: false });
     }
-  }, [nameEn, mode, dirtyFields.slug, setValue]);
+  }, [nameVal, mode, dirtyFields.slug, setValue]);
 
   // Populate form in edit mode
   useEffect(() => {
     if (open && mode === "edit" && product) {
-      const enT = product.translations?.find((t) => t.locale === "EN");
-      const bnT = product.translations?.find((t) => t.locale === "BN");
       reset({
-        nameEn: enT?.name || "",
-        nameBn: bnT?.name || "",
+        name: product.name || "",
         slug: product.slug,
         categoryId: product.categoryId,
         imageUrl: product.imageUrl ?? "",
@@ -95,8 +91,7 @@ export default function ProductDialog({
       });
     } else if (open && mode === "add") {
       reset({
-        nameEn: "",
-        nameBn: "",
+        name: "",
         slug: "",
         categoryId: "",
         imageUrl: "",
@@ -110,21 +105,14 @@ export default function ProductDialog({
       mode === "add" ? "Creating product..." : "Updating product...",
     );
 
-    const translations: { locale: "EN" | "BN"; name: string }[] = [
-      { locale: "EN", name: values.nameEn.trim() },
-      ...(values.nameBn?.trim()
-        ? [{ locale: "BN" as const, name: values.nameBn.trim() }]
-        : []),
-    ];
-
     try {
       if (mode === "add") {
         const res = await createProductAction({
+          name: values.name.trim(),
           slug: values.slug,
           categoryId: values.categoryId,
           imageUrl: values.imageUrl || undefined,
           isActive: values.isActive,
-          translations,
         });
         if (!res.success) {
           toast.error(res.message, { id: toastId });
@@ -133,11 +121,11 @@ export default function ProductDialog({
         toast.success("Product created successfully", { id: toastId });
       } else if (mode === "edit" && product?.id) {
         const res = await updateProductAction(product.id, {
+          name: values.name.trim(),
           slug: values.slug,
           categoryId: values.categoryId,
           imageUrl: values.imageUrl || undefined,
           isActive: values.isActive,
-          translations,
         });
         if (!res.success) {
           toast.error(res.message, { id: toastId });
@@ -175,44 +163,23 @@ export default function ProductDialog({
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Name EN */}
+          {/* Name */}
           <div className="space-y-1.5">
             <label
-              htmlFor="nameEn"
+              htmlFor="name"
               className="text-sm font-medium text-gray-800"
             >
-              Name (English) <span className="text-red-500">*</span>
+              Name <span className="text-red-500">*</span>
             </label>
             <Input
-              id="nameEn"
-              {...register("nameEn")}
+              id="name"
+              {...register("name")}
               className="bg-white"
-              placeholder="Product name in English"
+              placeholder="Product name"
             />
-            {errors.nameEn && (
+            {errors.name && (
               <p className="text-xs text-destructive">
-                {errors.nameEn.message}
-              </p>
-            )}
-          </div>
-
-          {/* Name BN */}
-          <div className="space-y-1.5">
-            <label
-              htmlFor="nameBn"
-              className="text-sm font-medium text-gray-800"
-            >
-              Name (Bangla)
-            </label>
-            <Input
-              id="nameBn"
-              {...register("nameBn")}
-              className="bg-white"
-              placeholder="Product name in Bangla"
-            />
-            {errors.nameBn && (
-              <p className="text-xs text-destructive">
-                {errors.nameBn.message}
+                {errors.name.message}
               </p>
             )}
           </div>
@@ -250,7 +217,7 @@ export default function ProductDialog({
               <SelectContent position="popper">
                 {categories.map((c) => (
                   <SelectItem key={c.id} value={c.id}>
-                    {c.translations?.[0]?.name ?? c.slug}
+                    {c.name ?? c.slug}
                   </SelectItem>
                 ))}
               </SelectContent>

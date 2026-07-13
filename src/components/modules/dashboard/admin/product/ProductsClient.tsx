@@ -98,7 +98,7 @@ export default function ProductsClient({
       result = result.filter(
         (p) =>
           p.slug.toLowerCase().includes(q) ||
-          p.translations?.some((t) => t.name.toLowerCase().includes(q)),
+          p.name?.toLowerCase().includes(q),
       );
     }
 
@@ -144,7 +144,7 @@ export default function ProductsClient({
               <SelectItem value="ALL">All Categories</SelectItem>
               {categories.map((c) => (
                 <SelectItem key={c.id} value={c.id}>
-                  {c.translations?.[0]?.name ?? c.slug}
+                  {c.name ?? c.slug}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -72,7 +72,7 @@ export default function CategoriesClient({
     const q = query.toLowerCase();
     return categories.filter(
       (cat) =>
-        cat.translations?.some((t) => t.name.toLowerCase().includes(q)) ||
+        cat.name?.toLowerCase().includes(q) ||
         cat.slug?.toLowerCase().includes(q),
     );
   }, [categories, query]);

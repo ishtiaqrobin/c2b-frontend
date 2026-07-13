@@ -1,10 +1,5 @@
 // ===== Core Enums matching backend =====
 
-export enum Locale {
-  EN = "EN",
-  BN = "BN",
-}
-
 export enum UserStatus {
   ACTIVE = "ACTIVE",
   BLOCKED = "BLOCKED",

@@ -1,14 +1,10 @@
 import z from "zod";
 
 export const categoryFormSchema = z.object({
-  nameEn: z
+  name: z
     .string()
-    .min(1, "English name is required")
+    .min(1, "Name is required")
     .max(200, "Name must be less than 200 characters"),
-  nameBn: z
-    .string()
-    .max(200, "Name must be less than 200 characters")
-    .optional(),
   slug: z
     .string()
     .min(1, "Slug is required")

@@ -6,16 +6,9 @@ export interface IStore {
   deletedAt?: string | null;
   createdAt: string;
   updatedAt: string;
-  translations?: IStoreTranslation[];
-  businessHours?: IBusinessHour[];
-}
-
-export interface IStoreTranslation {
-  id: string;
-  storeId: string;
-  locale: "EN" | "BN";
   name: string;
   address?: string | null;
+  businessHours?: IBusinessHour[];
 }
 
 export interface IBusinessHour {
@@ -30,7 +23,8 @@ export interface IBusinessHour {
 export interface IStoreCreatePayload {
   slug: string;
   isActive?: boolean;
-  translations: { locale: "EN" | "BN"; name: string; address?: string }[];
+  name: string;
+  address?: string;
   businessHours?: {
     dayOfWeek: number;
     openTime?: string;
@@ -42,7 +36,8 @@ export interface IStoreCreatePayload {
 export interface IStoreUpdatePayload {
   slug?: string;
   isActive?: boolean;
-  translations?: { locale: "EN" | "BN"; name: string; address?: string }[];
+  name?: string;
+  address?: string;
   businessHours?: {
     dayOfWeek: number;
     openTime?: string;

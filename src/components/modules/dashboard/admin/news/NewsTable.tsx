@@ -76,11 +76,7 @@ export default function NewsTable({
   };
 
   const confirmDelete = (item: INews) => {
-    const title =
-      item.translations?.find((t) => t.locale === "EN")?.title ||
-      item.translations?.[0]?.title ||
-      "this news";
-    setDeleting({ open: true, newsId: item.id, title });
+    setDeleting({ open: true, newsId: item.id, title: item.title || "this news" });
   };
 
   const cancelDelete = () =>
@@ -102,10 +98,7 @@ export default function NewsTable({
     }
   };
 
-  const newsTitle = (item: INews) =>
-    item.translations?.find((t) => t.locale === "EN")?.title ||
-    item.translations?.[0]?.title ||
-    "—";
+  const newsTitle = (item: INews) => item.title || "—";
 
   const formatDate = (dateStr: string) =>
     new Date(dateStr).toLocaleDateString("en-GB", {

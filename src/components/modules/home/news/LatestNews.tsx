@@ -41,7 +41,6 @@ export default function LatestNews() {
             ) : (
               <ul className="space-y-5">
                 {news.map((item) => {
-                  const translation = item.translations?.[0];
                   const publishedDate = new Date(
                     item.publishedAt,
                   ).toLocaleDateString("ja-JP", {
@@ -61,7 +60,7 @@ export default function LatestNews() {
                         href={`/news/${item.id}`}
                         className="text-[#2b6ba3] hover:underline underline-offset-2 text-sm md:text-base leading-snug"
                       >
-                        {translation?.title ?? "Untitled"}
+                        {item.title ?? "Untitled"}
                       </Link>
                     </li>
                   );

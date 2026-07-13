@@ -54,42 +54,33 @@ export default function CategoryDialog({
   } = useForm<CategoryFormValues>({
     resolver: zodResolver(categoryFormSchema),
     defaultValues: {
-      nameEn: "",
-      nameBn: "",
+      name: "",
       slug: "",
       isActive: true,
     },
   });
 
-  const nameEn = watch("nameEn");
+  const nameVal = watch("name");
   const isActive = watch("isActive");
 
-  // Auto-generate slug from English name in add mode (only when slug hasn't been manually edited)
+  // Auto-generate slug from name in add mode (only when slug hasn't been manually edited)
   useEffect(() => {
     if (mode === "add" && !dirtyFields.slug) {
-      setValue("slug", generateSlug(nameEn || ""), { shouldValidate: false });
+      setValue("slug", generateSlug(nameVal || ""), { shouldValidate: false });
     }
-  }, [nameEn, mode, dirtyFields.slug, setValue]);
+  }, [nameVal, mode, dirtyFields.slug, setValue]);
 
   // Sync form values when dialog opens or category changes
   useEffect(() => {
     if (open && mode === "edit" && category) {
-      const enTranslation = category.translations?.find(
-        (t) => t.locale === "EN",
-      );
-      const bnTranslation = category.translations?.find(
-        (t) => t.locale === "BN",
-      );
       reset({
-        nameEn: enTranslation?.name || "",
-        nameBn: bnTranslation?.name || "",
+        name: category.name || "",
         slug: category.slug || "",
         isActive: Boolean(category.isActive),
       });
     } else if (open && mode === "add") {
       reset({
-        nameEn: "",
-        nameBn: "",
+        name: "",
         slug: "",
         isActive: true,
       });
@@ -101,19 +92,12 @@ export default function CategoryDialog({
       mode === "add" ? "Creating category..." : "Updating category...",
     );
 
-    const translations: { locale: "EN" | "BN"; name: string }[] = [
-      { locale: "EN", name: values.nameEn.trim() },
-      ...(values.nameBn?.trim()
-        ? [{ locale: "BN" as const, name: values.nameBn.trim() }]
-        : []),
-    ];
-
     try {
       if (mode === "add") {
         const res = await createCategory({
           slug: values.slug,
           isActive: values.isActive,
-          translations,
+          name: values.name.trim(),
         });
 
         if (!res.success) {
@@ -126,7 +110,7 @@ export default function CategoryDialog({
         const res = await updateCategory(category.id, {
           slug: values.slug,
           isActive: values.isActive,
-          translations,
+          name: values.name.trim(),
         });
 
         if (!res.success) {
@@ -166,44 +150,23 @@ export default function CategoryDialog({
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* English Name */}
+          {/* Name */}
           <div className="space-y-1.5">
             <label
-              htmlFor="nameEn"
+              htmlFor="name"
               className="text-sm font-medium text-gray-800"
             >
-              Name (English) <span className="text-red-500">*</span>
+              Name <span className="text-red-500">*</span>
             </label>
             <Input
-              id="nameEn"
-              {...register("nameEn")}
+              id="name"
+              {...register("name")}
               className="bg-white"
-              placeholder="Enter category name in English"
+              placeholder="Enter category name"
             />
-            {errors.nameEn && (
+            {errors.name && (
               <p className="text-xs text-destructive">
-                {errors.nameEn.message}
-              </p>
-            )}
-          </div>
-
-          {/* Bangla Name */}
-          <div className="space-y-1.5">
-            <label
-              htmlFor="nameBn"
-              className="text-sm font-medium text-gray-800"
-            >
-              Name (Bangla)
-            </label>
-            <Input
-              id="nameBn"
-              {...register("nameBn")}
-              className="bg-white"
-              placeholder="Enter category name in Bangla"
-            />
-            {errors.nameBn && (
-              <p className="text-xs text-destructive">
-                {errors.nameBn.message}
+                {errors.name.message}
               </p>
             )}
           </div>

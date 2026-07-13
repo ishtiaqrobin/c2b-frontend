@@ -15,7 +15,6 @@ export const storeService = {
     limit?: string;
     search?: string;
     isActive?: string;
-    locale?: string;
   }): Promise<{
     data: IStore[] | null;
     meta?: { page: number; limit: number; total: number } | null;
@@ -27,7 +26,6 @@ export const storeService = {
       if (query?.limit) params.set("limit", query.limit);
       if (query?.search) params.set("search", query.search);
       if (query?.isActive) params.set("isActive", query.isActive);
-      if (query?.locale) params.set("locale", query.locale);
       const url = `${API_URL}/stores${params.toString() ? `?${params.toString()}` : ""}`;
       const res = await fetch(url, {
         credentials: "include",
