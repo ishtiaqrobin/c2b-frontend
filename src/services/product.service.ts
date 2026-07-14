@@ -5,8 +5,11 @@ import type {
   IProductFormValues,
   IProductCreatePayload,
   IProductVariant,
+  IVariantDeduction,
   IVariantCreatePayload,
   IVariantUpdatePayload,
+  IDeductionCreatePayload,
+  IDeductionUpdatePayload,
   IPriceHistory,
   IPriceUpdatePayload,
 } from "@/types/product.type";
@@ -384,6 +387,77 @@ export const productService = {
         data: null,
         error: errorFrom(err, "Error fetching price history"),
       };
+    }
+  },
+
+  // ==================== DEDUCTION (ADMIN) ====================
+
+  /** POST /products/variants/:variantId/deductions */
+  createDeduction: async function (
+    variantId: string,
+    payload: IDeductionCreatePayload,
+  ): Promise<ServiceResult<IVariantDeduction>> {
+    try {
+      const res = await fetchWithCookies(
+        `${API_URL}/products/variants/${variantId}/deductions`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || `HTTP error! status: ${res.status}`);
+      }
+      const response: ApiResponse<IVariantDeduction> = await res.json();
+      return { data: response.data, error: null };
+    } catch (err) {
+      return { data: null, error: errorFrom(err, "Error creating deduction") };
+    }
+  },
+
+  /** PATCH /products/deductions/:deductionId */
+  updateDeduction: async function (
+    deductionId: string,
+    payload: IDeductionUpdatePayload,
+  ): Promise<ServiceResult<IVariantDeduction>> {
+    try {
+      const res = await fetchWithCookies(
+        `${API_URL}/products/deductions/${deductionId}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || `HTTP error! status: ${res.status}`);
+      }
+      const response: ApiResponse<IVariantDeduction> = await res.json();
+      return { data: response.data, error: null };
+    } catch (err) {
+      return { data: null, error: errorFrom(err, "Error updating deduction") };
+    }
+  },
+
+  /** DELETE /products/deductions/:deductionId */
+  deleteDeduction: async function (
+    deductionId: string,
+  ): Promise<{ data: null; error: ServiceError | null }> {
+    try {
+      const res = await fetchWithCookies(
+        `${API_URL}/products/deductions/${deductionId}`,
+        { method: "DELETE" },
+      );
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || `HTTP error! status: ${res.status}`);
+      }
+      return { data: null, error: null };
+    } catch (err) {
+      return { data: null, error: errorFrom(err, "Error deleting deduction") };
     }
   },
 };

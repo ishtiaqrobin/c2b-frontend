@@ -9,6 +9,9 @@ import {
   Loader2,
   RefreshCw,
   PackageX,
+  MoreHorizontal,
+  Percent,
+  BadgePercent,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,11 +29,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { IProduct, IProductVariant } from "@/types/product.type";
+import type { IProduct, IProductVariant, IVariantDeduction } from "@/types/product.type";
 import { deleteVariantAction, updateVariantAction } from "@/actions/product.action";
 import DeleteDialog from "@/components/modules/shared/DeleteDialog";
 import VariantDialog from "./VariantDialog";
+import DeductionDialog from "./DeductionDialog";
 import { env } from "@/env";
 
 interface VariantSheetProps {
@@ -59,6 +70,19 @@ export default function VariantSheet({
   );
   const [selectedVariant, setSelectedVariant] =
     useState<IProductVariant | null>(null);
+
+  // Deduction dialog state
+  const [deductionDialogOpen, setDeductionDialogOpen] = useState(false);
+  const [deductionDialogMode, setDeductionDialogMode] = useState<"add" | "edit">(
+    "add",
+  );
+  const [selectedDeduction, setSelectedDeduction] =
+    useState<IVariantDeduction | null>(null);
+  const [deductionVariantId, setDeductionVariantId] = useState<string | null>(
+    null,
+  );
+  const [deductionVariantDeductions, setDeductionVariantDeductions] =
+    useState<IVariantDeduction[]>([]);
 
   // Delete dialog state
   const [deleting, setDeleting] = useState<{
@@ -107,6 +131,33 @@ export default function VariantSheet({
   };
 
   const handleVariantSuccess = () => {
+    loadVariants();
+    onSuccess?.();
+  };
+
+  const handleOpenDeductions = (variant: IProductVariant) => {
+    setDeductionVariantId(variant.id);
+    setDeductionVariantDeductions(variant.deductions ?? []);
+    setDeductionDialogMode("add");
+    setSelectedDeduction(null);
+    setDeductionDialogOpen(true);
+  };
+
+  const handleManageDeductions = (variant: IProductVariant) => {
+    setDeductionVariantId(variant.id);
+    setDeductionVariantDeductions(variant.deductions ?? []);
+    setDeductionDialogMode("add");
+    setSelectedDeduction(null);
+    setDeductionDialogOpen(true);
+  };
+
+  const handleEditDeduction = (deduction: IVariantDeduction) => {
+    setDeductionDialogMode("edit");
+    setSelectedDeduction(deduction);
+    setDeductionDialogOpen(true);
+  };
+
+  const handleDeductionSuccess = () => {
     loadVariants();
     onSuccess?.();
   };
@@ -221,6 +272,7 @@ export default function VariantSheet({
                     <TableHead>New Price</TableHead>
                     <TableHead>Used Price</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead className="text-center">Deductions</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -309,25 +361,53 @@ export default function VariantSheet({
                             {variant.isActive ? "Active" : "Inactive"}
                           </button>
                         </TableCell>
+                        <TableCell className="text-center">
+                          <button
+                            onClick={() => handleManageDeductions(variant)}
+                            className="inline-flex items-center gap-1.5 mx-auto text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                            title="Manage deductions"
+                          >
+                            <BadgePercent className="h-3.5 w-3.5" />
+                            <span className="tabular-nums">
+                              {variant.deductions?.length ?? 0}
+                            </span>
+                          </button>
+                        </TableCell>
                         <TableCell className="text-right">
-                          <div className="flex items-center justify-end gap-1">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-7 w-7 cursor-pointer"
-                              onClick={() => handleEditVariant(variant)}
-                            >
-                              <Pencil className="h-3.5 w-3.5" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-7 w-7 cursor-pointer text-red-500 hover:text-red-700 hover:bg-red-50"
-                              onClick={() => confirmDelete(variant)}
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </Button>
-                          </div>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="cursor-pointer"
+                              >
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() => handleEditVariant(variant)}
+                              >
+                                <Pencil className="mr-2 h-4 w-4" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onClick={() => handleManageDeductions(variant)}
+                              >
+                                <Percent className="mr-2 h-4 w-4" />
+                                Deductions
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem
+                                onClick={() => confirmDelete(variant)}
+                                className="text-red-600 focus:text-red-600"
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </TableCell>
                       </TableRow>
                     ))
@@ -348,6 +428,22 @@ export default function VariantSheet({
           variant={selectedVariant}
           mode={variantDialogMode}
           onSuccess={handleVariantSuccess}
+        />
+      )}
+
+      {/* Deduction create/edit dialog */}
+      {deductionVariantId && (
+        <DeductionDialog
+          open={deductionDialogOpen}
+          onOpenChange={(open) => {
+            if (!open) handleDeductionSuccess();
+            setDeductionDialogOpen(open);
+          }}
+          variantId={deductionVariantId}
+          deduction={selectedDeduction}
+          mode={deductionDialogMode}
+          initialDeductions={deductionVariantDeductions}
+          onSuccess={handleDeductionSuccess}
         />
       )}
 
