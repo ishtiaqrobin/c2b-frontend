@@ -76,33 +76,7 @@ export default function CategorySection() {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="mb-12 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 text-sm font-medium text-primary mb-4"
-          >
-            <Grid3X3 className="h-4 w-4" />
-            Categories
-          </motion.div>
-          <motion.h2
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
-          >
-            Explore What We Offer
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.15 }}
-            className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto"
-          >
-            Browse our curated categories to find exactly what you need.
-          </motion.p>
+          <p>Popular Categories</p>
         </div>
 
         {/* Category Grid */}

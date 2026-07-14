@@ -1,5 +1,4 @@
 import Footer from "@/components/layout/Footer";
-import { AuthNavbar } from "@/components/layout/AuthNavbar";
 import { ScrollToTop } from "@/components/layout/ScrollToTop";
 import React from "react";
 import Navbar from "@/components/layout/Navbar";

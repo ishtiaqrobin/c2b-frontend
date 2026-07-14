@@ -1,4 +1,4 @@
-// export type * from "./routes.type";
+export type * from "./routes.type";
 export type * from "./api.type";
 export type * from "./enums";
 export type * from "./user.type";

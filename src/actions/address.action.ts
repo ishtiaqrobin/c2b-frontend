@@ -12,7 +12,7 @@ export async function createAddressAction(payload: IAddressCreatePayload) {
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin-dashboard/addresses");
   revalidatePath("/user-dashboard/addresses");
-  revalidateTag("addresses");
+  revalidateTag("addresses", "max");
   return { success: true, message: "Address created successfully", data };
 }
 
@@ -24,7 +24,7 @@ export async function updateAddressAction(
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin-dashboard/addresses");
   revalidatePath("/user-dashboard/addresses");
-  revalidateTag("addresses");
+  revalidateTag("addresses", "max");
   return { success: true, message: "Address updated successfully", data };
 }
 
@@ -33,7 +33,7 @@ export async function deleteAddressAction(id: string) {
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin-dashboard/addresses");
   revalidatePath("/user-dashboard/addresses");
-  revalidateTag("addresses");
+  revalidateTag("addresses", "max");
   return { success: true, message: "Address deleted successfully" };
 }
 
@@ -42,6 +42,6 @@ export async function setDefaultAddressAction(id: string) {
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin-dashboard/addresses");
   revalidatePath("/user-dashboard/addresses");
-  revalidateTag("addresses");
+  revalidateTag("addresses", "max");
   return { success: true, message: "Default address updated", data };
 }

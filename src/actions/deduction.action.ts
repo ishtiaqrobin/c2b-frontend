@@ -17,7 +17,7 @@ export async function createDeductionAction(
   );
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin-dashboard/products");
-  revalidateTag("products");
+  revalidateTag("products", "max");
   return { success: true, message: "Deduction created successfully", data };
 }
 
@@ -31,7 +31,7 @@ export async function updateDeductionAction(
   );
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin-dashboard/products");
-  revalidateTag("products");
+  revalidateTag("products", "max");
   return { success: true, message: "Deduction updated successfully", data };
 }
 
@@ -39,6 +39,6 @@ export async function deleteDeductionAction(deductionId: string) {
   const { error } = await productService.deleteDeduction(deductionId);
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin-dashboard/products");
-  revalidateTag("products");
+  revalidateTag("products", "max");
   return { success: true, message: "Deduction deleted successfully" };
 }

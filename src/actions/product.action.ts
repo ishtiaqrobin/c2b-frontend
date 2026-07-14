@@ -12,7 +12,7 @@ export async function createProductAction(formData: FormData) {
   const { data, error } = await productService.create(formData);
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin-dashboard/products");
-  revalidateTag("products");
+  revalidateTag("products", "max");
   return { success: true, message: "Product created successfully", data };
 }
 
@@ -23,7 +23,7 @@ export async function updateProductAction(
   const { data, error } = await productService.update(id, formData);
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin-dashboard/products");
-  revalidateTag("products");
+  revalidateTag("products", "max");
   return { success: true, message: "Product updated successfully", data };
 }
 
@@ -31,7 +31,7 @@ export async function deleteProductAction(id: string) {
   const { error } = await productService.delete(id);
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin-dashboard/products");
-  revalidateTag("products");
+  revalidateTag("products", "max");
   return { success: true, message: "Product deleted successfully" };
 }
 
@@ -42,7 +42,7 @@ export async function createVariantAction(
   const { data, error } = await productService.createVariant(productId, payload);
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin-dashboard/products");
-  revalidateTag("products");
+  revalidateTag("products", "max");
   return { success: true, message: "Variant created successfully", data };
 }
 
@@ -53,7 +53,7 @@ export async function updateVariantAction(
   const { data, error } = await productService.updateVariant(id, payload);
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin-dashboard/products");
-  revalidateTag("products");
+  revalidateTag("products", "max");
   return { success: true, message: "Variant updated successfully", data };
 }
 
@@ -61,7 +61,7 @@ export async function deleteVariantAction(id: string) {
   const { error } = await productService.deleteVariant(id);
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin-dashboard/products");
-  revalidateTag("products");
+  revalidateTag("products", "max");
   return { success: true, message: "Variant deleted successfully" };
 }
 
@@ -72,6 +72,6 @@ export async function updatePriceAction(
   const { data, error } = await productService.updatePrice(variantId, payload);
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin-dashboard/products");
-  revalidateTag("products");
+  revalidateTag("products", "max");
   return { success: true, message: "Price updated successfully", data };
 }

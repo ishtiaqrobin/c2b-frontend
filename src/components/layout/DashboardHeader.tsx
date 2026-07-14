@@ -26,8 +26,6 @@ import { User, Menu } from "lucide-react";
 import Link from "next/link";
 import { adminRoutes } from "@/routes/adminRoutes";
 import { userRoutes } from "@/routes/userRoutes";
-import Image from "next/image";
-import logo from "@/assets/images/logo.webp";
 import { PERSONAL_INFO } from "@/utils/constants";
 // import { motion } from "framer-motion";
 import { motion } from "motion/react";
@@ -44,7 +42,7 @@ export function DashboardHeader() {
 
   const getUserRoutes = () => {
     if (user?.role === "ADMIN") return adminRoutes[0]?.items || [];
-    return userRoutes[0]?.items;
+    return userRoutes[0]?.items || [];
   };
 
   return (
@@ -127,7 +125,7 @@ export function DashboardHeader() {
                 <Avatar className="h-9 w-9">
                   <AvatarImage
                     src={user?.image || undefined}
-                    alt={user?.name}
+                    alt={user?.name || ""}
                   />
                   <AvatarFallback>
                     {user?.name?.charAt(0).toUpperCase() || "U"}
