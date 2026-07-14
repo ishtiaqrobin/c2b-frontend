@@ -16,6 +16,7 @@ import {
   FileText,
   Package,
   UserCog,
+  Star,
 } from "lucide-react";
 
 export const adminRoutes: Route[] = [
@@ -49,6 +50,11 @@ export const adminRoutes: Route[] = [
     title: "Content",
     items: [
       { title: "Banners", url: "/admin-dashboard/banners", icon: Image },
+      {
+        title: "Buyback Features",
+        url: "/admin-dashboard/buyback-features",
+        icon: Star,
+      },
       { title: "News", url: "/admin-dashboard/news", icon: Newspaper },
     ],
   },

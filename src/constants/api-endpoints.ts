@@ -102,4 +102,10 @@ export const API_ENDPOINTS = {
     UPDATE: (id: string) => `/api/v1/banners/${id}`,
     DELETE: (id: string) => `/api/v1/banners/${id}`,
   },
+  BUYBACK_FEATURES: {
+    LIST: "/api/v1/buyback-features",
+    CREATE: "/api/v1/buyback-features",
+    UPDATE: (id: string) => `/api/v1/buyback-features/${id}`,
+    DELETE: (id: string) => `/api/v1/buyback-features/${id}`,
+  },
 } as const;
