@@ -5,12 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { motion } from "motion/react";
-import {
-  ArrowLeft,
-  ChevronRight,
-  Folder,
-  Package,
-} from "lucide-react";
+import { ArrowLeft, ChevronRight, Folder, Package } from "lucide-react";
 import { categoryService } from "@/services/category.service";
 import type { ICategory } from "@/types/category.type";
 import CategoryCard from "@/components/modules/home/category/CategoryCard";
@@ -89,7 +84,7 @@ export default function CategoryDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-muted/20">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container-custom mx-auto px-4 py-8">
           <div className="animate-pulse space-y-6">
             <div className="h-4 w-32 bg-muted rounded" />
             <div className="h-64 rounded-2xl bg-muted" />
@@ -137,11 +132,12 @@ export default function CategoryDetailPage() {
 
   return (
     <div className="min-h-screen bg-muted/20">
+      {/* <BannerCarousel /> */}
       <BannerCarousel categoryId={category.id} />
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container-custom mx-auto px-4 py-8">
         {/* Breadcrumbs */}
-        <motion.nav
+        {/* <motion.nav
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           className="flex items-center gap-2 text-sm text-muted-foreground mb-6"
@@ -169,55 +165,7 @@ export default function CategoryDetailPage() {
           )}
           <ChevronRight className="h-3 w-3" />
           <span className="text-foreground font-medium">{category.name}</span>
-        </motion.nav>
-
-        {/* Hero */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="relative rounded-2xl overflow-hidden mb-10"
-        >
-          {category.imageUrl ? (
-            <Image
-              src={category.imageUrl}
-              alt={category.name}
-              width={1200}
-              height={400}
-              className="w-full h-64 object-cover"
-            />
-          ) : (
-            <div
-              className={`w-full h-64 bg-gradient-to-br ${GRADIENTS[gradientIndex]}`}
-            />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-          <div className="absolute inset-0 flex flex-col justify-end p-8">
-            <motion.h1
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-3xl sm:text-4xl font-bold text-white mb-2"
-            >
-              {category.name}
-            </motion.h1>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="flex items-center gap-4 text-white/80 text-sm"
-            >
-              {hasChildren && (
-                <span>{childCount} subcategories</span>
-              )}
-              {productCount > 0 && (
-                <span>{productCount} products</span>
-              )}
-              {childCount === 0 && productCount === 0 && (
-                <span>Explore this category</span>
-              )}
-            </motion.div>
-          </div>
-        </motion.div>
+        </motion.nav> */}
 
         {/* Notice */}
         {category.notice && (
@@ -246,11 +194,7 @@ export default function CategoryDetailPage() {
             </motion.h2>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
               {children.map((child, index) => (
-                <CategoryCard
-                  key={child.id}
-                  category={child}
-                  index={index}
-                />
+                <CategoryCard key={child.id} category={child} index={index} />
               ))}
             </div>
           </>

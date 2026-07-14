@@ -6,6 +6,7 @@ import PopularCategoriesSection from "@/components/modules/home/product/PopularC
 import LatestNews from "@/components/modules/home/news/LatestNews";
 import BuybackFeatures from "../../components/modules/home/buyback_features/BuybackFeatures";
 import SearchBar from "@/components/modules/shared/searchbar/SearchBar";
+import BuybackMethods from "@/components/modules/home/buyback_methods/BuybackMethods";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
       <CategorySection />
       <PopularCategoriesSection />
       <LatestNews />
+      <BuybackMethods />
       <BuybackFeatures />
     </div>
   );

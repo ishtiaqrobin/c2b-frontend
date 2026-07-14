@@ -23,12 +23,12 @@ export default function CategoriesPage() {
   }, []);
 
   const filtered = categories.filter((cat) =>
-    cat.name.toLowerCase().includes(search.toLowerCase())
+    cat.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
     <div className="min-h-screen bg-muted/20">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container-custom mx-auto px-4 py-8">
         {/* Back */}
         <motion.div
           initial={{ opacity: 0, x: -10 }}
@@ -57,7 +57,8 @@ export default function CategoriesPage() {
             Browse All Categories
           </h1>
           <p className="mt-2 text-muted-foreground max-w-xl">
-            Find exactly what you need by exploring our full range of categories.
+            Find exactly what you need by exploring our full range of
+            categories.
           </p>
         </motion.div>
 
@@ -94,7 +95,9 @@ export default function CategoriesPage() {
           <div className="text-center py-20">
             <Grid3X3 className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
             <p className="text-muted-foreground text-lg">
-              {search ? "No categories match your search." : "No categories yet."}
+              {search
+                ? "No categories match your search."
+                : "No categories yet."}
             </p>
           </div>
         ) : (

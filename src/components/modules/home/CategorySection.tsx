@@ -4,28 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "motion/react";
-import { ArrowRight, Grid3X3, Loader2 } from "lucide-react";
 import { categoryService } from "@/services/category.service";
 import type { ICategory } from "@/types/category.type";
-
-const GRADIENTS = [
-  "from-blue-500/80 to-blue-600/80",
-  "from-emerald-500/80 to-emerald-600/80",
-  "from-violet-500/80 to-violet-600/80",
-  "from-amber-500/80 to-amber-600/80",
-  "from-rose-500/80 to-rose-600/80",
-  "from-cyan-500/80 to-cyan-600/80",
-  "from-fuchsia-500/80 to-fuchsia-600/80",
-  "from-teal-500/80 to-teal-600/80",
-];
-
-function getGradient(index: number) {
-  return GRADIENTS[index % GRADIENTS.length];
-}
-
-function getChildCount(cat: ICategory): number {
-  return cat.children?.length || 0;
-}
 
 export default function CategorySection() {
   const [categories, setCategories] = useState<ICategory[]>([]);
@@ -42,26 +22,19 @@ export default function CategorySection() {
 
   if (isLoading) {
     return (
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="mb-12 text-center">
-            <div className="inline-flex items-center gap-2 text-sm font-medium text-primary mb-4">
-              <Grid3X3 className="h-4 w-4" />
-              Categories
-            </div>
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Explore What We Offer
-            </h2>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-              Browse our curated categories to find exactly what you need.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {[...Array(8)].map((_, i) => (
-              <div
-                key={i}
-                className="aspect-[4/3] rounded-2xl bg-muted/50 animate-pulse"
-              />
+      <section className="py-12 bg-white">
+        <div className="container mx-auto px-4 md:px-8 max-w-7xl">
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900 mb-8">
+            Popular Categories
+          </h2>
+          <div className="flex flex-wrap gap-8 md:gap-12">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="flex flex-col items-center gap-4">
+                {/* Skeleton for circular image */}
+                <div className="w-24 h-24 md:w-36 md:h-36 rounded-full bg-gray-200 animate-pulse" />
+                {/* Skeleton for text */}
+                <div className="h-4 w-20 bg-gray-200 animate-pulse rounded" />
+              </div>
             ))}
           </div>
         </div>
@@ -72,81 +45,50 @@ export default function CategorySection() {
   if (categories.length === 0) return null;
 
   return (
-    <section className="py-16 bg-muted/30">
-      <div className="container mx-auto px-4">
+    <section className="py-12 bg-white w-full overflow-hidden">
+      <div className="container mx-auto px-4 md:px-8 max-w-7xl">
         {/* Header */}
-        <div className="mb-12 text-center">
-          <p>Popular Categories</p>
-        </div>
+        <h2 className="text-2xl font-bold tracking-tight text-gray-900 mb-8">
+          Popular Categories
+        </h2>
 
-        {/* Category Grid */}
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        {/* Category List */}
+        <div className="flex overflow-x-auto pb-4 md:flex-wrap md:overflow-visible gap-6 md:gap-12 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {categories.map((category, index) => (
             <motion.div
               key={category.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              // initial={{ opacity: 0, y: 15 }}
+              // whileInView={{ opacity: 1, y: 0 }}
+              // viewport={{ once: true }}
               transition={{ delay: index * 0.05, duration: 0.4 }}
+              className="shrink-0"
             >
               <Link href={`/categories/${category.slug}`}>
-                <div className="group relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer">
-                  {/* Image or Gradient Background */}
-                  {category.imageUrl ? (
-                    <Image
-                      src={category.imageUrl}
-                      alt={category.name}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  ) : (
-                    <div
-                      className={`absolute inset-0 bg-gradient-to-br ${getGradient(index)}`}
-                    />
-                  )}
-
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-
-                  {/* Content */}
-                  <div className="absolute inset-0 flex flex-col justify-end p-5">
-                    <h3 className="text-white font-bold text-lg leading-tight mb-1">
-                      {category.name}
-                    </h3>
-                    {getChildCount(category) > 0 && (
-                      <span className="text-white/70 text-xs">
-                        {getChildCount(category)} subcategories
-                      </span>
+                <div className="flex flex-col items-center group cursor-pointer w-24 md:w-32">
+                  {/* Circular Image Container */}
+                  <div className="relative w-24 h-24 md:w-36 md:h-36 rounded-full overflow-hidden mb-4 transition-transform duration-300 group-hover:scale-103">
+                    {category.imageUrl ? (
+                      <Image
+                        src={category.imageUrl}
+                        alt={category.name}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 96px, 128px"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-100" /> // Fallback
                     )}
                   </div>
 
-                  {/* Hover Arrow */}
-                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0">
-                    <div className="h-8 w-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                      <ArrowRight className="h-4 w-4 text-white" />
-                    </div>
-                  </div>
+                  {/* Category Title */}
+                  <h3 className="text-sm md:text-base font-medium text-gray-900 text-center leading-snug">
+                    {category.name}
+                  </h3>
                 </div>
               </Link>
             </motion.div>
           ))}
         </div>
-
-        {/* See All Link */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="mt-12 text-center"
-        >
-          <Link
-            href="/categories"
-            className="inline-flex items-center gap-2 text-primary font-semibold hover:underline decoration-2 underline-offset-4"
-          >
-            See All Categories
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-        </motion.div>
       </div>
     </section>
   );

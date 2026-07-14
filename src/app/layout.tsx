@@ -120,7 +120,7 @@ export default function RootLayout({
             pointer-events-none is given so that it doesn't interfere with mouse clicks or scrolling.
             due to z-50 it will flash over all content.
           */}
-          <div className="fixed top-0 left-0 right-0 h-6 bg-linear-to-b from-white/65 via-white/40 to-transparent dark:from-neutral-950 dark:via-neutral-950/70 dark:to-transparent pointer-events-none z-50" />
+          {/* <div className="fixed top-0 left-0 right-0 h-6 bg-linear-to-b from-white/65 via-white/40 to-transparent dark:from-neutral-950 dark:via-neutral-950/70 dark:to-transparent pointer-events-none z-50" /> */}
 
           {/* ─── CONTENT ─── */}
           {children}
@@ -132,7 +132,7 @@ export default function RootLayout({
           <SpeedInsights />
 
           {/* ─── BOTTOM FADE OVERLAY ─── */}
-          <div className="fixed bottom-0 left-0 right-0 h-6.5 bg-linear-to-t from-white/65 via-white/40 to-transparent dark:from-neutral-950 dark:via-neutral-950/70 dark:to-transparent pointer-events-none z-50" />
+          {/* <div className="fixed bottom-0 left-0 right-0 h-6.5 bg-linear-to-t from-white/65 via-white/40 to-transparent dark:from-neutral-950 dark:via-neutral-950/70 dark:to-transparent pointer-events-none z-50" /> */}
         </Providers>
       </body>
     </html>

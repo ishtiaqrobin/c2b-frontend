@@ -43,17 +43,17 @@ export default function BuybackFeatures() {
 
   return (
     <section className="w-full py-16 px-4 md:px-8 bg-white">
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-12">
+      <div className="container-custom mx-auto">
+        <h2 className="text-2xl font-bold text-gray-900 mb-10">
           Here&apos;s what makes our buyback shop different.
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-20 gap-y-12">
           {features.map((feature) => (
             <div
               key={feature.id}
               className="flex flex-col items-start text-left"
             >
-              <div className="mb-6 relative w-24 h-24 shrink-0">
+              <div className="mb-6 relative w-32 h-24 shrink-0">
                 <Image
                   src={feature.imageUrl}
                   alt={feature.title}
@@ -68,7 +68,7 @@ export default function BuybackFeatures() {
               </h3>
 
               {/* Description */}
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <p className="text-gray-600 text-base leading-relaxed">
                 {feature.description}
               </p>
             </div>
