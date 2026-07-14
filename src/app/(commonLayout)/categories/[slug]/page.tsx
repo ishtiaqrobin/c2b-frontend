@@ -9,13 +9,14 @@ import {
   ArrowLeft,
   ChevronRight,
   Folder,
-  Loader2,
   Package,
 } from "lucide-react";
 import { categoryService } from "@/services/category.service";
 import type { ICategory } from "@/types/category.type";
 import CategoryCard from "@/components/modules/home/category/CategoryCard";
 import ProductVariantGrid from "@/components/modules/home/product/ProductVariantGrid";
+import BannerCarousel from "@/components/modules/home/banner/BannerCarousel";
+import PopularCategoriesSection from "@/components/modules/home/product/PopularCategoriesSection";
 
 const GRADIENTS = [
   "from-blue-500/80 to-blue-600/80",
@@ -136,6 +137,8 @@ export default function CategoryDetailPage() {
 
   return (
     <div className="min-h-screen bg-muted/20">
+      <BannerCarousel categoryId={category.id} />
+
       <div className="container mx-auto px-4 py-8">
         {/* Breadcrumbs */}
         <motion.nav
@@ -283,6 +286,8 @@ export default function CategoryDetailPage() {
           </motion.div>
         )}
       </div>
+
+      <PopularCategoriesSection parentId={category.id} />
     </div>
   );
 }

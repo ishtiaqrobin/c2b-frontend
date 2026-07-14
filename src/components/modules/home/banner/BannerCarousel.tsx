@@ -6,7 +6,11 @@ import { bannerService } from "@/services/banner.service";
 import type { IBanner } from "@/types/banner.type";
 import Image from "next/image";
 
-export default function BannerCarousel() {
+interface BannerCarouselProps {
+  categoryId?: string;
+}
+
+export default function BannerCarousel({ categoryId }: BannerCarouselProps) {
   const [banners, setBanners] = useState<IBanner[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -14,14 +18,16 @@ export default function BannerCarousel() {
 
   useEffect(() => {
     const fetchBanners = async () => {
-      const { data } = await bannerService.getAll({ isActive: "true" });
+      const query: { isActive: string; categoryId?: string } = { isActive: "true" };
+      if (categoryId) query.categoryId = categoryId;
+      const { data } = await bannerService.getAll(query);
       if (data && data.length > 0) {
         setBanners(data);
       }
       setIsLoading(false);
     };
     fetchBanners();
-  }, []);
+  }, [categoryId]);
 
   const prevSlide = useCallback(() => {
     setCurrentIndex((prev) => (prev === 0 ? banners.length - 1 : prev - 1));

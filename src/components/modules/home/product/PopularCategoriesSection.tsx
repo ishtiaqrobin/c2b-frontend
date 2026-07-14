@@ -5,7 +5,13 @@ import { categoryService } from "@/services/category.service";
 import PopularCategoryRow from "@/components/modules/home/product/PopularCategoryRow";
 import type { ICategory } from "@/types/category.type";
 
-export default function PopularCategoriesSection() {
+interface PopularCategoriesSectionProps {
+  parentId?: string;
+}
+
+export default function PopularCategoriesSection({
+  parentId,
+}: PopularCategoriesSectionProps) {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -13,7 +19,7 @@ export default function PopularCategoriesSection() {
     const fetch = async () => {
       const { data } = await categoryService.getAll({
         isPopular: "true",
-        parentId: "null",
+        parentId: parentId ?? "null",
         isActive: "true",
         limit: "10",
       });
@@ -21,7 +27,7 @@ export default function PopularCategoriesSection() {
       setIsLoading(false);
     };
     fetch();
-  }, []);
+  }, [parentId]);
 
   if (isLoading) return null;
 
