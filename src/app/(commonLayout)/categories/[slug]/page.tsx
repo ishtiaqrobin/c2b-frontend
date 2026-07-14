@@ -15,6 +15,7 @@ import {
 import { categoryService } from "@/services/category.service";
 import type { ICategory } from "@/types/category.type";
 import CategoryCard from "@/components/modules/home/category/CategoryCard";
+import ProductVariantGrid from "@/components/modules/home/product/ProductVariantGrid";
 
 const GRADIENTS = [
   "from-blue-500/80 to-blue-600/80",
@@ -250,8 +251,21 @@ export default function CategoryDetailPage() {
               ))}
             </div>
           </>
+        ) : productCount > 0 ? (
+          /* Leaf category with products — show the buyback item grid */
+          <>
+            <motion.h2
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="text-xl font-bold text-foreground mb-6"
+            >
+              Items we buy
+            </motion.h2>
+            <ProductVariantGrid categoryId={category.id} />
+          </>
         ) : (
-          /* Leaf category — no children */
+          /* Leaf category — no children AND no products yet */
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -260,11 +274,11 @@ export default function CategoryDetailPage() {
           >
             <Package className="h-16 w-16 text-muted-foreground/30 mx-auto mb-4" />
             <h2 className="text-xl font-bold text-foreground mb-2">
-              No Subcategories
+              No Items Yet
             </h2>
             <p className="text-muted-foreground max-w-md mx-auto">
-              This category doesn&apos;t have any subcategories yet. Products
-              for this category will appear here soon.
+              This category doesn&apos;t have any buyback items listed yet.
+              Please check back soon.
             </p>
           </motion.div>
         )}

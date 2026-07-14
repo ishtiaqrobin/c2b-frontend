@@ -3,6 +3,7 @@ import type { ApiResponse } from "@/types/api.type";
 import type {
   IProduct,
   IProductFormValues,
+  IProductCreatePayload,
   IProductVariant,
   IVariantCreatePayload,
   IVariantUpdatePayload,
@@ -65,7 +66,10 @@ export const productService = {
       if (query?.categoryId) params.set("categoryId", query.categoryId);
       if (query?.isActive) params.set("isActive", query.isActive);
       const url = `${API_URL}/products${params.toString() ? `?${params.toString()}` : ""}`;
-      const res = await fetch(url, { credentials: "include", cache: "no-store" });
+      const res = await fetch(url, {
+        credentials: "include",
+        cache: "no-store",
+      });
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const response: ApiResponse<IProduct[]> = await res.json();
       return { data: response.data, meta: response.meta ?? null, error: null };
@@ -110,10 +114,30 @@ export const productService = {
 
   // ==================== PRODUCT (ADMIN) ====================
 
-  /** Builds the multipart FormData the backend's multer middleware expects. */
-  buildProductFormData: (
-    values: IProductFormValues,
-  ): FormData => {
+  /**
+   * Builds the multipart FormData the backend's multer middleware expects.
+   *
+   * IMPORTANT: fields are appended flat (slug, categoryId, name, ...) —
+   * NOT nested under a single "data" JSON string. The backend's
+   * createProduct/updateProduct controllers read `req.body` directly
+   * (multer parses text fields onto req.body as flat key/value pairs)
+   * and createProductZodSchema/updateProductZodSchema validate those
+   * same flat top-level fields. A nested `data` field would fail
+   * validation silently mismatched (zod would see none of the expected
+   * keys at the top level).
+   *
+   * `variants` is intentionally NOT sent through this form — nested
+   * arrays (with their own nested `deductions` arrays) don't serialize
+   * cleanly as multipart fields, and the backend does not JSON-parse a
+   * stringified `variants` field. To create a product with variants,
+   * either:
+   *   1. Create the product here first (no variants), then add each
+   *      variant via `productService.createVariant()`, or
+   *   2. Use a plain JSON POST (no image) that includes `variants`
+   *      directly, then attach the product image afterward via
+   *      `update()`.
+   */
+  buildProductFormData: (values: IProductFormValues): FormData => {
     const formData = new FormData();
     if (values.image) formData.append("image", values.image);
     const data: Record<string, unknown> = {};
@@ -121,9 +145,34 @@ export const productService = {
     if (values.slug !== undefined) data.slug = values.slug;
     if (values.categoryId !== undefined) data.categoryId = values.categoryId;
     if (values.isActive !== undefined) data.isActive = values.isActive;
-    if (values.variants !== undefined) data.variants = values.variants;
     formData.append("data", JSON.stringify(data));
     return formData;
+  },
+
+  /**
+   * POST /products with a plain JSON body — use this instead of
+   * `create()` + `buildProductFormData` when you need to send `variants`
+   * (with nested `deductions`) in the same call. No image upload in
+   * this path; attach an image afterward via `update()` if needed.
+   */
+  createWithVariants: async function (
+    payload: IProductCreatePayload,
+  ): Promise<ServiceResult<IProduct>> {
+    try {
+      const res = await fetchWithCookies(`${API_URL}/products`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || `HTTP error! status: ${res.status}`);
+      }
+      const response: ApiResponse<IProduct> = await res.json();
+      return { data: response.data, error: null };
+    } catch (err) {
+      return { data: null, error: errorFrom(err, "Error creating product") };
+    }
   },
 
   /** POST /products — Create product */
@@ -187,11 +236,17 @@ export const productService = {
 
   // ==================== VARIANT (PUBLIC) ====================
 
-  /** GET /products/variants — List variants */
+  /**
+   * GET /products/variants — List variants.
+   * Pass `categoryId` (no `productId`) to browse every variant across
+   * every product under a category in one call — this is what the
+   * storefront category/homepage grid uses.
+   */
   getVariants: async function (query?: {
     page?: string;
     limit?: string;
     productId?: string;
+    categoryId?: string;
     storage?: string;
     isActive?: string;
   }): Promise<{
@@ -204,10 +259,14 @@ export const productService = {
       if (query?.page) params.set("page", query.page);
       if (query?.limit) params.set("limit", query.limit);
       if (query?.productId) params.set("productId", query.productId);
+      if (query?.categoryId) params.set("categoryId", query.categoryId);
       if (query?.storage) params.set("storage", query.storage);
       if (query?.isActive) params.set("isActive", query.isActive);
       const url = `${API_URL}/products/variants${params.toString() ? `?${params.toString()}` : ""}`;
-      const res = await fetch(url, { credentials: "include", cache: "no-store" });
+      const res = await fetch(url, {
+        credentials: "include",
+        cache: "no-store",
+      });
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const response: ApiResponse<IProductVariant[]> = await res.json();
       return { data: response.data, meta: response.meta ?? null, error: null };
@@ -249,14 +308,11 @@ export const productService = {
     payload: IVariantUpdatePayload,
   ): Promise<ServiceResult<IProductVariant>> {
     try {
-      const res = await fetchWithCookies(
-        `${API_URL}/products/variants/${id}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        },
-      );
+      const res = await fetchWithCookies(`${API_URL}/products/variants/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.message || `HTTP error! status: ${res.status}`);
@@ -273,10 +329,9 @@ export const productService = {
     id: string,
   ): Promise<{ data: null; error: ServiceError | null }> {
     try {
-      const res = await fetchWithCookies(
-        `${API_URL}/products/variants/${id}`,
-        { method: "DELETE" },
-      );
+      const res = await fetchWithCookies(`${API_URL}/products/variants/${id}`, {
+        method: "DELETE",
+      });
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.message || `HTTP error! status: ${res.status}`);
