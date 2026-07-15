@@ -42,7 +42,7 @@ export default function BuybackDashboard({
   onLoadMore,
 }: BuybackDashboardProps) {
   const sidebarTree = useMemo(() => {
-    if (!category) return [];
+    if (!category) return categoryTree;
     return categoryTree.filter((main) => main.slug === category.slug);
   }, [categoryTree, category]);
 
@@ -54,7 +54,7 @@ export default function BuybackDashboard({
           <LatestNews />
           <div className="flex flex-col lg:flex-row gap-8 items-start">
             <aside className="w-full lg:w-1/4 lg:sticky lg:top-28 shrink-0">
-              {category && (
+              {(category || categoryTree.length > 0) && (
                 <SidebarFilter
                   tree={sidebarTree}
                   activeSubcategoryId={activeSubcategoryId}
