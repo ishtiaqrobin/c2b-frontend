@@ -27,7 +27,7 @@ export default function WarningBanner({
         onClick={() => setIsOpen(!isOpen)}
         className="p-4 flex justify-between items-center cursor-pointer  "
       >
-        <div className="flex items-center gap-2 text-red-600 font-bold">
+        <div className="flex items-center gap-2 text-primary font-bold">
           <AlertTriangle size={20} />
           <span className="text-gray-900 dark:text-gray-100">
             Things to check before selling
@@ -68,7 +68,7 @@ export default function WarningBanner({
           ) : (
             items.map((item, index) => (
               <div key={item.id || index} className="flex items-start gap-2">
-                <span className="text-red-500 mt-0.5 shrink-0">▶</span>
+                <span className="text-primary mt-0.5 shrink-0">▶</span>
                 <p className="whitespace-pre-line leading-relaxed">
                   {item.content}
                 </p>

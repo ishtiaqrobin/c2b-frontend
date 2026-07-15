@@ -127,10 +127,10 @@ export default function ProductList({
           <button
             key={filter}
             onClick={() => setActiveStorage(filter)}
-            className={`px-2.5 md:px-3 h-9 rounded-md text-sm font-medium transition-all duration-300 ${
+            className={`px-2.5 md:px-3.5 h-9 rounded-md text-sm font-medium transition-all duration-300 ${
               activeStorage === filter
-                ? "bg-primary text-primary-foreground border"
-                : "bg-gray-200 text-text-primary border"
+                ? "bg-primary text-white border"
+                : "bg-gray-200/70 text-text-primary border"
             }`}
           >
             {filter}
