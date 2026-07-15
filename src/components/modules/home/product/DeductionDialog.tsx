@@ -69,7 +69,7 @@ export default function DeductionDialog({
             {applicableDeductions.map((d) => (
               <label
                 key={d.id}
-                className="flex items-center justify-between gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-2.5 cursor-pointer hover:bg-accent/50 transition-colors has-[:checked]:border-primary has-[:checked]:bg-primary/5"
+                className="flex items-center justify-between gap-3 rounded-md border border-zinc-200 dark:border-zinc-800 px-3 py-2.5 cursor-pointer hover:bg-accent/50 transition-colors has-checked:border-primary has-checked:bg-primary/5"
               >
                 <div className="flex items-center gap-2.5">
                   <Checkbox
@@ -78,7 +78,7 @@ export default function DeductionDialog({
                   />
                   <span className="text-sm text-text-primary">{d.label}</span>
                 </div>
-                <span className="text-sm font-semibold text-primary shrink-0">
+                <span className="text-sm font-semibold text-primary/65 shrink-0">
                   -{formatPrice(d.amount, currency)}
                 </span>
               </label>
@@ -87,13 +87,9 @@ export default function DeductionDialog({
         )}
 
         {finalPrice != null && (
-          <div className="flex items-center justify-between border-t border-border pt-3">
-            <span className="text-sm font-semibold text-text-primary">
-              Final price
-            </span>
-            <span className="text-md font-semibold text-primary">
-              {formattedFinalPrice}
-            </span>
+          <div className="flex items-center justify-between border-t border-border pt-3 text-sm font-semibold">
+            <span className="text-text-primary">Final price</span>
+            <span className="text-primary">{formattedFinalPrice}</span>
           </div>
         )}
 

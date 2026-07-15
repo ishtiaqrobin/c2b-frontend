@@ -231,7 +231,7 @@ export default function ProductVariantListItem({
         </div>
 
         {/* Actions */}
-        <div className="flex flex-row lg:flex-col items-center lg:items-stretch gap-2 w-full lg:w-auto lg:min-w-[160px]">
+        <div className="flex flex-row lg:flex-col items-center lg:items-stretch gap-2 w-full lg:w-auto lg:min-w-40">
           {formattedBasePrice && maxQty && (
             <p className="text-[10px] text-text-secondary text-center lg:text-left">
               Max {maxQty} per order

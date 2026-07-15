@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import DeductionDialog from "./DeductionDialog";
-import type { IProductVariant, IVariantDeduction } from "@/types/product.type";
+import type { IProductVariant } from "@/types/product.type";
 
 interface ProductVariantCardProps {
   variant: IProductVariant;
@@ -24,7 +24,7 @@ const formatPrice = (value: number | null | undefined, currency: string) => {
 
 export default function ProductVariantCard({
   variant,
-  index = 0,
+  // index = 0,
 }: ProductVariantCardProps) {
   const availableConditions = useMemo(() => {
     const list: Array<"NEW" | "USED"> = [];

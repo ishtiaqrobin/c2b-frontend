@@ -71,6 +71,7 @@ export default function BuybackDashboard({
                 category={category}
                 subcategories={subcategories}
                 activeSubcategoryName={activeSubcategoryName}
+                activeProductId={activeProductId}
                 isLoading={isLoading}
                 hasMore={hasMore}
                 isLoadingMore={isLoadingMore}

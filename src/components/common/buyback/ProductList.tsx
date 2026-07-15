@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { LayoutGrid, List, AlertTriangle, Loader2 } from "lucide-react";
+import { LayoutGrid, List, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ProductVariantCard from "@/components/modules/home/product/ProductVariantCard";
 import ProductVariantListItem from "../../modules/home/product/ProductVariantListItem";
@@ -15,6 +15,7 @@ interface ProductListProps {
   category: ICategory | null;
   subcategories: ICategory[];
   activeSubcategoryName: string | null;
+  activeProductId: string | null;
   isLoading: boolean;
   hasMore: boolean;
   isLoadingMore: boolean;
@@ -27,8 +28,9 @@ const storageFilters = ["All", "256GB", "512GB", "1TB", "2TB", "128GB"];
 export default function ProductList({
   variants = [],
   category,
-  subcategories = [],
+  // subcategories = [],
   activeSubcategoryName,
+  activeProductId,
   isLoading,
   hasMore,
   isLoadingMore,
@@ -76,6 +78,14 @@ export default function ProductList({
     breadcrumbParts.push(category.name);
     if (activeSubcategoryName) {
       breadcrumbParts.push(activeSubcategoryName);
+    }
+    if (activeProductId) {
+      const activeVariant = variants.find(
+        (v) => v.productId === activeProductId && v.product?.name,
+      );
+      if (activeVariant?.product?.name) {
+        breadcrumbParts.push(activeVariant.product.name);
+      }
     }
   }
 
