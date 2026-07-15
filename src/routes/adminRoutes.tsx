@@ -18,6 +18,7 @@ import {
   UserCog,
   Star,
   ClipboardList,
+  FileQuestion,
 } from "lucide-react";
 
 export const adminRoutes: Route[] = [
@@ -62,6 +63,7 @@ export const adminRoutes: Route[] = [
         icon: ClipboardList,
       },
       { title: "News", url: "/admin-dashboard/news", icon: Newspaper },
+      { title: "FAQ", url: "/admin-dashboard/faq", icon: FileQuestion },
     ],
   },
   {

@@ -96,7 +96,7 @@ export default function Navbar() {
             href="/faq"
             className="px-4 py-2 text-base font-medium text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
           >
-            Frequently Asked Questions
+            FAQ
           </Link>
 
           {/* Store List Dropdown */}
