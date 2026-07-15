@@ -41,7 +41,7 @@ export default function PopularCategories() {
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
-              className="flex flex-col items-center gap-3 min-w-[100px] animate-pulse"
+              className="flex flex-col items-center gap-3 min-w-25 animate-pulse"
             >
               <div className="w-24 h-24 rounded-full bg-gray-200" />
               <div className="h-4 w-20 bg-gray-200 rounded" />
@@ -64,9 +64,9 @@ export default function PopularCategories() {
           <Link
             key={cat.id}
             href={`/categories/${cat.slug}`}
-            className="flex flex-col items-center gap-3 cursor-pointer group min-w-[100px]"
+            className="flex flex-col items-center gap-3 cursor-pointer group min-w-25"
           >
-            <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-transparent group-hover:border-blue-500 transition-all duration-300 shadow-sm group-hover:shadow-md">
+            <div className="relative w-24 h-24 md:w-36 md:h-36 rounded-full overflow-hidden border-2 transition-all duration-300 shadow-sm group-hover:shadow-md group-hover:scale-103">
               {cat.imageUrl ? (
                 <Image
                   src={cat.imageUrl}
@@ -75,7 +75,7 @@ export default function PopularCategories() {
                   className="object-cover"
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-2xl font-bold">
+                <div className="w-full h-full bg-linear-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-2xl font-bold">
                   {cat.name.charAt(0)}
                 </div>
               )}

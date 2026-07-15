@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { ShoppingCart, Phone, User, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { HiMoon, HiSun } from "react-icons/hi";
+import { useTheme } from "next-themes";
 
 // --- Dummy Data (Replace these with API calls later) ---
 const categories = [
@@ -27,6 +30,8 @@ const storeLists = [
 // --------------------------------------------------------
 
 export default function Navbar() {
+  const { theme, setTheme } = useTheme();
+
   return (
     <header className="w-full border-b border-gray-200 bg-white sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 lg:px-8 h-20 flex items-center justify-between">
@@ -133,6 +138,39 @@ export default function Navbar() {
 
         {/* Action Icons Section */}
         <div className="flex items-center space-x-6 text-gray-600">
+          {/* Mode Toggle */}
+          {/* <div className="items-center gap-3">
+            <motion.button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="p-2.5 rounded-full bg-gray-100/75 hover:bg-gray-100 dark:bg-white/5 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 hover:text-yellow-500 dark:hover:text-yellow-400 transition-all duration-300 border border-gray-200 dark:border-white/10 cursor-pointer"
+              aria-label="Toggle theme"
+            >
+              <AnimatePresence mode="wait">
+                {theme === "dark" ? (
+                  <motion.div
+                    key="sun"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <HiSun className="text-lg" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="moon"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <HiMoon className="text-lg" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.button>
+          </div> */}
+
           {/* Cart Icon */}
           <Link
             href="/cart"

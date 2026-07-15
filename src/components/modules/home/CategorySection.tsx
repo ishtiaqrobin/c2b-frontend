@@ -66,7 +66,7 @@ export default function CategorySection() {
               <Link href={`/categories/${category.slug}`}>
                 <div className="flex flex-col items-center group cursor-pointer w-24 md:w-32">
                   {/* Circular Image Container */}
-                  <div className="relative w-24 h-24 md:w-36 md:h-36 rounded-full overflow-hidden mb-4 transition-transform duration-300 group-hover:scale-103">
+                  <div className="relative w-24 h-24 md:w-36 md:h-36 rounded-full overflow-hidden mb-4 border-2 transition-all shadow-sm group-hover:shadow-md duration-300  group-hover:scale-103">
                     {category.imageUrl ? (
                       <Image
                         src={category.imageUrl}

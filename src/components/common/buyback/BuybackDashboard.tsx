@@ -67,7 +67,6 @@ export default function BuybackDashboard({
             </aside>
             <main className="w-full lg:w-3/4">
               <ProductList
-                key={`${activeSubcategoryId ?? "all"}-${activeProductId ?? "all"}`}
                 variants={variants}
                 category={category}
                 subcategories={subcategories}

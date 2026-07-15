@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import Image from "next/image";
-import { motion } from "motion/react";
 import { toast } from "sonner";
 import { PackageSearch, Share2, Check } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -18,11 +17,10 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import type { IProductVariant, IVariantDeduction } from "@/types/product.type";
+import type { IProductVariant } from "@/types/product.type";
 
-interface ProductVariantCardProps {
+interface ProductVariantListItemProps {
   variant: IProductVariant;
-  index?: number;
 }
 
 const formatPrice = (value: number | null | undefined, currency: string) => {
@@ -30,10 +28,9 @@ const formatPrice = (value: number | null | undefined, currency: string) => {
   return `${new Intl.NumberFormat("en-US").format(value)} ${currency}`;
 };
 
-export default function ProductVariantCard({
+export default function ProductVariantListItem({
   variant,
-  index = 0,
-}: ProductVariantCardProps) {
+}: ProductVariantListItemProps) {
   const availableConditions = useMemo(() => {
     const list: Array<"NEW" | "USED"> = [];
     if (variant.newPrice !== null && variant.newPrice !== undefined)
@@ -105,7 +102,7 @@ export default function ProductVariantCard({
       return;
     }
     toast.info(
-      `${title} (${condition === "NEW" ? "New" : "Second-hand"}) x${quantity}${finalPrice != null ? ` — ${formattedFinalPrice}` : ""} — purchase flow coming soon`,
+      `${title} (${condition === "NEW" ? "New" : "Second-hand"}) x${quantity}${finalPrice != null ? ` \u2014 ${formattedFinalPrice}` : ""} \u2014 purchase flow coming soon`,
     );
   };
 
@@ -120,7 +117,7 @@ export default function ProductVariantCard({
         ? ` (deductions: ${selectedLabels.join(", ")})`
         : "";
     toast.info(
-      `${title} (${condition === "NEW" ? "New" : "Second-hand"}) x${quantity}${formattedFinalPrice ? ` — ${formattedFinalPrice}` : ""}${deductionSummary} — purchase flow coming soon`,
+      `${title} (${condition === "NEW" ? "New" : "Second-hand"}) x${quantity}${formattedFinalPrice ? ` \u2014 ${formattedFinalPrice}` : ""}${deductionSummary} \u2014 purchase flow coming soon`,
     );
   };
 
@@ -132,12 +129,8 @@ export default function ProductVariantCard({
 
   return (
     <>
-      <motion.div
-        viewport={{ once: true }}
-        // transition={{ delay: Math.min(index * 0.04, 0.4), duration: 0.35 }}
-        className="group relative flex flex-col rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 hover:shadow-md transition-all duration-300"
-      >
-        {/* Share icon */}
+      <div className="group relative flex flex-col lg:flex-row items-start lg:items-center gap-4 bg-card p-4 rounded-lg border border-border transition-all duration-300 hover:shadow-md">
+        {/* Share button */}
         <button
           type="button"
           onClick={(e) => {
@@ -158,128 +151,127 @@ export default function ProductVariantCard({
         </button>
 
         {/* Image */}
-        <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-muted/40 mb-4">
+        <div className="relative w-20 h-20 shrink-0 bg-muted/40 rounded-lg p-2">
           {imageSrc ? (
             <Image
               src={imageSrc}
               alt={title}
-              height={300}
-              width={300}
-              className="object-contain transition-transform duration-500 group-hover:scale-102"
+              fill
+              className="object-contain mix-blend-multiply"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
-              <PackageSearch className="h-10 w-10 text-text-secondary/30" />
+              <PackageSearch className="h-8 w-8 text-text-secondary/30" />
             </div>
           )}
         </div>
 
-        {/* Title + SKU */}
-        <h3 className="font-semibold text-sm text-text-primary leading-snug line-clamp-2 mb-1">
-          {title}
-        </h3>
-        {variant.sku && (
-          <p className="text-[11px] text-text-secondary font-mono mb-2">
-            SKU: {variant.sku}
-          </p>
-        )}
+        {/* Info */}
+        <div className="flex-1 min-w-0 w-full lg:w-auto">
+          <h4 className="font-semibold text-text-primary truncate">{title}</h4>
+          {variant.sku && (
+            <p className="text-xs text-text-secondary">Code: {variant.sku}</p>
+          )}
 
-        {/* Condition selector */}
-        {availableConditions.length > 0 && (
-          <RadioGroup
-            value={condition}
-            onValueChange={(v) => {
-              setCondition(v as "NEW" | "USED");
-              setSelectedDeductionIds(new Set());
-              setConfirmed(false);
-            }}
-            className="flex flex-col gap-1.5 mb-2"
-          >
-            {availableConditions.map((c) => {
-              const price = c === "NEW" ? variant.newPrice : variant.usedPrice;
-              return (
-                <div key={c} className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <RadioGroupItem value={c} id={`${variant.id}-${c}`} />
+          {/* Condition selector */}
+          {availableConditions.length > 0 && (
+            <RadioGroup
+              value={condition}
+              onValueChange={(v) => {
+                setCondition(v as "NEW" | "USED");
+                setSelectedDeductionIds(new Set());
+                setConfirmed(false);
+              }}
+              className="flex flex-row gap-4 mt-2"
+            >
+              {availableConditions.map((c) => {
+                const price =
+                  c === "NEW" ? variant.newPrice : variant.usedPrice;
+                return (
+                  <div key={c} className="flex items-center gap-1.5">
+                    <RadioGroupItem value={c} id={`list-${variant.id}-${c}`} />
                     <Label
-                      htmlFor={`${variant.id}-${c}`}
+                      htmlFor={`list-${variant.id}-${c}`}
                       className="text-xs font-normal text-text-primary cursor-pointer"
                     >
                       {c === "NEW" ? "New" : "Second Hand"}
                     </Label>
+                    <span className="text-sm font-semibold leading-snug line-clamp-2 text-red-600">
+                      {formatPrice(price, variant.currency)}
+                    </span>
                   </div>
-                  <span className="text-sm font-semibold leading-snug line-clamp-2 text-red-600">
-                    {formatPrice(price, variant.currency)}
-                  </span>
-                </div>
-              );
-            })}
-          </RadioGroup>
-        )}
+                );
+              })}
+            </RadioGroup>
+          )}
 
-        {availableConditions.length === 0 && (
-          <p className="text-xs text-text-secondary mb-2">
-            Price not available
-          </p>
-        )}
-
-        {/* Confirmed deduction summary */}
-        {confirmed && selectedDeductionIds.size > 0 && (
-          <div className="mb-2 px-2 py-1.5 rounded-lg bg-primary/5 border border-primary/10">
-            <p className="text-[10px] font-semibold text-primary uppercase tracking-wider mb-0.5">
-              Deductions applied
+          {availableConditions.length === 0 && (
+            <p className="text-xs text-text-secondary mt-2">
+              Price not available
             </p>
-            {applicableDeductions
-              .filter((d) => selectedDeductionIds.has(d.id))
-              .map((d) => (
-                <p
-                  key={d.id}
-                  className="text-[11px] text-text-secondary flex justify-between"
-                >
-                  <span>{d.label}</span>
-                  <span>-{formatPrice(d.amount, variant.currency)}</span>
-                </p>
-              ))}
-            {finalPrice != null && (
-              <p className="text-xs font-bold text-text-primary flex justify-between border-t border-primary/10 mt-1 pt-1">
-                <span>Final price</span>
-                <span>{formattedFinalPrice}</span>
+          )}
+
+          {/* Confirmed deduction summary */}
+          {confirmed && selectedDeductionIds.size > 0 && (
+            <div className="mt-2 p-2 rounded-md bg-primary/5 border border-primary/10">
+              <p className="text-[10px] font-semibold text-primary uppercase tracking-wider mb-0.5">
+                Deductions applied
               </p>
-            )}
-          </div>
-        )}
-
-        {/* Quantity + CTA */}
-        {formattedBasePrice && maxQty && (
-          <p className="mt-1.5 text-[10px] text-text-secondary">
-            Max {maxQty} per order
-          </p>
-        )}
-
-        <div className="mt-auto flex items-center gap-2 pt-1">
-          <Input
-            type="number"
-            min={1}
-            max={maxQty}
-            value={quantity}
-            onChange={(e) => {
-              const v = parseInt(e.target.value, 10);
-              if (Number.isNaN(v)) return setQuantity(1);
-              setQuantity(maxQty ? Math.min(v, maxQty) : v);
-            }}
-            className="h-8 w-16 text-xs px-2 rounded-md"
-            aria-label="Quantity"
-          />
-          <Button
-            size="sm"
-            disabled={availableConditions.length === 0}
-            onClick={confirmed ? openDeductionPopup : handlePurchaseApplication}
-            className="flex-1 h-8 text-xs rounded-md"
-          >
-            {confirmed ? "Update" : "Purchase application"}
-          </Button>
+              {applicableDeductions
+                .filter((d) => selectedDeductionIds.has(d.id))
+                .map((d) => (
+                  <p
+                    key={d.id}
+                    className="text-[11px] text-text-secondary flex justify-between"
+                  >
+                    <span>{d.label}</span>
+                    <span>-{formatPrice(d.amount, variant.currency)}</span>
+                  </p>
+                ))}
+              {finalPrice != null && (
+                <p className="text-xs font-bold text-text-primary flex justify-between border-t border-primary/10 mt-1 pt-1">
+                  <span>Final price</span>
+                  <span>{formattedFinalPrice}</span>
+                </p>
+              )}
+            </div>
+          )}
         </div>
-      </motion.div>
+
+        {/* Actions */}
+        <div className="flex flex-row lg:flex-col items-center lg:items-stretch gap-2 w-full lg:w-auto lg:min-w-[160px]">
+          {formattedBasePrice && maxQty && (
+            <p className="text-[10px] text-text-secondary text-center lg:text-left">
+              Max {maxQty} per order
+            </p>
+          )}
+          <div className="flex items-center gap-2">
+            <Input
+              type="number"
+              min={1}
+              max={maxQty}
+              value={quantity}
+              onChange={(e) => {
+                const v = parseInt(e.target.value, 10);
+                if (Number.isNaN(v)) return setQuantity(1);
+                setQuantity(maxQty ? Math.min(v, maxQty) : v);
+              }}
+              className="h-8 w-16 text-xs px-2 rounded-md"
+              aria-label="Quantity"
+            />
+            <Button
+              size="sm"
+              disabled={availableConditions.length === 0}
+              onClick={
+                confirmed ? openDeductionPopup : handlePurchaseApplication
+              }
+              className="flex-1 h-8 text-xs whitespace-nowrap rounded-md"
+            >
+              {confirmed ? "Update" : "Purchase application"}
+            </Button>
+          </div>
+        </div>
+      </div>
 
       {/* Deduction selection dialog */}
       <Dialog open={deductionOpen} onOpenChange={setDeductionOpen}>
@@ -324,7 +316,7 @@ export default function ProductVariantCard({
               <span className="text-sm font-semibold text-text-primary">
                 Final price
               </span>
-              <span className="text-lg font-bold text-red-600">
+              <span className="text-md font-semibold text-red-600">
                 {formattedFinalPrice}
               </span>
             </div>
@@ -334,14 +326,11 @@ export default function ProductVariantCard({
             <Button
               variant="outline"
               onClick={() => setDeductionOpen(false)}
-              className="rounded-xl border-border text-text-primary"
+              className="rounded-md"
             >
               Cancel
             </Button>
-            <Button
-              onClick={handleConfirmDeductions}
-              className="rounded-xl bg-red-600 hover:bg-red-700"
-            >
+            <Button onClick={handleConfirmDeductions} className="rounded-md">
               <Check className="mr-1.5 h-4 w-4" />
               Confirmed
             </Button>
