@@ -130,6 +130,50 @@ export const adminService = {
     }
   },
 
+  /** PATCH /admins/users/:userId/ban — Ban user */
+  banUser: async function (
+    token: string,
+    userId: string,
+  ): Promise<{ data: IUser | null; error: ServiceError | null }> {
+    try {
+      const res = await fetch(`${API_URL}/admins/users/${userId}/ban`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
+      }
+      const response: ApiResponse<IUser> = await res.json();
+      return { data: response.data, error: null };
+    } catch (err) {
+      return { data: null, error: { message: err instanceof Error ? err.message : "Error banning user" } };
+    }
+  },
+
+  /** PATCH /admins/users/:userId/unban — Unban user */
+  unbanUser: async function (
+    token: string,
+    userId: string,
+  ): Promise<{ data: IUser | null; error: ServiceError | null }> {
+    try {
+      const res = await fetch(`${API_URL}/admins/users/${userId}/unban`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || `HTTP error! status: ${res.status}`);
+      }
+      const response: ApiResponse<IUser> = await res.json();
+      return { data: response.data, error: null };
+    } catch (err) {
+      return { data: null, error: { message: err instanceof Error ? err.message : "Error unbanning user" } };
+    }
+  },
+
   /** PATCH /admins/users/:userId/soft-delete — Soft delete user */
   softDeleteUser: async function (
     token: string,

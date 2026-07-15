@@ -60,6 +60,16 @@ export interface IReviewEkycPayload {
   rejectReason?: string;
 }
 
+export interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  image?: string | null;
+  role: string;
+  isBanned: boolean;
+  createdAt: string;
+}
+
 export interface IAdminStats {
   totalUsers: number;
   totalCustomers: number;
@@ -80,30 +90,4 @@ export interface IAdminStats {
   totalEkycPending: number;
   totalEkycVerified: number;
   totalEkycRejected: number;
-}
-  startTime: string;
-  endTime: string;
-  duration: number;
-  totalPrice: number;
-  status: string;
-  paymentStatus: string;
-  transactionId: string | null;
-  createdAt: string;
-  updatedAt: string;
-  student: {
-    id: string;
-    name: string;
-    email: string;
-    phone: string | null;
-    image: string | null;
-  };
-  tutor: {
-    id: string;
-    hourlyRate: number;
-    user: {
-      name: string;
-      email: string;
-      image: string | null;
-    };
-  };
 }

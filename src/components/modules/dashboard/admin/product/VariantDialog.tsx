@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -50,7 +50,7 @@ export default function VariantDialog({
     watch,
     formState: { errors, isSubmitting },
   } = useForm<VariantFormValues>({
-    resolver: zodResolver(variantFormSchema),
+    resolver: zodResolver(variantFormSchema) as Resolver<VariantFormValues>,
     defaultValues: {
       sku: "",
       storage: "",

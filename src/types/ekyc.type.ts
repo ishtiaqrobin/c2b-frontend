@@ -1,3 +1,5 @@
+import type { IUser } from "./user.type";
+
 export interface IEkyc {
   id: string;
   userId: string;

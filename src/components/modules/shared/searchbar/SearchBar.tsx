@@ -4,20 +4,7 @@ import React, { FormEvent } from "react";
 import { Search } from "lucide-react";
 
 export default function SearchBar() {
-  const router = useRouter();
-  const [query, setQuery] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const filtered = query.trim()
-    ? suggestions.filter((s) =>
-        s.toLowerCase().includes(query.toLowerCase()),
-      )
-    : suggestions;
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSearch = (e: FormEvent) => {
     e.preventDefault();
     // এখানে আপনার সার্চ লজিক বসান
     console.log("Search triggered");

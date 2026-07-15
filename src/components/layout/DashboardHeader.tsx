@@ -35,13 +35,18 @@ export function DashboardHeader() {
   const pathname = usePathname();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
+  const hasRole = (key: string) =>
+    user?.roles?.some((r) => r.role.key === key) ?? false;
+  const primaryRole =
+    user?.roles?.[0]?.role?.key ?? user?.userType ?? "";
+
   const getDashboardUrl = () => {
-    if (user?.role === "ADMIN") return "/admin-dashboard";
+    if (hasRole("ADMIN")) return "/admin-dashboard";
     return "/user-dashboard";
   };
 
   const getUserRoutes = () => {
-    if (user?.role === "ADMIN") return adminRoutes[0]?.items || [];
+    if (hasRole("ADMIN")) return adminRoutes[0]?.items || [];
     return userRoutes[0]?.items || [];
   };
 
@@ -80,8 +85,8 @@ export function DashboardHeader() {
               <div className="flex flex-col gap-4">
                 <div className="space-y-1">
                   <h3 className="text-sm font-semibold text-muted-foreground px-2">
-                    {user?.role === "ADMIN" && "Admin Menu"}
-                    {user?.role === "USER" && "User Dashboard"}
+                    {hasRole("ADMIN") && "Admin Menu"}
+                    {!hasRole("ADMIN") && "User Dashboard"}
                   </h3>
                   <nav className="space-y-1">
                     {getUserRoutes().map((route) => {
@@ -111,8 +116,8 @@ export function DashboardHeader() {
           </Sheet>
 
           <h2 className="text-lg font-semibold">
-            {user?.role === "ADMIN" && "Admin Dashboard"}
-            {user?.role === "USER" && "User Dashboard"}
+            {hasRole("ADMIN") && "Admin Dashboard"}
+            {!hasRole("ADMIN") && "User Dashboard"}
           </h2>
         </div>
 
@@ -143,7 +148,7 @@ export function DashboardHeader() {
                     {user?.email}
                   </p>
                   <p className="text-xs leading-none text-muted-foreground mt-1">
-                    Role: {user?.role}
+                    Role: {primaryRole}
                   </p>
                 </div>
               </DropdownMenuLabel>

@@ -1,3 +1,5 @@
+import { IOrder } from "./order.type";
+
 export interface IPayment {
   id: string;
   orderId: string;

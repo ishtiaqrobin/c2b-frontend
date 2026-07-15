@@ -64,6 +64,7 @@ export default function PopularCategoryRow({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.05, duration: 0.4 }}
+      className="container-custom mx-auto"
     >
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xl font-bold text-foreground">{category.name}</h3>

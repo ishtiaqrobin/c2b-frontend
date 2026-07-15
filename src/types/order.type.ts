@@ -1,3 +1,9 @@
+import { IAddress } from "./address.type";
+import { IPayment } from "./payment.type";
+import { IProductVariant } from "./product.type";
+import { IStore } from "./store.type";
+import { IUser } from "./user.type";
+
 export interface IOrder {
   id: string;
   orderNumber: string;

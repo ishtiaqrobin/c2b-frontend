@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,7 +56,7 @@ export default function BuybackFeaturesDialog({
     watch,
     formState: { errors },
   } = useForm<BuybackFeatureFormValues>({
-    resolver: zodResolver(buybackFeatureFormSchema),
+    resolver: zodResolver(buybackFeatureFormSchema) as Resolver<BuybackFeatureFormValues>,
     defaultValues: {
       title: "",
       description: "",
