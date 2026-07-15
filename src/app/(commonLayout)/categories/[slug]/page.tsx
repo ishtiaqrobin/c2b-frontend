@@ -23,6 +23,7 @@ export default function CategoryDetailPage() {
   const pidParam = searchParams.get("pid");
 
   const [category, setCategory] = useState<ICategory | null>(null);
+  const [categoryTree, setCategoryTree] = useState<ICategory[]>([]);
   const [children, setChildren] = useState<ICategory[]>([]);
   const [variants, setVariants] = useState<IProductVariant[]>([]);
   const [page, setPage] = useState(1);
@@ -62,6 +63,7 @@ export default function CategoryDetailPage() {
       if (hasChildren) {
         const { data: tree } = await categoryService.getTree();
         if (tree) {
+          setCategoryTree(tree);
           const findInTree = (nodes: ICategory[]): ICategory | null => {
             for (const node of nodes) {
               if (node.slug === slug) return node;
@@ -137,8 +139,48 @@ export default function CategoryDetailPage() {
   // Re-fetch when category or filter changes
   useEffect(() => {
     if (!category || isCategoryLoading) return;
-    fetchVariants(1, true);
-  }, [category, isCategoryLoading, activeSubcategoryId, fetchVariants]);
+
+    const loadVariants = async () => {
+      const queryParams: {
+        page: string;
+        limit: string;
+        isActive: string;
+        categoryId?: string;
+        categoryIds?: string;
+      } = {
+        page: "1",
+        limit: String(PAGE_LIMIT),
+        isActive: "true",
+      };
+
+      if (activeSubcategoryId) {
+        queryParams.categoryId = activeSubcategoryId;
+      } else if (children.length > 0) {
+        queryParams.categoryIds = children.map((c) => c.id).join(",");
+      } else {
+        queryParams.categoryId = category.id;
+      }
+
+      const { data, meta, error: fetchError } =
+        await productService.getVariants(queryParams);
+
+      if (fetchError) {
+        setError(fetchError.message);
+      } else if (data) {
+        setVariants(data);
+        if (meta) {
+          setTotalPages(
+            meta.total ? Math.ceil(meta.total / PAGE_LIMIT) : 1,
+          );
+        }
+      }
+
+      setPage(1);
+      setHasInitiallyLoaded(true);
+    };
+
+    loadVariants();
+  }, [category, isCategoryLoading, activeSubcategoryId, children]);
 
   const buildUrl = (sub?: string | null, pid?: string | null) => {
     const parts: string[] = [];
@@ -235,6 +277,7 @@ export default function CategoryDetailPage() {
 
       <BuybackDashboard
         category={category}
+        categoryTree={categoryTree}
         subcategories={children}
         sidebarVariants={variants}
         variants={displayedVariants}

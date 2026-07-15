@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import PopularCategories from "./PopularCategories";
 import LatestNews from "./LatestNews";
 import SidebarFilter from "./SidebarFilter";
@@ -9,6 +10,7 @@ import type { ICategory } from "@/types/category.type";
 
 interface BuybackDashboardProps {
   category: ICategory | null;
+  categoryTree: ICategory[];
   subcategories: ICategory[];
   sidebarVariants: IProductVariant[];
   variants: IProductVariant[];
@@ -25,6 +27,7 @@ interface BuybackDashboardProps {
 
 export default function BuybackDashboard({
   category,
+  categoryTree = [],
   subcategories = [],
   sidebarVariants = [],
   variants = [],
@@ -38,6 +41,11 @@ export default function BuybackDashboard({
   isLoadingMore,
   onLoadMore,
 }: BuybackDashboardProps) {
+  const sidebarTree = useMemo(() => {
+    if (!category) return [];
+    return categoryTree.filter((main) => main.slug === category.slug);
+  }, [categoryTree, category]);
+
   return (
     <div className="min-h-screen bg-[#F4F7F6] py-10">
       <div className="max-w-[1400px] mx-auto px-4 md:px-8">
@@ -48,8 +56,7 @@ export default function BuybackDashboard({
             <aside className="w-full lg:w-1/4 lg:sticky lg:top-8 shrink-0">
               {category && (
                 <SidebarFilter
-                  mainCategory={category}
-                  subcategories={subcategories}
+                  tree={sidebarTree}
                   activeSubcategoryId={activeSubcategoryId}
                   activeProductId={activeProductId}
                   onSubcategoryChange={onSubcategoryChange}
@@ -60,6 +67,7 @@ export default function BuybackDashboard({
             </aside>
             <main className="w-full lg:w-3/4">
               <ProductList
+                key={`${activeSubcategoryId ?? "all"}-${activeProductId ?? "all"}`}
                 variants={variants}
                 category={category}
                 subcategories={subcategories}
