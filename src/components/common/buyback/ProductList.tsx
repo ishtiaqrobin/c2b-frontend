@@ -23,7 +23,7 @@ interface ProductListProps {
   checkItems?: ICategoryCheckItemRef[];
 }
 
-const storageFilters = ["All", "256GB", "512GB", "1TB", "2TB", "128GB"];
+const storageFilters = ["All", "128GB", "256GB", "512GB", "1TB", "2TB"];
 
 export default function ProductList({
   variants = [],

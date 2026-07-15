@@ -114,12 +114,24 @@ export default function CheckItemsTable({
             {loading ? (
               [...Array(5)].map((_, idx) => (
                 <TableRow key={`skeleton-${idx}`} className="align-middle">
-                  <TableCell><Skeleton className="h-4 w-6" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-28" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-80" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-8" /></TableCell>
-                  <TableCell><Skeleton className="h-5 w-16 rounded-full" /></TableCell>
-                  <TableCell><Skeleton className="h-8 w-9 rounded-md ml-auto" /></TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-6" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-28" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-80" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-4 w-8" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-5 w-16 rounded-full" />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton className="h-8 w-9 rounded-md ml-auto" />
+                  </TableCell>
                 </TableRow>
               ))
             ) : items.length === 0 ? (
@@ -156,9 +168,13 @@ export default function CheckItemsTable({
                       className="text-xs"
                     >
                       {item.isActive ? (
-                        <><CheckCircle2 className="mr-1 h-3 w-3" /> Active</>
+                        <>
+                          <CheckCircle2 className="mr-1 h-3 w-3" /> Active
+                        </>
                       ) : (
-                        <><XCircle className="mr-1 h-3 w-3" /> Inactive</>
+                        <>
+                          <XCircle className="mr-1 h-3 w-3" /> Inactive
+                        </>
                       )}
                     </Badge>
                   </TableCell>
@@ -215,9 +231,9 @@ export default function CheckItemsTable({
           <>
             This action cannot be undone. Are you sure you want to permanently
             delete this check item{" "}
-            <span className="font-semibold text-primary">
+            {/* <span className="font-semibold text-primary">
               &quot;{deleting.content}&quot;
-            </span>
+            </span> */}
             ?
           </>
         }

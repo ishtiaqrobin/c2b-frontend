@@ -100,9 +100,7 @@ export default function CheckItemsDialog({
   const onSubmit = async (values: CheckItemFormValues) => {
     setSaving(true);
     const toastId = toast.loading(
-      mode === "add"
-        ? "Creating check item..."
-        : "Updating check item...",
+      mode === "add" ? "Creating check item..." : "Updating check item...",
     );
 
     try {
@@ -173,7 +171,7 @@ export default function CheckItemsDialog({
               <SelectTrigger className="bg-white w-full h-10 rounded-xl">
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent position="popper">
                 {categories.map((cat) => (
                   <SelectItem key={cat.id} value={cat.id}>
                     {cat.name}
