@@ -8,6 +8,7 @@ import type {
   IVariantDeduction,
   IVariantCreatePayload,
   IVariantUpdatePayload,
+  IVariantFormValues,
   IDeductionCreatePayload,
   IDeductionUpdatePayload,
   IPriceHistory,
@@ -153,6 +154,31 @@ export const productService = {
   },
 
   /**
+   * Builds multipart FormData for variant create/update.
+   * Follows the same pattern as buildProductFormData: text fields go
+   * inside a JSON-serialized "data" field, while the image (if any) is
+   * appended as a separate "image" field for multer on the backend.
+   */
+  buildVariantFormData: (values: IVariantFormValues): FormData => {
+    const formData = new FormData();
+    if (values.image) formData.append("image", values.image);
+    const data: Record<string, unknown> = {};
+    if (values.sku !== undefined) data.sku = values.sku;
+    if (values.storage !== undefined) data.storage = values.storage;
+    if (values.color !== undefined) data.color = values.color;
+    if (values.newPrice !== undefined) data.newPrice = values.newPrice;
+    if (values.usedPrice !== undefined) data.usedPrice = values.usedPrice;
+    if (values.currency !== undefined) data.currency = values.currency;
+    if (values.maxQuantityPerOrder !== undefined)
+      data.maxQuantityPerOrder = values.maxQuantityPerOrder;
+    if (values.dailyPurchaseLimit !== undefined)
+      data.dailyPurchaseLimit = values.dailyPurchaseLimit;
+    if (values.isActive !== undefined) data.isActive = values.isActive;
+    formData.append("data", JSON.stringify(data));
+    return formData;
+  },
+
+  /**
    * POST /products with a plain JSON body — use this instead of
    * `create()` + `buildProductFormData` when you need to send `variants`
    * (with nested `deductions`) in the same call. No image upload in
@@ -282,7 +308,28 @@ export const productService = {
 
   // ==================== VARIANT (ADMIN) ====================
 
-  /** POST /products/:productId/variants */
+  /** POST /products/:productId/variants (multipart) */
+  createVariantWithImage: async function (
+    productId: string,
+    formData: FormData,
+  ): Promise<ServiceResult<IProductVariant>> {
+    try {
+      const res = await fetchWithCookies(
+        `${API_URL}/products/${productId}/variants`,
+        { method: "POST", body: formData },
+      );
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || `HTTP error! status: ${res.status}`);
+      }
+      const response: ApiResponse<IProductVariant> = await res.json();
+      return { data: response.data, error: null };
+    } catch (err) {
+      return { data: null, error: errorFrom(err, "Error creating variant") };
+    }
+  },
+
+  /** POST /products/:productId/variants (JSON) */
   createVariant: async function (
     productId: string,
     payload: IVariantCreatePayload,
@@ -307,7 +354,28 @@ export const productService = {
     }
   },
 
-  /** PATCH /products/variants/:id */
+  /** PATCH /products/variants/:id (multipart) */
+  updateVariantWithImage: async function (
+    id: string,
+    formData: FormData,
+  ): Promise<ServiceResult<IProductVariant>> {
+    try {
+      const res = await fetchWithCookies(`${API_URL}/products/variants/${id}`, {
+        method: "PATCH",
+        body: formData,
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || `HTTP error! status: ${res.status}`);
+      }
+      const response: ApiResponse<IProductVariant> = await res.json();
+      return { data: response.data, error: null };
+    } catch (err) {
+      return { data: null, error: errorFrom(err, "Error updating variant") };
+    }
+  },
+
+  /** PATCH /products/variants/:id (JSON) */
   updateVariant: async function (
     id: string,
     payload: IVariantUpdatePayload,

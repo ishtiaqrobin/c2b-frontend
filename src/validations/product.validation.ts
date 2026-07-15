@@ -53,6 +53,7 @@ export const variantFormSchema = z.object({
   sku: z.string().max(50).optional(),
   storage: z.string().max(50).optional(),
   color: z.string().max(50).optional(),
+  image: z.instanceof(File, { message: "Image must be a file" }).optional(),
   newPrice: optionalPrice,
   usedPrice: optionalPrice,
   currency: z.string().max(10).optional(),

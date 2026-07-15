@@ -18,9 +18,9 @@ export default function LatestNews() {
   }, []);
 
   return (
-    <section className="w-full max-w-6xl mx-auto py-12 px-4 font-sans">
+    <section className="w-full container-custom mx-auto py-12 px-4">
       {/* Main Heading */}
-      <h2 className="text-2xl md:text-[28px] font-medium text-center text-gray-600 mb-8">
+      <h2 className="text-2xl font-bold tracking-tight text-gray-900 text-center mb-8">
         We will bring you the latest information.
       </h2>
 
@@ -28,18 +28,18 @@ export default function LatestNews() {
       <div className="border border-gray-300 bg-white rounded-sm">
         {/* Header Area */}
         <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-[#2b6ba3] text-lg font-bold">Latest News</h3>
+          <h3 className="text-[#2c7cba] text-xl font-bold">Latest News</h3>
         </div>
 
         {/* Scrollable Content Area */}
-        <ScrollArea className="h-[260px] w-full">
+        <ScrollArea className="h-56 w-full">
           <div className="p-6">
             {loading ? (
               <p className="text-slate-400 text-sm">Loading news...</p>
             ) : news.length === 0 ? (
               <p className="text-slate-400 text-sm">No news available.</p>
             ) : (
-              <ul className="space-y-5">
+              <ul className="space-y-4">
                 {news.map((item) => {
                   const publishedDate = new Date(
                     item.publishedAt,
@@ -58,7 +58,7 @@ export default function LatestNews() {
                       {/* Title / Link */}
                       <Link
                         href={`/news/${item.id}`}
-                        className="text-[#2b6ba3] hover:underline underline-offset-2 text-sm md:text-base leading-snug"
+                        className="text-[#2c7cba] hover:underline underline-offset-2 text-sm md:text-base leading-snug"
                       >
                         {item.title ?? "Untitled"}
                       </Link>

@@ -34,7 +34,7 @@ export default function Navbar() {
 
   return (
     <header className="w-full border-b border-gray-200 bg-white sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 h-20 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 lg:px-8 h-18 flex items-center justify-between">
         {/* Logo Section */}
         <Link
           href="/"
@@ -47,7 +47,7 @@ export default function Navbar() {
         <nav className="hidden lg:flex items-center gap-2">
           {/* Category Dropdown */}
           <div className="relative group">
-            <button className="flex items-center gap-1 px-4 py-2 text-base font-medium text-gray-800 hover:bg-gray-100 rounded-md transition-colors">
+            <button className="flex items-center gap-1 px-4 py-2 text-[15px] font-medium text-gray-800 hover:bg-gray-100/90 rounded-md transition-colors">
               Category
               <ChevronDown className="w-4 h-4 text-gray-500 transition-transform group-hover:rotate-180" />
             </button>
@@ -58,7 +58,7 @@ export default function Navbar() {
                   <li key={item.id}>
                     <Link
                       href={item.href}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded-sm transition-colors"
+                      className="block px-4 py-2 text-[15px] text-gray-700 hover:bg-gray-100/90 hover:text-gray-900 rounded-sm transition-colors"
                     >
                       {item.title}
                     </Link>
@@ -70,7 +70,7 @@ export default function Navbar() {
 
           {/* Buyback Process Dropdown */}
           <div className="relative group">
-            <button className="flex items-center gap-1 px-4 py-2 text-base font-medium text-gray-800 hover:bg-gray-100 rounded-md transition-colors">
+            <button className="flex items-center gap-1 px-4 py-2 text-[15px] font-medium text-gray-800 hover:bg-gray-100/90 rounded-md transition-colors">
               Buyback process
               <ChevronDown className="w-4 h-4 text-gray-500 transition-transform group-hover:rotate-180" />
             </button>
@@ -81,7 +81,7 @@ export default function Navbar() {
                   <li key={item.id}>
                     <Link
                       href={item.href}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded-sm transition-colors"
+                      className="block px-4 py-2 text-[15px] text-gray-700 hover:bg-gray-100/90 hover:text-gray-900 rounded-sm transition-colors"
                     >
                       {item.title}
                     </Link>
@@ -94,14 +94,14 @@ export default function Navbar() {
           {/* FAQ Link */}
           <Link
             href="/faq"
-            className="px-4 py-2 text-base font-medium text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
+            className="px-4 py-2 text-[15px] font-medium text-gray-800 hover:bg-gray-100/90 rounded-md transition-colors"
           >
             FAQ
           </Link>
 
           {/* Store List Dropdown */}
           <div className="relative group">
-            <button className="flex items-center gap-1 px-4 py-2 text-base font-medium text-gray-800 hover:bg-gray-100 rounded-md transition-colors">
+            <button className="flex items-center gap-1 px-4 py-2 text-[15px] font-medium text-gray-800 hover:bg-gray-100/90 rounded-md transition-colors">
               Store List
               <ChevronDown className="w-4 h-4 text-gray-500 transition-transform group-hover:rotate-180" />
             </button>
@@ -112,7 +112,7 @@ export default function Navbar() {
                   <li key={item.id}>
                     <Link
                       href={item.href}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded-sm transition-colors"
+                      className="block px-4 py-2 text-[15px] text-gray-700 hover:bg-gray-100/90 hover:text-gray-900 rounded-sm transition-colors"
                     >
                       {item.title}
                     </Link>
@@ -125,7 +125,7 @@ export default function Navbar() {
           {/* Inquiry Link */}
           <Link
             href="/inquiry"
-            className="px-4 py-2 text-base font-medium text-gray-800 hover:bg-gray-100 rounded-md transition-colors"
+            className="px-4 py-2 text-[15px] font-medium text-gray-800 hover:bg-gray-100/90 rounded-md transition-colors"
           >
             Inquiry
           </Link>
@@ -137,7 +137,7 @@ export default function Navbar() {
           {/* <div className="items-center gap-3">
             <motion.button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2.5 rounded-full bg-gray-100/75 hover:bg-gray-100 dark:bg-white/5 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 hover:text-yellow-500 dark:hover:text-yellow-400 transition-all duration-300 border border-gray-200 dark:border-white/10 cursor-pointer"
+              className="p-2.5 rounded-full bg-gray-100/75 hover:bg-gray-100/90 dark:bg-white/5 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 hover:text-yellow-500 dark:hover:text-yellow-400 transition-all duration-300 border border-gray-200 dark:border-white/10 cursor-pointer"
               aria-label="Toggle theme"
             >
               <AnimatePresence mode="wait">

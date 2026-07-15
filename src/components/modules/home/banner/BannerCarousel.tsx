@@ -18,7 +18,9 @@ export default function BannerCarousel({ categoryId }: BannerCarouselProps) {
 
   useEffect(() => {
     const fetchBanners = async () => {
-      const query: { isActive: string; categoryId?: string } = { isActive: "true" };
+      const query: { isActive: string; categoryId?: string } = {
+        isActive: "true",
+      };
       if (categoryId) query.categoryId = categoryId;
       const { data } = await bannerService.getAll(query);
       if (data && data.length > 0) {

@@ -5,6 +5,7 @@ import { productService } from "@/services/product.service";
 import type {
   IVariantCreatePayload,
   IVariantUpdatePayload,
+  IVariantFormValues,
   IPriceUpdatePayload,
 } from "@/types/product.type";
 
@@ -46,11 +47,39 @@ export async function createVariantAction(
   return { success: true, message: "Variant created successfully", data };
 }
 
+export async function createVariantWithImageAction(
+  productId: string,
+  formData: FormData,
+) {
+  const { data, error } = await productService.createVariantWithImage(
+    productId,
+    formData,
+  );
+  if (error) return { success: false, message: error.message };
+  revalidatePath("/admin-dashboard/products");
+  revalidateTag("products", "max");
+  return { success: true, message: "Variant created successfully", data };
+}
+
 export async function updateVariantAction(
   id: string,
   payload: IVariantUpdatePayload,
 ) {
   const { data, error } = await productService.updateVariant(id, payload);
+  if (error) return { success: false, message: error.message };
+  revalidatePath("/admin-dashboard/products");
+  revalidateTag("products", "max");
+  return { success: true, message: "Variant updated successfully", data };
+}
+
+export async function updateVariantWithImageAction(
+  id: string,
+  formData: FormData,
+) {
+  const { data, error } = await productService.updateVariantWithImage(
+    id,
+    formData,
+  );
   if (error) return { success: false, message: error.message };
   revalidatePath("/admin-dashboard/products");
   revalidateTag("products", "max");

@@ -37,7 +37,7 @@ export default function BuybackMethods() {
   return (
     <section className="w-full py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
-        <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-8">
           Choose your preferred buyback method
         </h2>
 

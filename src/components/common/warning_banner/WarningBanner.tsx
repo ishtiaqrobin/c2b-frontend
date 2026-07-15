@@ -22,7 +22,7 @@ export default function WarningBanner({
   if (items.length === 0 && !loading) return null;
 
   return (
-    <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-sm transition-all duration-300">
+    <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden transition-all duration-300">
       <div
         onClick={() => setIsOpen(!isOpen)}
         className="p-4 flex justify-between items-center cursor-pointer  "

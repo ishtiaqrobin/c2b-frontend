@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { toast } from "sonner";
 import {
   Plus,
@@ -12,6 +13,7 @@ import {
   MoreHorizontal,
   Percent,
   BadgePercent,
+  PackageSearch,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -267,6 +269,7 @@ export default function VariantSheet({
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-12">Image</TableHead>
                     <TableHead>SKU</TableHead>
                     <TableHead>Storage / Color</TableHead>
                     <TableHead>New Price</TableHead>
@@ -280,7 +283,7 @@ export default function VariantSheet({
                   {loading ? (
                     [...Array(3)].map((_, i) => (
                       <TableRow key={i}>
-                        {[...Array(6)].map((_, j) => (
+                        {[...Array(7)].map((_, j) => (
                           <TableCell key={j}>
                             <Skeleton className="h-4 w-20" />
                           </TableCell>
@@ -290,7 +293,7 @@ export default function VariantSheet({
                   ) : variants.length === 0 ? (
                     <TableRow>
                       <TableCell
-                        colSpan={6}
+                        colSpan={7}
                         className="text-center py-8 text-gray-500"
                       >
                         <div className="flex flex-col items-center gap-2">
@@ -311,6 +314,22 @@ export default function VariantSheet({
                   ) : (
                     variants.map((variant) => (
                       <TableRow key={variant.id} className="align-middle">
+                        <TableCell>
+                          <div className="relative w-10 h-10 rounded-md overflow-hidden bg-muted/40">
+                            {(variant.imageUrl || variant.product?.imageUrl) ? (
+                              <Image
+                                src={variant.imageUrl || variant.product?.imageUrl || ""}
+                                alt="Variant"
+                                fill
+                                className="object-contain p-0.5"
+                              />
+                            ) : (
+                              <div className="flex h-full w-full items-center justify-center">
+                                <PackageSearch className="h-5 w-5 text-muted-foreground/40" />
+                              </div>
+                            )}
+                          </div>
+                        </TableCell>
                         <TableCell>
                           <span className="font-mono text-xs">
                             {variant.sku ?? "—"}

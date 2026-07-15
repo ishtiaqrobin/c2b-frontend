@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Image from "next/image";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,9 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { Loader2, Upload, X } from "lucide-react";
 import {
   variantFormSchema,
   type VariantFormValues,
@@ -22,8 +25,11 @@ import {
 import type { IProductVariant } from "@/types/product.type";
 import {
   createVariantAction,
-  updateVariantAction,
+  createVariantWithImageAction,
+  updateVariantWithImageAction,
 } from "@/actions/product.action";
+import { useImageUpload } from "@/hooks/useImageUpload";
+import { productService } from "@/services/product.service";
 
 interface VariantDialogProps {
   open: boolean;
@@ -43,6 +49,15 @@ export default function VariantDialog({
   onSuccess,
 }: VariantDialogProps) {
   const {
+    file: imageFile,
+    preview: imagePreview,
+    isCompressing,
+    handleFileChange,
+    reset: resetImage,
+    inputRef,
+  } = useImageUpload({});
+
+  const {
     register,
     handleSubmit,
     reset,
@@ -55,6 +70,7 @@ export default function VariantDialog({
       sku: "",
       storage: "",
       color: "",
+      image: undefined,
       newPrice: undefined,
       usedPrice: undefined,
       currency: "BDT",
@@ -72,6 +88,7 @@ export default function VariantDialog({
         sku: variant.sku ?? "",
         storage: variant.storage ?? "",
         color: variant.color ?? "",
+        image: undefined,
         newPrice: variant.newPrice ?? undefined,
         usedPrice: variant.usedPrice ?? undefined,
         currency: variant.currency ?? "BDT",
@@ -84,6 +101,7 @@ export default function VariantDialog({
         sku: "",
         storage: "",
         color: "",
+        image: undefined,
         newPrice: undefined,
         usedPrice: undefined,
         currency: "BDT",
@@ -91,36 +109,52 @@ export default function VariantDialog({
         dailyPurchaseLimit: undefined,
         isActive: true,
       });
+      resetImage();
     }
-  }, [open, mode, variant, reset]);
+  }, [open, mode, variant, reset, resetImage]);
 
   const onSubmit = async (values: VariantFormValues) => {
     const toastId = toast.loading(
       mode === "add" ? "Creating variant..." : "Updating variant...",
     );
 
-    const payload = {
-      sku: values.sku || undefined,
-      storage: values.storage || undefined,
-      color: values.color || undefined,
-      newPrice: values.newPrice,
-      usedPrice: values.usedPrice,
-      currency: values.currency || "BDT",
-      maxQuantityPerOrder: values.maxQuantityPerOrder,
-      dailyPurchaseLimit: values.dailyPurchaseLimit,
-      isActive: values.isActive,
-    };
-
     try {
       if (mode === "add") {
-        const res = await createVariantAction(productId, payload);
-        if (!res.success) {
-          toast.error(res.message, { id: toastId });
-          return;
+        if (imageFile) {
+          const fd = productService.buildVariantFormData({
+            ...values,
+            image: imageFile,
+          });
+          const res = await createVariantWithImageAction(productId, fd);
+          if (!res.success) {
+            toast.error(res.message, { id: toastId });
+            return;
+          }
+        } else {
+          const payload = {
+            sku: values.sku || undefined,
+            storage: values.storage || undefined,
+            color: values.color || undefined,
+            newPrice: values.newPrice,
+            usedPrice: values.usedPrice,
+            currency: values.currency || "BDT",
+            maxQuantityPerOrder: values.maxQuantityPerOrder,
+            dailyPurchaseLimit: values.dailyPurchaseLimit,
+            isActive: values.isActive,
+          };
+          const res = await createVariantAction(productId, payload);
+          if (!res.success) {
+            toast.error(res.message, { id: toastId });
+            return;
+          }
         }
         toast.success("Variant created successfully", { id: toastId });
       } else if (mode === "edit" && variant?.id) {
-        const res = await updateVariantAction(variant.id, payload);
+        const fd = productService.buildVariantFormData({
+          ...values,
+          image: imageFile || undefined,
+        });
+        const res = await updateVariantWithImageAction(variant.id, fd);
         if (!res.success) {
           toast.error(res.message, { id: toastId });
           return;
@@ -138,13 +172,18 @@ export default function VariantDialog({
   };
 
   const handleClose = () => {
+    resetImage();
     reset();
     onOpenChange(false);
   };
 
+  const isEdit = mode === "edit";
+  const displayPreview =
+    imagePreview || (isEdit && variant?.imageUrl) || null;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto mx-auto">
         <DialogHeader>
           <DialogTitle>
             {mode === "add" ? "Add Variant" : "Edit Variant"}
@@ -157,6 +196,77 @@ export default function VariantDialog({
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Image Upload */}
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="variantImage"
+              className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase"
+            >
+              Image{" "}
+              {isEdit
+                ? "(leave empty to keep current)"
+                : "(optional)"}
+            </Label>
+
+            {displayPreview ? (
+              <div className="relative h-40 rounded-xl overflow-hidden border">
+                <Image
+                  src={displayPreview}
+                  alt="Variant preview"
+                  fill
+                  className="object-contain"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    resetImage();
+                    if (inputRef.current) inputRef.current.value = "";
+                  }}
+                  className="absolute top-2 right-2 h-6 w-6 rounded-full bg-black/60 flex items-center justify-center hover:bg-black/80 transition-colors"
+                >
+                  <X className="h-3 w-3 text-white" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-40 rounded-xl border-2 border-dashed border-muted-foreground/30 bg-muted/10">
+                <div className="text-center text-muted-foreground">
+                  <Upload className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-xs">No image selected</p>
+                </div>
+              </div>
+            )}
+
+            <input
+              ref={inputRef}
+              id="variantImage"
+              name="image"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileChange}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={isCompressing}
+              onClick={() => inputRef.current?.click()}
+              className="w-full mt-1"
+            >
+              {isCompressing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Compressing...
+                </>
+              ) : (
+                <>
+                  <Upload className="mr-2 h-4 w-4" />
+                  {displayPreview ? "Change Image" : "Select Image"}
+                </>
+              )}
+            </Button>
+          </div>
+
           {/* SKU + Storage */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
@@ -360,9 +470,12 @@ export default function VariantDialog({
             </Button>
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isCompressing}
               className="hover:cursor-pointer"
             >
+              {isSubmitting && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
               {mode === "add" ? "Add Variant" : "Save Changes"}
             </Button>
           </DialogFooter>

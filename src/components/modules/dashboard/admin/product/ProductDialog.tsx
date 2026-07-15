@@ -188,10 +188,7 @@ export default function ProductDialog({
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Name */}
           <div className="space-y-1.5">
-            <label
-              htmlFor="name"
-              className="text-sm font-medium text-gray-800"
-            >
+            <label htmlFor="name" className="text-sm font-medium text-gray-800">
               Name <span className="text-red-500">*</span>
             </label>
             <Input
@@ -201,9 +198,7 @@ export default function ProductDialog({
               placeholder="Product name"
             />
             {errors.name && (
-              <p className="text-xs text-destructive">
-                {errors.name.message}
-              </p>
+              <p className="text-xs text-destructive">{errors.name.message}</p>
             )}
           </div>
 
@@ -258,10 +253,7 @@ export default function ProductDialog({
               htmlFor="image"
               className="text-[11px] font-bold tracking-wider text-muted-foreground uppercase"
             >
-              Image{" "}
-              {isEdit
-                ? "(leave empty to keep current)"
-                : "(optional)"}
+              Image {isEdit ? "(leave empty to keep current)" : "(optional)"}
             </Label>
 
             {displayPreview ? (
@@ -270,7 +262,7 @@ export default function ProductDialog({
                   src={displayPreview}
                   alt="Product preview"
                   fill
-                  className="object-cover"
+                  className="object-contain"
                 />
                 <button
                   type="button"
