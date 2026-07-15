@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import ProductVariantCard from "@/components/modules/home/product/ProductVariantCard";
 import type { IProductVariant } from "@/types/product.type";
 import type { ICategory } from "@/types/category.type";
+import Image from "next/image";
 
 interface ProductListProps {
   variants: IProductVariant[];
@@ -40,7 +41,9 @@ export default function ProductList({
 
   const storageOptions = useMemo(() => {
     const unique = Array.from(
-      new Set(variants.map((v) => v.storage).filter((s): s is string => Boolean(s))),
+      new Set(
+        variants.map((v) => v.storage).filter((s): s is string => Boolean(s)),
+      ),
     ).sort();
     return unique;
   }, [variants]);
@@ -164,9 +167,10 @@ export default function ProductList({
               >
                 <div className="relative w-20 h-20 shrink-0 bg-gray-50 rounded-lg p-2">
                   {variant.imageUrl || variant.product?.imageUrl ? (
-                    <img
+                    <Image
                       src={variant.imageUrl || variant.product?.imageUrl || ""}
                       alt={title}
+                      fill
                       className="w-full h-full object-contain mix-blend-multiply"
                     />
                   ) : (
@@ -176,13 +180,9 @@ export default function ProductList({
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-bold text-gray-900 truncate">
-                    {title}
-                  </h4>
+                  <h4 className="font-bold text-gray-900 truncate">{title}</h4>
                   {variant.sku && (
-                    <p className="text-xs text-gray-500">
-                      JAN: {variant.sku}
-                    </p>
+                    <p className="text-xs text-gray-500">JAN: {variant.sku}</p>
                   )}
                   <div className="mt-2 inline-block bg-orange-100 text-[#E85D22] text-xs px-2 py-1 rounded">
                     We are strengthening our purchasing efforts.
@@ -233,9 +233,7 @@ export default function ProductList({
             onClick={onLoadMore}
             disabled={isLoadingMore}
           >
-            {isLoadingMore && (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            )}
+            {isLoadingMore && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Load more
           </Button>
         </div>

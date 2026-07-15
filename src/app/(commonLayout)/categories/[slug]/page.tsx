@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { motion } from "motion/react";
@@ -26,6 +26,8 @@ export default function CategoryDetailPage() {
   const [categoryTree, setCategoryTree] = useState<ICategory[]>([]);
   const [children, setChildren] = useState<ICategory[]>([]);
   const [variants, setVariants] = useState<IProductVariant[]>([]);
+  const [sidebarVariants, setSidebarVariants] = useState<IProductVariant[]>([]);
+  const sidebarCapturedRef = useRef(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [hasInitiallyLoaded, setHasInitiallyLoaded] = useState(false);
@@ -168,6 +170,10 @@ export default function CategoryDetailPage() {
         setError(fetchError.message);
       } else if (data) {
         setVariants(data);
+        if (!sidebarCapturedRef.current) {
+          setSidebarVariants(data);
+          sidebarCapturedRef.current = true;
+        }
         if (meta) {
           setTotalPages(
             meta.total ? Math.ceil(meta.total / PAGE_LIMIT) : 1,
@@ -279,7 +285,7 @@ export default function CategoryDetailPage() {
         category={category}
         categoryTree={categoryTree}
         subcategories={children}
-        sidebarVariants={variants}
+        sidebarVariants={sidebarVariants}
         variants={displayedVariants}
         activeSubcategoryId={activeSubcategoryId}
         activeSubcategoryName={activeSubcategory?.name || null}

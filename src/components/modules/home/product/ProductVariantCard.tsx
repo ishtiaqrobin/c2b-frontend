@@ -63,8 +63,7 @@ export default function ProductVariantCard({
     .join(" ");
   const title = variantLabel ? `${productName} ${variantLabel}` : productName;
 
-  const basePrice =
-    condition === "NEW" ? variant.newPrice : variant.usedPrice;
+  const basePrice = condition === "NEW" ? variant.newPrice : variant.usedPrice;
   const formattedBasePrice = formatPrice(basePrice, variant.currency);
 
   const maxQty = variant.maxQuantityPerOrder ?? undefined;
@@ -86,7 +85,8 @@ export default function ProductVariantCard({
   }, [applicableDeductions, selectedDeductionIds]);
 
   const finalPrice = basePrice != null ? basePrice - totalDeduction : null;
-  const formattedFinalPrice = finalPrice != null ? formatPrice(finalPrice, variant.currency) : null;
+  const formattedFinalPrice =
+    finalPrice != null ? formatPrice(finalPrice, variant.currency) : null;
 
   const toggleDeduction = (deductionId: string) => {
     setSelectedDeductionIds((prev) => {
@@ -135,11 +135,11 @@ export default function ProductVariantCard({
   return (
     <>
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        // initial={{ opacity: 0, y: 16 }}
+        // whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: Math.min(index * 0.04, 0.4), duration: 0.35 }}
-        className="group relative flex flex-col rounded-xl border border-border/50 bg-card p-3 hover:border-primary/30 hover:shadow-md transition-all duration-300"
+        className="group relative flex flex-col rounded-xl border border-border/50 bg-card p-4 hover:border-primary/30 hover:shadow-md transition-all duration-300"
       >
         {/* Share icon */}
         <button
@@ -147,7 +147,9 @@ export default function ProductVariantCard({
           onClick={(e) => {
             e.preventDefault();
             if (navigator.share) {
-              navigator.share({ title, url: window.location.href }).catch(() => {});
+              navigator
+                .share({ title, url: window.location.href })
+                .catch(() => {});
             } else {
               navigator.clipboard?.writeText(window.location.href);
               toast.success("Link copied");
@@ -160,13 +162,14 @@ export default function ProductVariantCard({
         </button>
 
         {/* Image */}
-        <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-muted/40 mb-3">
+        <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-muted/40 mb-4">
           {imageSrc ? (
             <Image
               src={imageSrc}
               alt={title}
-              fill
-              className="object-contain p-3 transition-transform duration-500 group-hover:scale-105"
+              height={300}
+              width={300}
+              className="object-contain transition-transform duration-500 group-hover:scale-102"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
@@ -268,9 +271,7 @@ export default function ProductVariantCard({
           <Button
             size="sm"
             disabled={availableConditions.length === 0}
-            onClick={
-              confirmed ? openDeductionPopup : handlePurchaseApplication
-            }
+            onClick={confirmed ? openDeductionPopup : handlePurchaseApplication}
             className="flex-1 h-8 text-xs bg-red-600 hover:bg-red-700"
           >
             {confirmed ? "Update" : "Purchase application"}
@@ -332,10 +333,7 @@ export default function ProductVariantCard({
           )}
 
           <DialogFooter className="gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setDeductionOpen(false)}
-            >
+            <Button variant="outline" onClick={() => setDeductionOpen(false)}>
               Cancel
             </Button>
             <Button
