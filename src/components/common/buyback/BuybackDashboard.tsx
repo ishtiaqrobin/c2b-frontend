@@ -48,12 +48,12 @@ export default function BuybackDashboard({
 
   return (
     <div className="min-h-screen bg-[#F4F7F6] py-10">
-      <div className="max-w-[1400px] mx-auto px-4 md:px-8">
+      <div className="container-custom mx-auto px-4 md:px-8">
         <PopularCategories />
         <div className="mt-8">
           <LatestNews />
           <div className="flex flex-col lg:flex-row gap-8 items-start">
-            <aside className="w-full lg:w-1/4 lg:sticky lg:top-8 shrink-0">
+            <aside className="w-full lg:w-1/4 lg:sticky lg:top-28 shrink-0">
               {category && (
                 <SidebarFilter
                   tree={sidebarTree}
