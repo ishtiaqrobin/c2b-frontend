@@ -208,7 +208,7 @@ export default function ProductVariantCard({
                       {c === "NEW" ? "New" : "Second Hand"}
                     </Label>
                   </div>
-                  <span className="text-sm font-semibold leading-snug line-clamp-2 text-red-600">
+                  <span className="text-sm font-semibold leading-snug line-clamp-2 text-primary">
                     {formatPrice(price, variant.currency)}
                   </span>
                 </div>
@@ -324,7 +324,7 @@ export default function ProductVariantCard({
               <span className="text-sm font-semibold text-text-primary">
                 Final price
               </span>
-              <span className="text-lg font-bold text-red-600">
+              <span className="text-md font-bold text-red-600">
                 {formattedFinalPrice}
               </span>
             </div>
@@ -334,15 +334,12 @@ export default function ProductVariantCard({
             <Button
               variant="outline"
               onClick={() => setDeductionOpen(false)}
-              className="rounded-xl border-border text-text-primary"
+              className=""
             >
               Cancel
             </Button>
-            <Button
-              onClick={handleConfirmDeductions}
-              className="rounded-xl bg-red-600 hover:bg-red-700"
-            >
-              <Check className="mr-1.5 h-4 w-4" />
+            <Button onClick={handleConfirmDeductions} className="">
+              {/* <Check className="mr-1.5 h-4 w-4" /> */}
               Confirmed
             </Button>
           </DialogFooter>

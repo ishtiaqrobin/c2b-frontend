@@ -31,6 +31,11 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
 
@@ -53,85 +58,46 @@
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
 
-  /* ─── Updated Primary Scale (Based on your Green & Lime Theme) ─── */
-  --color-primary-50: #f0fdf4;
-  --color-primary-100: #dcfce7;
-  --color-primary-200: #bbf7d0;
-  --color-primary-300: #b5ff6d;
-  --color-primary-400: #4ade80;
-  --color-primary-500: #30af5b;
-  --color-primary-600: #16a34a;
-  --color-primary-700: #15803d;
-  --color-primary-800: #166534;
-  --color-primary-900: #14532d;
-  --color-primary-950: #052e16;
+  /* ─── Primary Scale — Daraz Orange ──────────────────────────
+     Daraz-এর signature orange/red — energetic, e-commerce/
+     marketplace feel, buyback offers ও CTA-তে ভালো pop করে।
+  ───────────────────────────────────────────────────────────── */
+  --color-primary-50: #fff3ec;
+  --color-primary-100: #ffe4d1;
+  --color-primary-200: #ffc7a3;
+  --color-primary-300: #ffa066;
+  --color-primary-400: #fb7a33;
+  --color-primary-500: #f85606;
+  --color-primary-600: #e04d05;
+  --color-primary-700: #b93f04;
+  --color-primary-800: #923204;
+  --color-primary-900: #782903;
 
-  /* ─── Optimized Violet Scale (For Cyberpunk/Tech Gradients) ─── */
-  --color-violet-400: #c084fc;
-  --color-violet-500: #a855f7;
-  --color-violet-600: #9333ea;
+  /* ─── Neutral Scale ──────────────────────────────────────────
+     UI structure (text, borders, backgrounds)-এর জন্য একটাই
+     clean gray scale — কোনো extra accent color নেই।
+  ───────────────────────────────────────────────────────────── */
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f4f4f5;
+  --color-neutral-200: #e4e4e7;
+  --color-neutral-300: #d4d4d8;
+  --color-neutral-400: #a1a1aa;
+  --color-neutral-500: #71717a;
+  --color-neutral-600: #52525b;
+  --color-neutral-700: #3f3f46;
+  --color-neutral-800: #27272a;
+  --color-neutral-900: #18181b;
+  --color-neutral-950: #0a0a0a;
 
-  /* ─── Updated Dark Scale (Matching your #0a0a0a Background) ─── */
-  --color-dark-50: #0a0a0a;
-  --color-dark-100: #141414;
-  --color-dark-200: #1f1f1f;
-  --color-dark-300: #2e2e2e;
-  --color-dark-400: #4a4a4a;
-  --color-dark-500: #7a7a7a;
-  --color-dark-600: #c0c0cf;
-
-  --animate-gradient: gradient 8s ease infinite;
-  --animate-float: float 6s ease-in-out infinite;
-  --animate-float-delayed: float 6s ease-in-out 3s infinite;
-  --animate-pulse-glow: pulseGlow 2s ease-in-out infinite;
-  --animate-spin-slow: spin 8s linear infinite;
-  --animate-bounce-slow: bounce 3s infinite;
-  --animate-slide-up: slideUp 0.5s ease-out;
+  --animate-slide-up: slideUp 0.4s ease-out;
   --animate-slide-down: slideDown 0.3s ease-out;
-  --animate-fade-in: fadeIn 0.5s ease-out;
-  --animate-scale-in: scaleIn 0.3s ease-out;
-
-  @keyframes gradient {
-
-    0%,
-    100% {
-      background-position: 0% 50%;
-    }
-
-    50% {
-      background-position: 100% 50%;
-    }
-  }
-
-  @keyframes float {
-
-    0%,
-    100% {
-      transform: translateY(0px);
-    }
-
-    50% {
-      transform: translateY(-20px);
-    }
-  }
-
-  @keyframes pulseGlow {
-
-    0%,
-    100% {
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-    }
-
-    50% {
-      box-shadow: 0 0 40px rgba(99, 102, 241, 0.6);
-    }
-  }
+  --animate-fade-in: fadeIn 0.3s ease-out;
+  --animate-scale-in: scaleIn 0.2s ease-out;
 
   @keyframes slideUp {
     0% {
-      transform: translateY(20px);
+      transform: translateY(12px);
       opacity: 0;
     }
 
@@ -143,7 +109,7 @@
 
   @keyframes slideDown {
     0% {
-      transform: translateY(-10px);
+      transform: translateY(-8px);
       opacity: 0;
     }
 
@@ -165,7 +131,7 @@
 
   @keyframes scaleIn {
     0% {
-      transform: scale(0.9);
+      transform: scale(0.96);
       opacity: 0;
     }
 
@@ -178,101 +144,110 @@
 
 :root {
   --radius: 0.625rem;
-  --background: #f7f8fa;
-  --foreground: oklch(0.145 0.004 285.823);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0.004 285.823);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0.004 285.823);
 
-  /* for large text */
-  --primary: #30af5b;
-  --primary-foreground: oklch(0.985 0 0);
+  --background: #fafafa;
+  --foreground: #18181b;
 
-  /* for large text */
-  --secondary: #0a0a0a;
-  --secondary-foreground: #f6f7ff;
+  --card: #ffffff;
+  --card-foreground: #18181b;
+  --popover: #ffffff;
+  --popover-foreground: #18181b;
 
-  /* for small text */
-  --text-primary: #0a0a0a;
-  --text-secondary: #c0c0cf;
+  /* main brand action color */
+  --primary: #f85606;
+  --primary-foreground: #ffffff;
 
-  /* for dashboard */
-  --muted: oklch(0.97 0.006 285.885);
-  --muted-foreground: oklch(0.556 0.015 285.823);
+  /* dark neutral, for secondary buttons / text emphasis */
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
 
-  /* for card */
-  --accent: #f7f8fa;
-  --accent-foreground: oklch(0.205 0.013 285.823);
+  --text-primary: #18181b;
+  --text-secondary: #71717a;
 
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0.006 285.885);
-  --input: oklch(0.922 0.006 285.885);
-  --ring: #7f8082;
+  /* dashboard surfaces (tables, panels) */
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
 
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  --accent: #fff3ec;
+  --accent-foreground: #b93f04;
 
-  --sidebar: oklch(0.985 0.002 285.885);
-  --sidebar-foreground: oklch(0.145 0.004 285.823);
-  --sidebar-primary: #30af5b;
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0.006 285.885);
-  --sidebar-accent-foreground: oklch(0.205 0.013 285.823);
-  --sidebar-border: oklch(0.922 0.006 285.885);
-  --sidebar-ring: #30af5b;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --success: #16a34a;
+  --success-foreground: #ffffff;
+  --warning: #d97706;
+  --warning-foreground: #ffffff;
+
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #f85606;
+
+  /* dashboard charts — one primary orange + neutral supports, no clashing hues */
+  --chart-1: #f85606;
+  --chart-2: #fb7a33;
+  --chart-3: #a1a1aa;
+  --chart-4: #71717a;
+  --chart-5: #d97706;
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #18181b;
+  --sidebar-primary: #f85606;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f4f4f5;
+  --sidebar-accent-foreground: #18181b;
+  --sidebar-border: #e4e4e7;
+  --sidebar-ring: #f85606;
 }
 
 .dark {
   --background: #0a0a0a;
-  --foreground: oklch(0.985 0.002 285.885);
-  --card: oklch(0.205 0.013 285.823);
-  --card-foreground: oklch(0.985 0.002 285.885);
-  --popover: oklch(0.205 0.013 285.823);
-  --popover-foreground: oklch(0.985 0.002 285.885);
+  --foreground: #f4f4f5;
 
-  /* for large text */
-  --primary: #b5ff6d;
-  --primary-foreground: #ffffff;
+  --card: #18181b;
+  --card-foreground: #f4f4f5;
+  --popover: #18181b;
+  --popover-foreground: #f4f4f5;
 
-  /* for large text */
-  --secondary: #f6f7ff;
-  --secondary-foreground: #0a0a0a;
+  --primary: #fb7a33;
+  --primary-foreground: #0a0a0a;
 
-  /* for small text */
-  --text-primary: #c0c0cf;
-  --text-secondary: #0a0a0a;
+  --secondary: #27272a;
+  --secondary-foreground: #f4f4f5;
 
-  /* for dashboard */
-  --muted: oklch(0.269 0.017 285.823);
-  --muted-foreground: oklch(0.708 0.015 285.823);
+  --text-primary: #f4f4f5;
+  --text-secondary: #a1a1aa;
 
-  /* for card */
-  --accent: #0b0b0d;
-  --accent-foreground: oklch(0.985 0.002 285.885);
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
 
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: #6f6f72;
+  --accent: #782903;
+  --accent-foreground: #ffe4d1;
 
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
+  --destructive: #f87171;
+  --destructive-foreground: #0a0a0a;
+  --success: #4ade80;
+  --success-foreground: #0a0a0a;
+  --warning: #fbbf24;
+  --warning-foreground: #0a0a0a;
 
-  --sidebar: oklch(0.205 0.013 285.823);
-  --sidebar-foreground: oklch(0.985 0.002 285.885);
-  --sidebar-primary: #b5ff6d;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: oklch(0.269 0.017 285.823);
-  --sidebar-accent-foreground: oklch(0.985 0.002 285.885);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: #b5ff6d;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.12);
+  --ring: #fb7a33;
+
+  --chart-1: #fb7a33;
+  --chart-2: #f85606;
+  --chart-3: #a1a1aa;
+  --chart-4: #71717a;
+  --chart-5: #fbbf24;
+
+  --sidebar: #141414;
+  --sidebar-foreground: #f4f4f5;
+  --sidebar-primary: #fb7a33;
+  --sidebar-primary-foreground: #0a0a0a;
+  --sidebar-accent: #27272a;
+  --sidebar-accent-foreground: #f4f4f5;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #fb7a33;
 }
 
 @layer base {
@@ -290,54 +265,58 @@
 
   body {
     @apply bg-background text-foreground;
-    /* ✅ Satoshi root font — weight 400/500/600 সবচেয়ে বেশি ব্যবহার হবে */
     font-family: var(--font-satoshi), system-ui, sans-serif;
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Scrollbar will hide */
+  /* Thin, minimal scrollbar — dashboard-এ table/panel-এ scroll
+     আছে সেটা বোঝা দরকার, তাই পুরোপুরি hide না করে subtle রাখা */
   ::-webkit-scrollbar {
-    display: none;
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-neutral-300);
+    border-radius: 999px;
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background-color: var(--color-neutral-700);
   }
 
   * {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-neutral-300) transparent;
+  }
+
+  .dark * {
+    scrollbar-color: var(--color-neutral-700) transparent;
   }
 
   ::selection {
-    background-color: #30af5b;
-    color: #fff;
-  }
-
-  .dark ::selection {
-    background-color: #b5ff6d;
-    color: #fff;
-  }
-
-  .light ::selection {
-    color: #f6f7ff;
-  }
-
-  .dark ::selection {
-    color: #0b0b0d;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
   }
 }
 
 @layer components {
 
-  /* ─── ClashDisplay Utility Class ───────────────────────────────────────────
-     যেকোনো element-এ font-clash class দিলেই ClashDisplay apply হবে।
-     Default weight: 500 (Medium) — সবচেয়ে বেশি ব্যবহার হবে।
-  ─────────────────────────────────────────────────────────────────────────── */
+  /* ─── ClashDisplay Utility Class ───────────────────────────
+     যেকোনো element-এ font-clash class দিলেই ClashDisplay apply
+     হবে। Default weight: 500 (Medium)।
+  ───────────────────────────────────────────────────────────── */
   .font-clash {
     font-family: var(--font-clash-display), system-ui, sans-serif;
     font-weight: 500;
   }
 
-  /* Weight variants — প্রয়োজনে combine করে ব্যবহার করো */
   .font-clash-light {
     font-family: var(--font-clash-display), system-ui, sans-serif;
     font-weight: 300;
@@ -363,7 +342,7 @@
     font-weight: 700;
   }
 
-  /* ─── Satoshi weight shortcuts (body এর জন্য) ─────────────────────────── */
+  /* ─── Satoshi weight shortcuts (body এর জন্য) ─────────────── */
   .font-satoshi-regular {
     font-family: var(--font-satoshi), system-ui, sans-serif;
     font-weight: 400;
@@ -379,275 +358,40 @@
     font-weight: 600;
   }
 
-  /* ─── Existing components ──────────────────────────────────────────────── */
-  .glass {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10;
-  }
-
-  .glass-light {
-    @apply bg-black/[0.02] backdrop-blur-xl border border-black/10 shadow-lg;
-  }
-
-  .gradient-text {
-    @apply bg-gradient-to-r from-primary-400 via-violet-400 to-primary-500 bg-clip-text text-transparent;
-  }
-
-  .gradient-bg {
-    @apply bg-gradient-to-r from-primary-500 to-violet-500;
-  }
-
-  .gradient-border {
-    position: relative;
-  }
-
-  .gradient-border::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(135deg, #6366f1, #8b5cf6, #6366f1);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-  }
-
-  .glow {
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3), 0 0 60px rgba(99, 102, 241, 0.1);
-  }
-
-  .glow-hover:hover {
-    box-shadow: 0 0 30px rgba(99, 102, 241, 0.4), 0 0 80px rgba(99, 102, 241, 0.15);
-  }
-
-  .text-gradient {
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
+  /* ─── Layout helpers ─────────────────────────────────────── */
   .section-padding {
-    @apply py-20 md:py-28 lg:py-32;
+    @apply py-16 md:py-20 lg:py-24;
   }
 
   .container-custom {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
-}
 
-@layer utilities {
-  .animate-gradient {
-    background-size: 400% 400%;
-    animation: gradient 8s ease infinite;
+  /* ─── Dashboard-friendly surfaces ────────────────────────────
+     Flat card, subtle border, no glow/blur — clean & simple
+  ───────────────────────────────────────────────────────────── */
+  .card-flat {
+    @apply bg-card text-card-foreground border border-border rounded-xl;
   }
 
-  .perspective-1000 {
-    perspective: 1000px;
+  .card-hover {
+    @apply transition-colors duration-200 hover:border-primary/40;
   }
 
-  .mesh-gradient {
-    background:
-      radial-gradient(at 40% 20%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, rgba(139, 92, 246, 0.1) 0px, transparent 50%),
-      radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
-      radial-gradient(at 80% 50%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, rgba(99, 102, 241, 0.08) 0px, transparent 50%);
+  /* Status badges — buyback/order status দেখানোর জন্য */
+  .badge-success {
+    @apply bg-success/10 text-success border border-success/20 rounded-full px-2.5 py-0.5 text-xs font-medium;
   }
 
-  .light .mesh-gradient {
-    background:
-      radial-gradient(at 40% 20%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, rgba(139, 92, 246, 0.06) 0px, transparent 50%),
-      radial-gradient(at 0% 50%, rgba(99, 102, 241, 0.06) 0px, transparent 50%);
+  .badge-warning {
+    @apply bg-warning/10 text-warning border border-warning/20 rounded-full px-2.5 py-0.5 text-xs font-medium;
   }
 
-  .dots-pattern {
-    background-image: radial-gradient(rgba(99, 102, 241, 0.15) 1px, transparent 1px);
-    background-size: 40px 40px;
+  .badge-destructive {
+    @apply bg-destructive/10 text-destructive border border-destructive/20 rounded-full px-2.5 py-0.5 text-xs font-medium;
   }
 
-  .light .dots-pattern {
-    background-image: radial-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+  .badge-muted {
+    @apply bg-muted text-muted-foreground border border-border rounded-full px-2.5 py-0.5 text-xs font-medium;
   }
-
-  @keyframes gradient {
-    0% {
-      background-position: 0% 50%;
-    }
-
-    50% {
-      background-position: 100% 50%;
-    }
-
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-}
-
-/* Tech Marquee */
-@keyframes marquee {
-  0% {
-    transform: translateX(0%);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-marquee {
-  /* Loop the animation for 100 seconds */
-  animation: marquee 100s linear infinite;
-}
-
-/* Transition to slow down animation speed on hover */
-/* .marquee-container:hover .animate-marquee { */
-/* Loop the animation for 60 seconds for slower speed when hovered */
-/* animation-duration: 60s; */
-/* } */
-
-/* Text Marquee */
-@keyframes text-marquee {
-  0% {
-    transform: translateX(0%);
-  }
-
-  100% {
-    transform: translateX(-50%);
-    /* Half of the width of the container (50%) */
-  }
-}
-
-.animate-text-marquee {
-  /* Loop the animation for 120 seconds */
-  animation: text-marquee 120s linear infinite;
-}
-
-
-/* Infinite Rotating Text Badge */
-@keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.animate-spin-slow {
-  animation: spin-slow 12s linear infinite;
-}
-
-/* Text Shine Effect*/
-@keyframes shine {
-  0% {
-    background-position: 200% center;
-  }
-
-  100% {
-    background-position: -200% center;
-  }
-}
-
-.animate-text-shine {
-  background-size: 200% auto;
-  animation: shine 4s linear infinite;
-}
-
-/* Wave Hand Animation */
-@keyframes wave-hand-tilted {
-  0% {
-    transform: rotate(-15deg);
-  }
-
-  /* ডিফল্ট অবস্থায় বামে হেলে থাকবে */
-  10% {
-    transform: rotate(0deg);
-  }
-
-  /* দোলার সময় কিছুটা ডানে আসবে */
-  20% {
-    transform: rotate(-25deg);
-  }
-
-  /* আবার বেশি বামে হেলবে */
-  30% {
-    transform: rotate(-5deg);
-  }
-
-  40% {
-    transform: rotate(-20deg);
-  }
-
-  50% {
-    transform: rotate(-10deg);
-  }
-
-  60% {
-    transform: rotate(-15deg);
-  }
-
-  /* পুনরায় হেলে থাকা পজিশনে ফিরবে */
-  100% {
-    transform: rotate(-15deg);
-  }
-
-  /* বিরতি বা পজ (Pause) */
-}
-
-.animate-wave-tilted {
-  animation: wave-hand-tilted 2.5s ease-in-out infinite;
-  transform-origin: 75% 80%;
-  /* কব্জির গোড়ালি ঠিক রেখে হাত দুলবে */
-  display: inline-block;
-}
-
-/* Testimonials — add these rules inside your globals.css */
-
-/* ── Circular ring progress ──────────────────────────────────
-   stroke-dashoffset animates from full circumference → 0
-   over 8 seconds (matches AUTO_PLAY_DURATION).
-   The component passes --ring-circumference as an inline var.
-   React re-keys the element on each card change to restart.
-   ----------------------------------------------------------- */
-@keyframes testimonial-ring-fill {
-  from {
-    stroke-dashoffset: var(--ring-circumference);
-  }
-
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-.testimonial-ring-progress {
-  animation: testimonial-ring-fill 8s linear forwards;
-  will-change: stroke-dashoffset;
-}
-
-/* ── Text expand / collapse ──────────────────────────────────
-   max-height transition creates a smooth grow/shrink.
-   --expanded-height is set via inline style in the component:
-     collapsed → 5.5rem
-     expanded  → 600px (safe upper bound)
-   ----------------------------------------------------------- */
-.testimonial-text-wrapper {
-  overflow: hidden;
-  max-height: var(--expanded-height, 5.5rem);
-  transition: max-height 380ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* ── NOTE on sliding ─────────────────────────────────────────
-   Card sliding is handled by Framer Motion (AnimatePresence
-   mode="sync") directly in Testimonials.tsx via inline
-   transform. No CSS class needed for the slide itself.
-   ----------------------------------------------------------- */
-
-/* Design Process */
-.will-change-transform {
-  will-change: transform;
 }

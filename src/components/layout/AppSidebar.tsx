@@ -64,16 +64,11 @@ export function AppSidebar({
       {/* shrink-0 যাতে header compress না হয় */}
       <SidebarHeader className="border-b shrink-0">
         {/* Logo */}
-        <Link href="/" className="p-2.5">
-          <motion.div
-            className="text-2xl font-bold font-mono text-gray-900 dark:text-white hover:text-primary transition-colors cursor-pointer"
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.99 }}
-          >
-            <span className="text-primary">&lt;</span>
-            {PERSONAL_INFO.name.split(" ")[0]}
-            <span className="text-primary"> /&gt;</span>
-          </motion.div>
+        <Link
+          href="/"
+          className="p-2.5 flex flex-col text-[#f25c27] hover:opacity-90 transition-opacity"
+        >
+          <span className="text-2xl font-bold font-clash">KroyDot</span>
         </Link>
       </SidebarHeader>
 

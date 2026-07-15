@@ -196,7 +196,7 @@ export default function ProductVariantListItem({
                     >
                       {c === "NEW" ? "New" : "Second Hand"}
                     </Label>
-                    <span className="text-sm font-semibold leading-snug line-clamp-2 text-red-600">
+                    <span className="text-sm font-semibold leading-snug line-clamp-2 text-primary">
                       {formatPrice(price, variant.currency)}
                     </span>
                   </div>
@@ -326,12 +326,12 @@ export default function ProductVariantListItem({
             <Button
               variant="outline"
               onClick={() => setDeductionOpen(false)}
-              className="rounded-md"
+              className=""
             >
               Cancel
             </Button>
-            <Button onClick={handleConfirmDeductions} className="rounded-md">
-              <Check className="mr-1.5 h-4 w-4" />
+            <Button onClick={handleConfirmDeductions} className="">
+              {/* <Check className="mr-1.5 h-4 w-4" /> */}
               Confirmed
             </Button>
           </DialogFooter>

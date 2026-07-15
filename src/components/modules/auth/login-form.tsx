@@ -5,7 +5,7 @@ import { authClient } from "@/lib/auth-client";
 import { IUser } from "@/types";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, Loader, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/form";
 import HoverButton from "../shared/HoverButton";
 import ShimmerText from "../shared/ShimmerText";
+import { Button } from "@/components/ui/button";
 
 export function LoginForm({ ...props }: React.ComponentProps<"div">) {
   const router = useRouter();
@@ -82,13 +83,12 @@ export function LoginForm({ ...props }: React.ComponentProps<"div">) {
 
   return (
     <div
-      className="w-full max-w-lg mx-auto bg-white dark:bg-[#111116] border border-zinc-100 dark:border-zinc-800/40 rounded-3xl p-8 shadow-xs select-none"
+      className="w-full max-w-lg mx-auto bg-white dark:bg-[#111116] border border-zinc-100 dark:border-zinc-800/40 rounded-xl p-8 shadow-xl"
       {...props}
     >
       {/* Header */}
       <div className="mb-8">
-        <ShimmerText className="mb-3">Welcome back</ShimmerText>
-        <h2 className="text-3xl font-clash font-medium tracking-tight text-secondary leading-tight">
+        <h2 className="text-3xl font-clash font-medium tracking-tight text-primary leading-tight">
           Login to your account
         </h2>
         <p className="text-sm text-text-primary mt-1">
@@ -104,7 +104,7 @@ export function LoginForm({ ...props }: React.ComponentProps<"div">) {
             name="email"
             render={({ field }) => (
               <FormItem className="space-y-0">
-                <FormLabel className="text-sm leading-4 font-medium text-secondary mb-1.5 block">
+                <FormLabel className="text-sm leading-4 font-medium text-primary mb-1.5 block">
                   Email
                 </FormLabel>
                 <FormControl>
@@ -112,7 +112,7 @@ export function LoginForm({ ...props }: React.ComponentProps<"div">) {
                     <Mail className="absolute left-3 top-3 h-4 w-4 text-text-primary/50" />
                     <Input
                       placeholder="your@email.com"
-                      className="w-full bg-white dark:bg-[#111116] border-zinc-200/80 dark:border-zinc-800/80 h-10 rounded-xl text-base tracking-wide pl-9 pr-3 py-2 transition-all focus-visible:ring-2"
+                      className="w-full bg-white dark:bg-[#111116] border-zinc-200/80 dark:border-zinc-800/80 text-base tracking-wide pl-9 pr-3 py-2 transition-all focus-visible:ring-2"
                       disabled={isLoading}
                       {...field}
                     />
@@ -129,7 +129,7 @@ export function LoginForm({ ...props }: React.ComponentProps<"div">) {
             render={({ field }) => (
               <FormItem className="space-y-0">
                 <div className="flex items-center justify-between mb-1.5">
-                  <FormLabel className="text-sm leading-4 font-medium text-secondary">
+                  <FormLabel className="text-sm leading-4 font-medium text-primary">
                     Password
                   </FormLabel>
                   <Link
@@ -145,7 +145,7 @@ export function LoginForm({ ...props }: React.ComponentProps<"div">) {
                     <Input
                       type={showPassword ? "text" : "password"}
                       placeholder="••••••••"
-                      className="w-full bg-white dark:bg-[#111116] border-zinc-200/80 dark:border-zinc-800/80 h-10 rounded-xl text-base tracking-wide pl-9 pr-10 py-2 transition-all focus-visible:ring-2"
+                      className="w-full bg-white dark:bg-[#111116] border-zinc-200/80 dark:border-zinc-800/80 text-base tracking-wide pl-9 pr-10 py-2 transition-all focus-visible:ring-2"
                       disabled={isLoading}
                       {...field}
                     />
@@ -169,25 +169,23 @@ export function LoginForm({ ...props }: React.ComponentProps<"div">) {
           />
 
           <div className="pt-1">
-            <HoverButton
+            <Button
               type="submit"
-              loading={isLoading}
+              // loading={isLoading}
               className="w-full justify-center"
             >
-              {isLoading ? "Logging in..." : "Login"}
-            </HoverButton>
+              {isLoading ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="animate-spin w-4 h-4" />
+                  <span className="">Loading...</span>
+                </div>
+              ) : (
+                <>Login</>
+              )}
+            </Button>
           </div>
         </form>
       </Form>
-
-      {/* Divider */}
-      {/* <div className="flex items-center gap-3 my-5">
-        <div className="flex-1 h-px bg-zinc-200 dark:bg-zinc-800" />
-        <span className="text-xs text-text-primary/50 font-normal tracking-wide">
-          or continue with
-        </span>
-        <div className="flex-1 h-px bg-zinc-200 dark:bg-zinc-800" />
-      </div> */}
 
       {/* Footer */}
       <p className="text-sm text-center text-text-primary mt-6">

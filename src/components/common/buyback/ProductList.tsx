@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { LayoutGrid, List, AlertTriangle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ProductVariantCard from "@/components/modules/home/product/ProductVariantCard";
-import ProductVariantListItem from "./ProductVariantListItem";
+import ProductVariantListItem from "../../modules/home/product/ProductVariantListItem";
 import type { IProductVariant } from "@/types/product.type";
 import type { ICategory } from "@/types/category.type";
 import type { ICategoryCheckItemRef } from "@/types/category.type";
@@ -127,9 +127,9 @@ export default function ProductList({
           <button
             key={filter}
             onClick={() => setActiveStorage(filter)}
-            className={`px-5 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
+            className={`px-2.5 md:px-3 h-9 rounded-md text-sm font-medium transition-all duration-300 ${
               activeStorage === filter
-                ? "bg-gray-600 text-primary-foreground border"
+                ? "bg-primary text-primary-foreground border"
                 : "bg-gray-200 text-text-primary border"
             }`}
           >

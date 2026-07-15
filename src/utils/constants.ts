@@ -1,5 +1,5 @@
 export const PERSONAL_INFO = {
-  name: "Ishtiaq Robin",
+  name: "Kroy Dot",
   linkedin: "https://linkedin.com/in/ishtiaqrobin",
   facebook: "https://www.facebook.com/ishtiaqrobin.me",
   instagram: "https://instagram.com/ishtiaqrobins",

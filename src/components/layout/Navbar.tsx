@@ -40,12 +40,7 @@ export default function Navbar() {
           href="/"
           className="flex flex-col text-[#f25c27] hover:opacity-90 transition-opacity"
         >
-          <span className="text-3xl font-bold tracking-widest font-sans">
-            買取商店
-          </span>
-          <span className="text-sm font-medium tracking-wide">
-            kaitorishouten
-          </span>
+          <span className="text-2xl font-bold font-clash">KroyDot</span>
         </Link>
 
         {/* Navigation Links */}

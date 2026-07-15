@@ -25,7 +25,7 @@ export default function WarningBanner({
     <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-sm transition-all duration-300">
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="p-4 flex justify-between items-center cursor-pointer select-none"
+        className="p-4 flex justify-between items-center cursor-pointer  "
       >
         <div className="flex items-center gap-2 text-red-600 font-bold">
           <AlertTriangle size={20} />

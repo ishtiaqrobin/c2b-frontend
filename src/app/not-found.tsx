@@ -7,7 +7,7 @@ export default function NotFound() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 text-center">
       <div className="relative mb-8 flex items-center justify-center">
         <div className="absolute -inset-4 animate-pulse rounded-full bg-primary/10 blur-3xl" />
-        <h1 className="relative text-9xl font-extrabold tracking-tighter text-transparent bg-clip-text bg-linear-to-r from-primary-500 via-violet-500 to-primary-500">
+        <h1 className="relative text-9xl font-extrabold tracking-tighter ">
           404
         </h1>
       </div>
@@ -22,17 +22,17 @@ export default function NotFound() {
         </p>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-          <Button size="md" className="cursor-pointer">
+          <Button className="cursor-pointer">
             <Link href="/">Back to Home</Link>
           </Button>
-          <Button variant="outline" size="md" className="cursor-pointer">
+          <Button variant="outline" className="cursor-pointer">
             <Link href="/login">Login</Link>
           </Button>
         </div>
       </div>
 
       <div className="mt-16 text-sm text-muted-foreground/60">
-        © {new Date().getFullYear()} Ishtiaq Robin. All rights reserved.
+        © {new Date().getFullYear()} Kroy dot. All rights reserved.
       </div>
     </div>
   );

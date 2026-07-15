@@ -124,10 +124,7 @@ export default function DesignProcess() {
   const doubledCards = [...WEB_PROCESS_DATA, ...WEB_PROCESS_DATA];
 
   return (
-    <section
-      ref={containerRef}
-      className="w-full py-20 overflow-hidden select-none"
-    >
+    <section ref={containerRef} className="w-full py-20 overflow-hidden  ">
       {/* ─── HEADING ─── */}
       <div className="container-custom mb-8 flex flex-col items-start">
         <ShimmerText className="mb-3.5">Steps I Follow</ShimmerText>

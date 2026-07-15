@@ -6,10 +6,10 @@ import { authClient } from "@/lib/auth-client";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Loader2, Mail } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import ShimmerText from "@/components/modules/shared/ShimmerText";
-import HoverButton from "@/components/modules/shared/HoverButton";
+import { Button } from "@/components/ui/button";
 
 function VerifyEmailContent() {
   const router = useRouter();
@@ -72,21 +72,16 @@ function VerifyEmailContent() {
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto bg-white dark:bg-[#111116] border border-zinc-100 dark:border-zinc-800/40 rounded-3xl p-8 shadow-xs select-none">
+    <div className="w-full max-w-lg mx-auto bg-white dark:bg-[#111116] border border-zinc-100 dark:border-zinc-800/40 rounded-xl p-8 shadow-xl">
       {/* Header */}
       <div className="mb-8">
-        <ShimmerText className="mb-3">Almost there</ShimmerText>
-        {/* <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 bg-primary/10 rounded-xl">
-            <Mail className="h-5 w-5 text-primary" />
-          </div>
-        </div> */}
-        <h2 className="text-3xl font-clash font-medium tracking-tight text-secondary leading-tight">
+        {/* <ShimmerText className="mb-3">Almost there</ShimmerText> */}
+        <h2 className="text-3xl font-clash font-medium tracking-tight text-primary leading-tight">
           Verify your email
         </h2>
         <p className="text-sm text-text-primary mt-1">
           We&apos;ve sent a 6-digit code to{" "}
-          <span className="font-semibold text-secondary">{email}</span>. Please
+          <span className="font-semibold text-primary">{email}</span>. Please
           enter it below to verify your account.
         </p>
       </div>
@@ -97,7 +92,7 @@ function VerifyEmailContent() {
           <Input
             type="text"
             placeholder="000000"
-            className="w-full bg-white dark:bg-[#111116] border-zinc-200/80 dark:border-zinc-800/80 h-10 rounded-xl text-2xl tracking-[1em] font-bold text-center transition-all focus-visible:ring-2"
+            className="w-full bg-white dark:bg-[#111116] border-zinc-200/80 dark:border-zinc-800/80 text-2xl tracking-[1em] font-bold text-center py-2 transition-all focus-visible:ring-2"
             maxLength={6}
             value={otp}
             onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
@@ -107,13 +102,16 @@ function VerifyEmailContent() {
         </div>
 
         <div className="pt-1">
-          <HoverButton
-            type="submit"
-            loading={isLoading}
-            className="w-full justify-center"
-          >
-            {isLoading ? "Verifying..." : "Verify Email"}
-          </HoverButton>
+          <Button type="submit" className="w-full justify-center">
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <Loader2 className="animate-spin w-4 h-4" />
+                <span>Loading...</span>
+              </div>
+            ) : (
+              <>Verify Email</>
+            )}
+          </Button>
         </div>
       </form>
 
@@ -152,7 +150,7 @@ export default function VerifyEmailPage() {
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <Suspense
         fallback={
-          <Card className="w-full max-w-lg mx-auto border-zinc-100 dark:border-zinc-800/40 rounded-3xl">
+          <Card className="w-full max-w-lg mx-auto border-zinc-100 dark:border-zinc-800/40 rounded-xl">
             <CardContent className="flex items-center justify-center py-10">
               <Loader2 className="h-10 w-10 animate-spin text-primary" />
             </CardContent>
