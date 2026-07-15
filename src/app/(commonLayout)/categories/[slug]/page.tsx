@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { ArrowLeft, Folder } from "lucide-react";
 import { categoryService } from "@/services/category.service";
@@ -17,17 +17,26 @@ const PAGE_LIMIT = 20;
 export default function CategoryDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const subParam = searchParams.get("sub");
+  const pidParam = searchParams.get("pid");
 
   const [category, setCategory] = useState<ICategory | null>(null);
   const [children, setChildren] = useState<ICategory[]>([]);
   const [variants, setVariants] = useState<IProductVariant[]>([]);
-  const [activeSubcategoryId, setActiveSubcategoryId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
+  const [hasInitiallyLoaded, setHasInitiallyLoaded] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isCategoryLoading, setIsCategoryLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const activeSubcategoryId = (() => {
+    if (!subParam || children.length === 0) return null;
+    const match = children.find((c) => c.slug === subParam);
+    return match?.id ?? null;
+  })();
 
   // Fetch category info + children
   useEffect(() => {
@@ -43,7 +52,7 @@ export default function CategoryDetailPage() {
       if (catError || !cat) {
         setError(catError?.message || "Category not found");
         setIsCategoryLoading(false);
-        setIsLoading(false);
+        setHasInitiallyLoaded(true);
         return;
       }
 
@@ -78,17 +87,10 @@ export default function CategoryDetailPage() {
     fetchCategory();
   }, [slug]);
 
-  // Fetch variants based on active filters
+  // Pure data fetcher — no synchronous setState
   const fetchVariants = useCallback(
     async (targetPage: number, replace: boolean) => {
       if (!category) return;
-
-      if (replace) setIsLoading(true);
-      else setIsLoadingMore(true);
-
-      if (targetPage === 1) {
-        setVariants([]);
-      }
 
       const queryParams: {
         page: string;
@@ -96,7 +98,6 @@ export default function CategoryDetailPage() {
         isActive: string;
         categoryId?: string;
         categoryIds?: string;
-        storage?: string;
       } = {
         page: String(targetPage),
         limit: String(PAGE_LIMIT),
@@ -125,8 +126,10 @@ export default function CategoryDetailPage() {
         }
       }
 
-      setIsLoading(false);
-      setIsLoadingMore(false);
+      if (replace) {
+        setPage(targetPage);
+        setHasInitiallyLoaded(true);
+      }
     },
     [category, children, activeSubcategoryId],
   );
@@ -134,18 +137,42 @@ export default function CategoryDetailPage() {
   // Re-fetch when category or filter changes
   useEffect(() => {
     if (!category || isCategoryLoading) return;
-    setPage(1);
     fetchVariants(1, true);
   }, [category, isCategoryLoading, activeSubcategoryId, fetchVariants]);
 
+  const buildUrl = (sub?: string | null, pid?: string | null) => {
+    const parts: string[] = [];
+    if (sub) parts.push(`sub=${sub}`);
+    if (pid) parts.push(`pid=${pid}`);
+    return parts.length > 0
+      ? `/categories/${slug}?${parts.join("&")}`
+      : `/categories/${slug}`;
+  };
+
   const handleSubcategoryChange = (subcategoryId: string | null) => {
-    setActiveSubcategoryId(subcategoryId);
+    if (!subcategoryId) {
+      router.replace(buildUrl(null, null), { scroll: false });
+    } else {
+      const sub = children.find((c) => c.id === subcategoryId);
+      if (sub) {
+        router.replace(buildUrl(sub.slug, null), { scroll: false });
+      }
+    }
+  };
+
+  const handleProductChange = (productId: string | null) => {
+    if (!productId) {
+      router.replace(buildUrl(subParam, null), { scroll: false });
+    } else {
+      router.replace(buildUrl(subParam, productId), { scroll: false });
+    }
   };
 
   const handleLoadMore = () => {
     const nextPage = page + 1;
+    setIsLoadingMore(true);
     setPage(nextPage);
-    fetchVariants(nextPage, false);
+    fetchVariants(nextPage, false).finally(() => setIsLoadingMore(false));
   };
 
   const hasMore = page < totalPages;
@@ -153,6 +180,13 @@ export default function CategoryDetailPage() {
   const activeSubcategory = activeSubcategoryId
     ? children.find((c) => c.id === activeSubcategoryId) || null
     : null;
+
+  // Apply client-side product filter
+  const displayedVariants = !pidParam
+    ? variants
+    : variants.filter((v) => v.productId === pidParam);
+
+  const isLoading = !hasInitiallyLoaded;
 
   // Error state
   if (error && !category) {
@@ -202,10 +236,13 @@ export default function CategoryDetailPage() {
       <BuybackDashboard
         category={category}
         subcategories={children}
-        variants={variants}
+        sidebarVariants={variants}
+        variants={displayedVariants}
         activeSubcategoryId={activeSubcategoryId}
         activeSubcategoryName={activeSubcategory?.name || null}
+        activeProductId={pidParam ?? null}
         onSubcategoryChange={handleSubcategoryChange}
+        onProductChange={handleProductChange}
         isLoading={isLoading || isCategoryLoading}
         hasMore={hasMore}
         isLoadingMore={isLoadingMore}

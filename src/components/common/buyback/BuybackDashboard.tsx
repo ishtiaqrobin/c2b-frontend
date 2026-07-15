@@ -10,10 +10,13 @@ import type { ICategory } from "@/types/category.type";
 interface BuybackDashboardProps {
   category: ICategory | null;
   subcategories: ICategory[];
+  sidebarVariants: IProductVariant[];
   variants: IProductVariant[];
   activeSubcategoryId: string | null;
   activeSubcategoryName: string | null;
+  activeProductId: string | null;
   onSubcategoryChange: (categoryId: string | null) => void;
+  onProductChange: (productId: string | null) => void;
   isLoading: boolean;
   hasMore: boolean;
   isLoadingMore: boolean;
@@ -23,10 +26,13 @@ interface BuybackDashboardProps {
 export default function BuybackDashboard({
   category,
   subcategories = [],
+  sidebarVariants = [],
   variants = [],
   activeSubcategoryId,
   activeSubcategoryName,
+  activeProductId,
   onSubcategoryChange,
+  onProductChange,
   isLoading,
   hasMore,
   isLoadingMore,
@@ -45,7 +51,10 @@ export default function BuybackDashboard({
                   mainCategory={category}
                   subcategories={subcategories}
                   activeSubcategoryId={activeSubcategoryId}
+                  activeProductId={activeProductId}
                   onSubcategoryChange={onSubcategoryChange}
+                  onProductChange={onProductChange}
+                  variants={sidebarVariants}
                 />
               )}
             </aside>
