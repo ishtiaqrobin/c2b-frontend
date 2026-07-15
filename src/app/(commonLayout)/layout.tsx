@@ -1,5 +1,5 @@
 import { ScrollToTop } from "@/components/layout/ScrollToTop";
-import { CustomCursor } from "@/components/common/CustomCursor";
+import { CustomCursor } from "@/components/common/others/CustomCursor";
 import React from "react";
 import Footer from "@/components/layout/Footer";
 import { MobileNav } from "@/components/layout/MobileNav";
