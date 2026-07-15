@@ -250,6 +250,7 @@ export const productService = {
     limit?: string;
     productId?: string;
     categoryId?: string;
+    categoryIds?: string;
     storage?: string;
     isActive?: string;
   }): Promise<{
@@ -263,6 +264,7 @@ export const productService = {
       if (query?.limit) params.set("limit", query.limit);
       if (query?.productId) params.set("productId", query.productId);
       if (query?.categoryId) params.set("categoryId", query.categoryId);
+      if (query?.categoryIds) params.set("categoryIds", query.categoryIds);
       if (query?.storage) params.set("storage", query.storage);
       if (query?.isActive) params.set("isActive", query.isActive);
       const url = `${API_URL}/products/variants${params.toString() ? `?${params.toString()}` : ""}`;

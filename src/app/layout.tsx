@@ -50,11 +50,10 @@ const ClashDisplay = localFont({
 
 export const metadata: Metadata = {
   title: {
-    default: "Ishtiaq Robin | Professional Full Stack Web Developer",
-    template: "%s | Ishtiaq Robin",
+    default: "Kroydot | Kroydot is a c2b company",
+    template: "%s | Kroydot",
   },
-  description:
-    "Professional portfolio of Ishtiaq Robin, a creative Full Stack Web Developer specializing in modern web technologies.",
+  description: "Kroydot is a c2b company",
   keywords: [
     "Ishtiaq Robin",
     "Full Stack Web Developer",
