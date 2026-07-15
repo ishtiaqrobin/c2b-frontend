@@ -13,6 +13,7 @@ interface SidebarFilterProps {
   onSubcategoryChange: (categoryId: string | null) => void;
   onProductChange: (productId: string | null) => void;
   variants?: IProductVariant[];
+  filterByResults?: boolean;
 }
 
 const chevronStyle = (isOpen: boolean) =>
@@ -34,6 +35,7 @@ export default function SidebarFilter({
   onSubcategoryChange,
   onProductChange,
   variants = [],
+  filterByResults = false,
 }: SidebarFilterProps) {
   const [expandedSubId, setExpandedSubId] = useState<string | null>(null);
 
@@ -69,9 +71,23 @@ export default function SidebarFilter({
     return map;
   }, [variants]);
 
+  const filteredTree = useMemo(() => {
+    if (!filterByResults) return tree;
+    return tree
+      .map((main) => ({
+        ...main,
+        children: (main.children as ICategory[] | undefined)?.filter(
+          (sub) => (productMap.get(sub.id)?.size ?? 0) > 0,
+        ),
+      }))
+      .filter(
+        (main) => (main.children as ICategory[] | undefined)?.length ?? 0 > 0,
+      );
+  }, [tree, filterByResults, productMap]);
+
   return (
     <div className="sticky top-0 flex flex-col gap-1 rounded-lg overflow-hidden border border-gray-200 bg-white">
-      {tree.map((main) => {
+      {filteredTree.map((main) => {
         const subs = (main.children as ICategory[]) || [];
         return (
           <div key={main.id}>

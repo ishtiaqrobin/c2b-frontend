@@ -62,6 +62,7 @@ export default function BuybackDashboard({
                   onSubcategoryChange={onSubcategoryChange}
                   onProductChange={onProductChange}
                   variants={sidebarVariants}
+                  filterByResults={!category}
                 />
               )}
             </aside>

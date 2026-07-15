@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { productService } from "@/services/product.service";
 import { categoryService } from "@/services/category.service";
@@ -15,9 +15,12 @@ const PAGE_LIMIT = 20;
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const query = searchParams.get("q") || "";
+  const activeSubParam = searchParams.get("sub") || null;
+  const activePidParam = searchParams.get("pid") || null;
 
-  const [variants, setVariants] = useState<IProductVariant[]>([]);
+  const [allVariants, setAllVariants] = useState<IProductVariant[]>([]);
   const [categoryTree, setCategoryTree] = useState<ICategory[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -27,7 +30,7 @@ export default function SearchPage() {
   const fetchResults = useCallback(
     async (targetPage: number, append: boolean) => {
       if (!query.trim()) {
-        setVariants([]);
+        setAllVariants([]);
         return;
       }
 
@@ -45,12 +48,12 @@ export default function SearchPage() {
       });
 
       if (data) {
-        setVariants((prev) => (append ? [...prev, ...data] : data));
+        setAllVariants((prev) => (append ? [...prev, ...data] : data));
         if (meta) {
           setTotalPages(Math.ceil(meta.total / PAGE_LIMIT) || 1);
         }
       } else {
-        if (!append) setVariants([]);
+        if (!append) setAllVariants([]);
       }
 
       setPage(targetPage);
@@ -67,9 +70,6 @@ export default function SearchPage() {
   }, []);
 
   useEffect(() => {
-    setPage(1);
-    setVariants([]);
-    setTotalPages(1);
     fetchResults(1, false);
   }, [fetchResults]);
 
@@ -78,6 +78,49 @@ export default function SearchPage() {
   };
 
   const hasMore = page < totalPages;
+
+  const buildUrl = (sub: string | null, pid: string | null) => {
+    const parts: string[] = [];
+    if (query) parts.push(`q=${encodeURIComponent(query)}`);
+    if (sub) parts.push(`sub=${encodeURIComponent(sub)}`);
+    if (pid) parts.push(`pid=${encodeURIComponent(pid)}`);
+    return `/search?${parts.join("&")}`;
+  };
+
+  const handleSubcategoryChange = (subcategoryId: string | null) => {
+    router.replace(buildUrl(subcategoryId, null), { scroll: false });
+  };
+
+  const handleProductChange = (productId: string | null) => {
+    router.replace(buildUrl(activeSubParam, productId), { scroll: false });
+  };
+
+  const displayedVariants = useMemo(() => {
+    let filtered = allVariants;
+    if (activePidParam) {
+      filtered = filtered.filter((v) => v.productId === activePidParam);
+    }
+    if (activeSubParam) {
+      filtered = filtered.filter(
+        (v) => v.product?.category?.id === activeSubParam,
+      );
+    }
+    return filtered;
+  }, [allVariants, activeSubParam, activePidParam]);
+
+  const activeSubcategoryName =
+    activeSubParam && categoryTree.length > 0
+      ? (() => {
+          for (const main of categoryTree) {
+            const children = main.children as ICategory[] | undefined;
+            if (children) {
+              const match = children.find((c) => c.id === activeSubParam);
+              if (match) return match.name;
+            }
+          }
+          return null;
+        })()
+      : null;
 
   if (!query) {
     return (
@@ -109,13 +152,13 @@ export default function SearchPage() {
           category={null}
           categoryTree={categoryTree}
           subcategories={[]}
-          sidebarVariants={variants}
-          variants={variants}
-          activeSubcategoryId={null}
-          activeSubcategoryName={null}
-          activeProductId={null}
-          onSubcategoryChange={() => {}}
-          onProductChange={() => {}}
+          sidebarVariants={allVariants}
+          variants={displayedVariants}
+          activeSubcategoryId={activeSubParam}
+          activeSubcategoryName={activeSubcategoryName}
+          activeProductId={activePidParam}
+          onSubcategoryChange={handleSubcategoryChange}
+          onProductChange={handleProductChange}
           isLoading={isLoading}
           hasMore={hasMore}
           isLoadingMore={isLoadingMore}
