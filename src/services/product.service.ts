@@ -274,6 +274,7 @@ export const productService = {
   getVariants: async function (query?: {
     page?: string;
     limit?: string;
+    search?: string;
     productId?: string;
     categoryId?: string;
     categoryIds?: string;
@@ -288,6 +289,7 @@ export const productService = {
       const params = new URLSearchParams();
       if (query?.page) params.set("page", query.page);
       if (query?.limit) params.set("limit", query.limit);
+      if (query?.search) params.set("search", query.search);
       if (query?.productId) params.set("productId", query.productId);
       if (query?.categoryId) params.set("categoryId", query.categoryId);
       if (query?.categoryIds) params.set("categoryIds", query.categoryIds);

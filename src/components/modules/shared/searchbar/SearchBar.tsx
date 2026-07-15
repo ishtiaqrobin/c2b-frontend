@@ -1,13 +1,22 @@
 "use client";
 
-import React, { FormEvent } from "react";
+import React, { useState, FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 
-export default function SearchBar() {
+interface SearchBarProps {
+  initialQuery?: string;
+}
+
+export default function SearchBar({ initialQuery = "" }: SearchBarProps) {
+  const router = useRouter();
+  const [query, setQuery] = useState(initialQuery);
+
   const handleSearch = (e: FormEvent) => {
     e.preventDefault();
-    // এখানে আপনার সার্চ লজিক বসান
-    console.log("Search triggered");
+    const trimmed = query.trim();
+    if (!trimmed) return;
+    router.push(`/search?q=${encodeURIComponent(trimmed)}`);
   };
 
   return (
@@ -18,7 +27,9 @@ export default function SearchBar() {
       >
         <input
           type="text"
-          placeholder="Search for buyback price (enter product name and JAN code)"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search for buyback price (enter product name and code)"
           className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder:text-gray-400/90 text-sm md:text-base font-medium w-full pr-4"
         />
         <button

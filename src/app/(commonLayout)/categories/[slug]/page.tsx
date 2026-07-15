@@ -11,6 +11,7 @@ import type { ICategory } from "@/types/category.type";
 import type { IProductVariant } from "@/types/product.type";
 import BannerCarousel from "@/components/modules/home/banner/BannerCarousel";
 import BuybackDashboard from "@/components/common/buyback/BuybackDashboard";
+import SearchBar from "@/components/modules/shared/searchbar/SearchBar";
 
 const PAGE_LIMIT = 20;
 
@@ -269,7 +270,7 @@ export default function CategoryDetailPage() {
           {/* <BannerCarousel categoryId={category.id} /> */}
           <BannerCarousel />
           {category.notice && (
-            <div className="max-w-[1400px] mx-auto px-4 md:px-8 mt-6">
+            <div className="container-custom mx-auto px-4 md:px-8 mt-6">
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -283,6 +284,8 @@ export default function CategoryDetailPage() {
           )}
         </div>
       )}
+
+      <SearchBar />
 
       <BuybackDashboard
         category={category}

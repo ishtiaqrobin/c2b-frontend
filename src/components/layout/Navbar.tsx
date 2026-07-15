@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingCart, Phone, User, ChevronDown } from "lucide-react";
+import { ShoppingCart, Phone, User, ChevronDown, Search } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { HiMoon, HiSun } from "react-icons/hi";
 import { useTheme } from "next-themes";
@@ -165,6 +165,15 @@ export default function Navbar() {
               </AnimatePresence>
             </motion.button>
           </div> */}
+
+          {/* Search Icon */}
+          <Link
+            href="/search"
+            className="hover:text-gray-900 transition-colors"
+            aria-label="Search"
+          >
+            <Search className="w-6 h-6" />
+          </Link>
 
           {/* Cart Icon */}
           <Link
