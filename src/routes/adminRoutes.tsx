@@ -17,6 +17,7 @@ import {
   Package,
   UserCog,
   Star,
+  ClipboardList,
 } from "lucide-react";
 
 export const adminRoutes: Route[] = [
@@ -54,6 +55,11 @@ export const adminRoutes: Route[] = [
         title: "Buyback Features",
         url: "/admin-dashboard/buyback-features",
         icon: Star,
+      },
+      {
+        title: "Check Items",
+        url: "/admin-dashboard/check-items",
+        icon: ClipboardList,
       },
       { title: "News", url: "/admin-dashboard/news", icon: Newspaper },
     ],

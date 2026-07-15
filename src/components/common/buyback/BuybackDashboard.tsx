@@ -75,6 +75,7 @@ export default function BuybackDashboard({
                 hasMore={hasMore}
                 isLoadingMore={isLoadingMore}
                 onLoadMore={onLoadMore}
+                checkItems={category?.checkItems}
               />
             </main>
           </div>

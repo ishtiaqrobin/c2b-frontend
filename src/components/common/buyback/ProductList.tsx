@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { LayoutGrid, List, AlertTriangle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ProductVariantCard from "@/components/modules/home/product/ProductVariantCard";
 import ProductVariantListItem from "./ProductVariantListItem";
 import type { IProductVariant } from "@/types/product.type";
 import type { ICategory } from "@/types/category.type";
+import type { ICategoryCheckItemRef } from "@/types/category.type";
 import WarningBanner from "../warning_banner/WarningBanner";
 
 interface ProductListProps {
@@ -18,6 +19,7 @@ interface ProductListProps {
   hasMore: boolean;
   isLoadingMore: boolean;
   onLoadMore: () => void;
+  checkItems?: ICategoryCheckItemRef[];
 }
 
 const storageFilters = ["All", "256GB", "512GB", "1TB", "2TB", "128GB"];
@@ -31,18 +33,10 @@ export default function ProductList({
   hasMore,
   isLoadingMore,
   onLoadMore,
+  checkItems = [],
 }: ProductListProps) {
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [activeStorage, setActiveStorage] = useState("All");
-
-  useEffect(() => {
-    setActiveStorage("All");
-  }, [variants]);
-
-  const filteredVariants = useMemo(() => {
-    if (activeStorage === "All") return variants;
-    return variants.filter((v) => v.storage === activeStorage);
-  }, [variants, activeStorage]);
 
   const storageOptions = useMemo(() => {
     const unique = Array.from(
@@ -52,6 +46,15 @@ export default function ProductList({
     ).sort();
     return unique;
   }, [variants]);
+
+  if (activeStorage !== "All" && !storageOptions.includes(activeStorage)) {
+    setActiveStorage("All");
+  }
+
+  const filteredVariants = useMemo(() => {
+    if (activeStorage === "All") return variants;
+    return variants.filter((v) => v.storage === activeStorage);
+  }, [variants, activeStorage]);
 
   const displayStorageFilters = useMemo(() => {
     if (storageOptions.length > 0) {
@@ -116,7 +119,7 @@ export default function ProductList({
       </div>
 
       {/* ── Warning Banner ── */}
-      <WarningBanner />
+      <WarningBanner items={checkItems} />
 
       {/* ── Storage Filters ── */}
       <div className="flex flex-wrap gap-2">

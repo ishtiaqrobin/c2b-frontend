@@ -116,17 +116,18 @@ export default function CategoryDetailPage() {
         queryParams.categoryId = category.id;
       }
 
-      const { data, meta, error: fetchError } =
-        await productService.getVariants(queryParams);
+      const {
+        data,
+        meta,
+        error: fetchError,
+      } = await productService.getVariants(queryParams);
 
       if (fetchError) {
         setError(fetchError.message);
       } else if (data) {
         setVariants((prev) => (replace ? data : [...prev, ...data]));
         if (meta) {
-          setTotalPages(
-            meta.total ? Math.ceil(meta.total / PAGE_LIMIT) : 1,
-          );
+          setTotalPages(meta.total ? Math.ceil(meta.total / PAGE_LIMIT) : 1);
         }
       }
 
@@ -163,8 +164,11 @@ export default function CategoryDetailPage() {
         queryParams.categoryId = category.id;
       }
 
-      const { data, meta, error: fetchError } =
-        await productService.getVariants(queryParams);
+      const {
+        data,
+        meta,
+        error: fetchError,
+      } = await productService.getVariants(queryParams);
 
       if (fetchError) {
         setError(fetchError.message);
@@ -175,9 +179,7 @@ export default function CategoryDetailPage() {
           sidebarCapturedRef.current = true;
         }
         if (meta) {
-          setTotalPages(
-            meta.total ? Math.ceil(meta.total / PAGE_LIMIT) : 1,
-          );
+          setTotalPages(meta.total ? Math.ceil(meta.total / PAGE_LIMIT) : 1);
         }
       }
 
@@ -264,7 +266,8 @@ export default function CategoryDetailPage() {
     <div>
       {category && (
         <div className="relative">
-          <BannerCarousel categoryId={category.id} />
+          {/* <BannerCarousel categoryId={category.id} /> */}
+          <BannerCarousel />
           {category.notice && (
             <div className="max-w-[1400px] mx-auto px-4 md:px-8 mt-6">
               <motion.div

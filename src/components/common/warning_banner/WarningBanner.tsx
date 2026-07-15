@@ -2,26 +2,27 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { AlertTriangle, ChevronDown } from "lucide-react";
+import { AlertTriangle, ChevronDown, Loader2 } from "lucide-react";
+interface CheckItemMinimal {
+  id: string;
+  content: string;
+}
 
-// এই ডেটাগুলো পরে API থেকে আসবে
-const WARNING_DATA = [
-  'The new price listed below is for an unlocked (Apple Store version), unopened, and warranty not yet activated device.\n・For unlocked, opened, or ununlocked devices, click on "Notes" (optional) to see the reduced price.',
-  "If the remaining warranty period for the iPhone is less than 9 months, the price will be reduced.\nSome devices may have been activated by the seller even if unopened, so the buyback price will vary depending on the purchase date.",
-  "If the device has been charged 5 times or more, the price will be reduced.",
-  'The used price listed below is the highest price for an unlocked device. (The appraisal amount will vary depending on the condition, such as scratches.)\n・For ununlocked devices, click on "Notes" (optional) to see the reduced price.\n・For used items, the maximum battery capacity must be 81% or higher. If it is below 81%, the price will be reduced.',
-  "If you have set up an Apple ID or Apple iCloud, please be sure to delete and reset it.",
-  'For inspection purposes, please sell your device with a battery condition of "30% or higher" (excluding unopened items).',
-  'We cannot purchase devices with network usage restrictions marked "×" or "- (other than Apple version)".\nIf the network usage restriction becomes "×" after the sale is completed, we will return the product and charge you the full purchase price.',
-  "Exchanged items will be purchased as used.",
-];
+interface WarningBannerProps {
+  items?: CheckItemMinimal[];
+  loading?: boolean;
+}
 
-export default function WarningBanner() {
+export default function WarningBanner({
+  items = [],
+  loading = false,
+}: WarningBannerProps) {
   const [isOpen, setIsOpen] = useState(false);
+
+  if (items.length === 0 && !loading) return null;
 
   return (
     <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-sm transition-all duration-300">
-      {/* ── Header / Toggle Button ── */}
       <div
         onClick={() => setIsOpen(!isOpen)}
         className="p-4 flex justify-between items-center cursor-pointer select-none"
@@ -51,7 +52,6 @@ export default function WarningBanner() {
         </div>
       </div>
 
-      {/* ── Expandable Body (Accordion) ── */}
       <motion.div
         initial={false}
         animate={
@@ -61,14 +61,24 @@ export default function WarningBanner() {
         style={{ overflow: "hidden" }}
       >
         <div className="p-4 pt-2 text-sm text-gray-700 dark:text-gray-300 space-y-4 border-t border-zinc-100 dark:border-zinc-800/50 mt-1">
-          {WARNING_DATA.map((item, index) => (
-            <div key={index} className="flex items-start gap-2">
-              <span className="text-red-500 mt-0.5 shrink-0">▶</span>
-              <p className="whitespace-pre-line leading-relaxed">{item}</p>
+          {loading ? (
+            <div className="flex items-center justify-center py-4">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
             </div>
-          ))}
+          ) : (
+            items.map((item, index) => (
+              <div key={item.id || index} className="flex items-start gap-2">
+                <span className="text-red-500 mt-0.5 shrink-0">▶</span>
+                <p className="whitespace-pre-line leading-relaxed">
+                  {item.content}
+                </p>
+              </div>
+            ))
+          )}
         </div>
       </motion.div>
     </div>
   );
 }
+
+export type { WarningBannerProps };

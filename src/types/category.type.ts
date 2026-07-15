@@ -34,6 +34,7 @@ export interface ICategory {
   // (e.g. block delete or re-parenting when children/products > 0).
   _count?: ICategoryCount;
   notice?: ICategoryNotice | null;
+  checkItems?: ICategoryCheckItemRef[];
 }
 
 export interface ICategoryCreatePayload {
@@ -63,6 +64,12 @@ export interface ICategoryNotice {
   categoryId: string;
   updatedAt: string;
   body: string;
+}
+
+export interface ICategoryCheckItemRef {
+  id: string;
+  content: string;
+  sortOrder: number;
 }
 
 export interface ICategoryFormValues {
