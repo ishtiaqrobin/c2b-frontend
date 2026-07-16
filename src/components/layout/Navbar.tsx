@@ -3,17 +3,8 @@
 import { useState, useRef, useEffect, useCallback, FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  ShoppingCart,
-  Phone,
-  User,
-  ChevronDown,
-  Search,
-  X,
-} from "lucide-react";
+import { ShoppingCart, User, ChevronDown, Search, X } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { HiMoon, HiSun } from "react-icons/hi";
-import { useTheme } from "next-themes";
 import { productService } from "@/services/product.service";
 import { useDebounce } from "@/hooks/useDebounce";
 import type { IProductVariant } from "@/types/product.type";
@@ -43,7 +34,6 @@ const storeLists = [
 // --------------------------------------------------------
 
 export default function Navbar() {
-  const { theme, setTheme } = useTheme();
   const router = useRouter();
 
   const [searchOpen, setSearchOpen] = useState(false);
@@ -215,8 +205,6 @@ export default function Navbar() {
 
         {/* Action Icons Section */}
         <div className="flex items-center space-x-6 text-gray-600">
-          {/* Mode Toggle */}
-
           <div ref={searchRef} className="relative">
             <motion.form
               key="search-input"

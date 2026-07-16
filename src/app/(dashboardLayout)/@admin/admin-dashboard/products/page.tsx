@@ -16,11 +16,13 @@ export default async function AdminProductsPage({
     categoryService.getAll({ isActive: "true" }),
   ]);
 
+  const subCategories = (categories ?? []).filter((c) => c.parentId);
+
   return (
     <div className="space-y-6 min-h-screen">
       <ProductsClient
         products={products ?? []}
-        categories={categories ?? []}
+        categories={subCategories}
         showInactiveDefault={showInactive}
       />
     </div>

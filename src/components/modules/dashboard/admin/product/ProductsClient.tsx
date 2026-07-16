@@ -97,15 +97,17 @@ export default function ProductsClient({
       const q = query.toLowerCase();
       result = result.filter(
         (p) =>
-          p.slug.toLowerCase().includes(q) ||
-          p.name?.toLowerCase().includes(q),
+          p.slug.toLowerCase().includes(q) || p.name?.toLowerCase().includes(q),
       );
     }
 
     return result;
   }, [products, categoryFilter, query]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredProducts.length / PAGE_SIZE),
+  );
   const safePage = useMemo(
     () => Math.min(page, totalPages),
     [page, totalPages],
@@ -128,7 +130,7 @@ export default function ProductsClient({
               setPage(1);
             }}
             placeholder="Search products..."
-            className="bg-white w-full md:w-[220px]"
+            className="bg-white w-full md:w-56"
           />
           <Select
             value={categoryFilter}
@@ -137,7 +139,7 @@ export default function ProductsClient({
               setPage(1);
             }}
           >
-            <SelectTrigger className="bg-white w-full sm:w-[180px]">
+            <SelectTrigger className="bg-white w-full sm:w-44">
               <SelectValue placeholder="All Categories" />
             </SelectTrigger>
             <SelectContent position="popper">

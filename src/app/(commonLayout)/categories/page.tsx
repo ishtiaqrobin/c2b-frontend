@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { ArrowLeft, ChevronRight, Folder, Grid3X3, Search } from "lucide-react";
+import { ArrowLeft, ChevronRight, Folder, Grid3X3 } from "lucide-react";
 import { categoryService } from "@/services/category.service";
 import type { ICategory } from "@/types/category.type";
 import Image from "next/image";

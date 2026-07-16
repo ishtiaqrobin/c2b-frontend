@@ -30,7 +30,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { IProduct } from "@/types/product.type";
-import { updateProductAction, deleteProductAction } from "@/actions/product.action";
+import {
+  updateProductAction,
+  deleteProductAction,
+} from "@/actions/product.action";
 import DeleteDialog from "@/components/modules/shared/DeleteDialog";
 import TablePagination from "@/components/modules/shared/TablePagination";
 
@@ -91,7 +94,11 @@ export default function ProductTable({
   };
 
   const confirmDelete = (product: IProduct) => {
-    setDeleting({ open: true, productId: product.id, name: product.name || product.slug });
+    setDeleting({
+      open: true,
+      productId: product.id,
+      name: product.name || product.slug,
+    });
   };
 
   const cancelDelete = () =>
@@ -115,7 +122,8 @@ export default function ProductTable({
 
   const productName = (p: IProduct) => p.name || p.slug;
 
-  const categoryName = (p: IProduct) => p.category?.name ?? p.category?.slug ?? "—";
+  const categoryName = (p: IProduct) =>
+    p.category?.name ?? p.category?.slug ?? "—";
 
   return (
     <>
@@ -126,7 +134,7 @@ export default function ProductTable({
               <TableHead className="w-14">Image</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Slug</TableHead>
-              <TableHead>Category</TableHead>
+              <TableHead>Sub-Category</TableHead>
               <TableHead className="text-center">Variants</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Action</TableHead>
@@ -207,7 +215,9 @@ export default function ProductTable({
                   <TableCell className="text-center">
                     <span className="inline-flex items-center gap-1 text-sm font-medium">
                       <Layers className="h-3.5 w-3.5 text-muted-foreground" />
-                      {product._count?.variants ?? product.variants?.length ?? 0}
+                      {product._count?.variants ??
+                        product.variants?.length ??
+                        0}
                     </span>
                   </TableCell>
 

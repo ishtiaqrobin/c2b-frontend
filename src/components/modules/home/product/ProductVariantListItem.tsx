@@ -174,7 +174,7 @@ export default function ProductVariantListItem({
                 setSelectedDeductionIds(new Set());
                 setConfirmed(false);
               }}
-              className="flex flex-row gap-4 mt-2"
+              className="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-2"
             >
               {availableConditions.map((c) => {
                 const price =
@@ -188,9 +188,9 @@ export default function ProductVariantListItem({
                     >
                       {c === "NEW" ? "New" : "Second Hand"}
                     </Label>
-                    <span className="text-sm font-semibold leading-snug line-clamp-2 text-primary">
+                    <p className="text-sm font-semibold leading-snug line-clamp-2 text-primary">
                       {formatPrice(price, variant.currency)}
-                    </span>
+                    </p>
                   </div>
                 );
               })}
@@ -231,13 +231,13 @@ export default function ProductVariantListItem({
         </div>
 
         {/* Actions */}
-        <div className="flex flex-row lg:flex-col items-center lg:items-stretch gap-2 w-full lg:w-auto lg:min-w-40">
+        <div className="flex flex-col items-stretch gap-2 w-full lg:w-auto lg:min-w-40">
           {formattedBasePrice && maxQty && (
-            <p className="text-[10px] text-text-secondary text-center lg:text-left">
+            <p className="text-[10px] text-text-secondary text-left">
               Max {maxQty} per order
             </p>
           )}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full">
             <Input
               type="number"
               min={1}

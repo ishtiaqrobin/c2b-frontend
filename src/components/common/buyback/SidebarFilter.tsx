@@ -112,7 +112,7 @@ export default function SidebarFilter({
                       onClick={() => toggleSub(sub.id)}
                       className={`w-full flex items-center gap-2 pl-8 pr-4 py-2.5 text-sm border-b border-gray-100 transition-colors ${
                         isSubActive
-                          ? "bg-orange-50 text-[#E85D22]"
+                          ? "bg-primary-100 text-primary"
                           : "text-gray-700 hover:bg-gray-100"
                       }`}
                     >
@@ -154,7 +154,7 @@ export default function SidebarFilter({
                                   }
                                   className={`w-full flex items-center gap-2 pl-12 pr-4 py-2 text-xs transition-colors ${
                                     isProdActive
-                                      ? "bg-orange-100 text-[#E85D22]"
+                                      ? "bg-primary-50 text-primary"
                                       : "text-gray-600 hover:bg-gray-50"
                                   }`}
                                 >

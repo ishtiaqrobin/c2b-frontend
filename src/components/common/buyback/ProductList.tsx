@@ -94,13 +94,13 @@ export default function ProductList({
       {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <p className="mt-1 text-sm font-semibold text-text-secondary">
+          <p className="mt-1 text-sm font-medium text-text-secondary">
             List of items we buy: {""} {""}
             {breadcrumbParts.join(" > ") || "All items"}
           </p>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-sm text-text-secondary font-medium tabular-nums">
+          <span className="text-sm text-primary font-medium tabular-nums">
             Update date {formatDate()}
           </span>
           <div className="flex items-center gap-2 bg-zinc-200/40 p-1 rounded-lg">
