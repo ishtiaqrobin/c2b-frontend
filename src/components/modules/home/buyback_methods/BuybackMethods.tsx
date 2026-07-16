@@ -47,7 +47,7 @@ export default function BuybackMethods() {
             <Link
               href={method.linkUrl || "/"}
               key={method.id}
-              className="relative w-full overflow-hidden cursor-pointer transition-all duration-300 hover:scale-103"
+              className="relative w-full overflow-hidden cursor-pointer transition-transform duration-500 hover:scale-103"
             >
               <Image
                 src={method.imagePath}

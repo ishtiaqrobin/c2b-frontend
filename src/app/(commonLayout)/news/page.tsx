@@ -13,14 +13,14 @@ export default async function NewsPage() {
         </h2>
       </section>
 
-      <section className="py-16">
+      <section className="pt-16 pb-20">
         <div className="container mx-auto max-w-5xl px-4">
           {!newsList || newsList.length === 0 ? (
             <p className="text-center text-muted-foreground">
               No news available.
             </p>
           ) : (
-            <div className="grid gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6">
               {newsList.map((news) => {
                 const date = new Date(news.publishedAt).toLocaleDateString(
                   "en-US",

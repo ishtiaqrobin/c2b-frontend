@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { productService } from "@/services/product.service";
@@ -27,42 +27,6 @@ export default function SearchPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  const fetchResults = useCallback(
-    async (targetPage: number, append: boolean) => {
-      if (!query.trim()) {
-        setAllVariants([]);
-        return;
-      }
-
-      if (append) {
-        setIsLoadingMore(true);
-      } else {
-        setIsLoading(true);
-      }
-
-      const { data, meta } = await productService.getVariants({
-        search: query.trim(),
-        page: String(targetPage),
-        limit: String(PAGE_LIMIT),
-        isActive: "true",
-      });
-
-      if (data) {
-        setAllVariants((prev) => (append ? [...prev, ...data] : data));
-        if (meta) {
-          setTotalPages(Math.ceil(meta.total / PAGE_LIMIT) || 1);
-        }
-      } else {
-        if (!append) setAllVariants([]);
-      }
-
-      setPage(targetPage);
-      setIsLoading(false);
-      setIsLoadingMore(false);
-    },
-    [query],
-  );
-
   useEffect(() => {
     categoryService.getTree().then(({ data }) => {
       if (data) setCategoryTree(data);
@@ -70,11 +34,51 @@ export default function SearchPage() {
   }, []);
 
   useEffect(() => {
-    fetchResults(1, false);
-  }, [fetchResults]);
+    if (!query.trim()) return;
 
-  const handleLoadMore = () => {
-    fetchResults(page + 1, true);
+    let cancelled = false;
+
+    Promise.resolve().then(() => {
+      if (!cancelled) setIsLoading(true);
+    });
+
+    productService
+      .getVariants({
+        search: query.trim(),
+        page: "1",
+        limit: String(PAGE_LIMIT),
+        isActive: "true",
+      })
+      .then(({ data, meta }) => {
+        if (cancelled) return;
+        setAllVariants(data ?? []);
+        if (meta) setTotalPages(Math.ceil(meta.total / PAGE_LIMIT) || 1);
+        setPage(1);
+        setIsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [query]);
+
+  const handleLoadMore = async () => {
+    setIsLoadingMore(true);
+
+    const nextPage = page + 1;
+    const { data, meta } = await productService.getVariants({
+      search: query.trim(),
+      page: String(nextPage),
+      limit: String(PAGE_LIMIT),
+      isActive: "true",
+    });
+
+    if (data) {
+      setAllVariants((prev) => [...prev, ...data]);
+      if (meta) setTotalPages(Math.ceil(meta.total / PAGE_LIMIT) || 1);
+    }
+    setPage(nextPage);
+    setIsLoadingMore(false);
   };
 
   const hasMore = page < totalPages;
