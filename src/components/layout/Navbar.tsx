@@ -1,10 +1,23 @@
 "use client";
 
+import { useState, useRef, useEffect, useCallback, FormEvent } from "react";
 import Link from "next/link";
-import { ShoppingCart, Phone, User, ChevronDown, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
+import {
+  ShoppingCart,
+  Phone,
+  User,
+  ChevronDown,
+  Search,
+  X,
+} from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { HiMoon, HiSun } from "react-icons/hi";
 import { useTheme } from "next-themes";
+import { productService } from "@/services/product.service";
+import { useDebounce } from "@/hooks/useDebounce";
+import type { IProductVariant } from "@/types/product.type";
+import Image from "next/image";
 
 // --- Dummy Data (Replace these with API calls later) ---
 const categories = [
@@ -31,6 +44,75 @@ const storeLists = [
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
+
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [results, setResults] = useState<IProductVariant[]>([]);
+  const [searching, setSearching] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const searchRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const debouncedQuery = useDebounce(searchQuery, 300);
+
+  useEffect(() => {
+    if (!debouncedQuery.trim()) {
+      return;
+    }
+    let cancelled = false;
+    productService
+      .getVariants({
+        search: debouncedQuery.trim(),
+        limit: "8",
+        isActive: "true",
+      })
+      .then(({ data }) => {
+        if (cancelled) return;
+        setResults(data ?? []);
+        setShowDropdown(true);
+        setSearching(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [debouncedQuery]);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setSearchOpen(false);
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    if (searchOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [searchOpen]);
+
+  const handleSearchSubmit = useCallback(
+    (e: FormEvent) => {
+      e.preventDefault();
+      const trimmed = searchQuery.trim();
+      if (!trimmed) return;
+      setSearchOpen(false);
+      setShowDropdown(false);
+      router.push(`/search?q=${encodeURIComponent(trimmed)}`);
+    },
+    [searchQuery, router],
+  );
+
+  const handleResultClick = useCallback(() => {
+    setSearchOpen(false);
+    setShowDropdown(false);
+    setSearchQuery("");
+  }, []);
 
   return (
     <header className="w-full border-b border-gray-200 bg-white sticky top-0 z-50">
@@ -134,46 +216,132 @@ export default function Navbar() {
         {/* Action Icons Section */}
         <div className="flex items-center space-x-6 text-gray-600">
           {/* Mode Toggle */}
-          {/* <div className="items-center gap-3">
-            <motion.button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2.5 rounded-full bg-gray-100/75 hover:bg-gray-100/90 dark:bg-white/5 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300 hover:text-yellow-500 dark:hover:text-yellow-400 transition-all duration-300 border border-gray-200 dark:border-white/10 cursor-pointer"
-              aria-label="Toggle theme"
-            >
-              <AnimatePresence mode="wait">
-                {theme === "dark" ? (
-                  <motion.div
-                    key="sun"
-                    initial={{ rotate: -90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: 90, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <HiSun className="text-lg" />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="moon"
-                    initial={{ rotate: 90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: -90, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <HiMoon className="text-lg" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.button>
-          </div> */}
 
-          {/* Search Icon */}
-          <Link
-            href="/search"
-            className="hover:text-gray-900 transition-colors"
-            aria-label="Search"
-          >
-            <Search className="w-6 h-6" />
-          </Link>
+          <div ref={searchRef} className="relative">
+            <motion.form
+              key="search-input"
+              // initial={{ width: 0, opacity: 0 }}
+              // animate={{ width: 280, opacity: 1 }}
+              // exit={{ width: 0, opacity: 0 }}
+              // transition={{ duration: 0.25, ease: "easeInOut" }}
+              onSubmit={handleSearchSubmit}
+              className="flex items-center overflow-hidden"
+            >
+              <div className="relative w-full">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setSearching(true);
+                  }}
+                  placeholder="Search products..."
+                  className="w-full h-9 pl-4 pr-10 text-sm text-gray-700 bg-gray-100/80 border border-gray-200 rounded-md outline-none focus:border-primary/80 focus:ring-0.5 focus:ring-[#008B8B] duration-300 transition-colors"
+                />
+                {searchQuery ? (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-0 top-0 h-full flex items-center pr-3 transition-colors text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    className="absolute right-0 top-0 h-full flex items-center pr-3 text-gray-500 hover:text-primary transition-colors"
+                  >
+                    <Search className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            </motion.form>
+
+            {/* Dropdown */}
+            <AnimatePresence>
+              {debouncedQuery.trim() && showDropdown && (
+                <motion.div
+                  // initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute top-full right-0 mt-2 w-96 bg-white border border-gray-100 rounded-md shadow-lg overflow-hidden z-50"
+                >
+                  <div className="p-3 border-b border-gray-100">
+                    <p className="text-xs font-medium text-gray-400 tracking-wider">
+                      {searching
+                        ? "Searching..."
+                        : `${results.length} Result${results.length === 1 ? "" : "s"}`}
+                    </p>
+                  </div>
+                  <ul className="max-h-80 overflow-y-auto">
+                    {results.length === 0 && !searching ? (
+                      <li className="px-4 py-6 text-center text-sm text-gray-400">
+                        No products found
+                      </li>
+                    ) : (
+                      results.map((variant) => (
+                        <li key={variant.id}>
+                          <Link
+                            href={`/search?q=${encodeURIComponent(searchQuery)}&pid=${variant.productId}`}
+                            onClick={handleResultClick}
+                            className="flex items-center gap-3 px-4 py-3 hover:bg-primary/5 transition-colors"
+                          >
+                            <div className="w-10 h-10 rounded-md bg-gray-100 flex items-center justify-center shrink-0 overflow-hidden">
+                              {variant.imageUrl ? (
+                                <Image
+                                  src={variant.imageUrl}
+                                  alt=""
+                                  width={40}
+                                  height={40}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <Search className="w-4 h-4 text-gray-400" />
+                              )}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm font-medium text-gray-800 truncate">
+                                {variant.product?.name ?? "Product"}
+                              </p>
+                              <p className="text-xs text-gray-400 truncate">
+                                {[variant.storage, variant.color]
+                                  .filter(Boolean)
+                                  .join(" / ")}
+                              </p>
+                            </div>
+                            <div className="text-right shrink-0">
+                              {variant.newPrice != null && (
+                                <p className="text-sm font-medium text-primary">
+                                  {variant.currency}{" "}
+                                  {variant.newPrice.toLocaleString()}
+                                </p>
+                              )}
+                              <p className="text-xs text-gray-400 truncate">
+                                New Price
+                              </p>
+                            </div>
+                          </Link>
+                        </li>
+                      ))
+                    )}
+                  </ul>
+                  {results.length > 0 && (
+                    <div className="p-2 border-t border-gray-100">
+                      <Link
+                        href={`/search?q=${encodeURIComponent(searchQuery)}`}
+                        onClick={handleResultClick}
+                        className="block w-full text-center text-sm font-medium text-gray-800 hover:text-primary py-2 rounded-md hover:bg-primary/5 duration-300 transition-colors"
+                      >
+                        View all results
+                      </Link>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
 
           {/* Cart Icon */}
           <Link
@@ -187,12 +355,12 @@ export default function Navbar() {
           </Link>
 
           {/* Phone Icon */}
-          <Link
+          {/* <Link
             href="/contact"
             className="hover:text-gray-900 transition-colors"
           >
             <Phone className="w-6 h-6" />
-          </Link>
+          </Link> */}
 
           {/* User Icon */}
           <Link href="/login" className="hover:text-gray-900 transition-colors">

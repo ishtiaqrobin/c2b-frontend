@@ -3,10 +3,106 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { ArrowLeft, Grid3X3, Loader2, Search } from "lucide-react";
+import { ArrowLeft, ChevronRight, Folder, Grid3X3, Search } from "lucide-react";
 import { categoryService } from "@/services/category.service";
 import type { ICategory } from "@/types/category.type";
-import CategoryCard from "@/components/modules/home/category/CategoryCard";
+import Image from "next/image";
+
+function SubCategoryItem({
+  sub,
+  parentSlug,
+  index,
+}: {
+  sub: ICategory;
+  parentSlug: string;
+  index: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -8 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: index * 0.03, duration: 0.3 }}
+    >
+      <Link
+        href={`/categories/${parentSlug}?sub=${sub.slug}`}
+        className="group flex items-center gap-2 rounded-md px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 duration-300 transition-all"
+      >
+        <span className="text-muted-foreground/30 select-none">├──</span>
+        <ChevronRight className="h-3 w-3 shrink-0 opacity-0 group-hover:opacity-100 transition-all -ml-1" />
+        <span className="truncate group-hover:translate-x-0.5 transition-transform">
+          {sub.name}
+        </span>
+      </Link>
+    </motion.div>
+  );
+}
+
+function CategoryTreeNode({
+  category,
+  index,
+}: {
+  category: ICategory;
+  index: number;
+}) {
+  const childCount = category.children?.length || 0;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.05, duration: 0.4 }}
+    >
+      <div className="rounded-xl border border-border bg-card overflow-hidden hover:border-primary/20 hover:shadow-sm transition-all duration-300">
+        {/* Parent category header */}
+        <Link
+          href={`/categories/${category.slug}`}
+          className="group flex items-center gap-4 p-5"
+        >
+          <div className="flex shrink-0 items-center justify-center rounded-full group-hover:from-primary/15 group-hover:to-primary/10 transition-colors">
+            {category.imageUrl ? (
+              <Image
+                src={category.imageUrl}
+                alt={category.name}
+                width={48}
+                height={48}
+                className="object-cover"
+              />
+            ) : (
+              <Folder className="h-5 w-5 text-primary/60" />
+            )}
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+              {category.name}
+            </h3>
+            {childCount > 0 && (
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {childCount} subcategor{childCount === 1 ? "y" : "ies"}
+              </p>
+            )}
+          </div>
+
+          <ChevronRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-primary/60 group-hover:translate-x-0.5 transition-all" />
+        </Link>
+
+        {/* Sub-categories tree */}
+        {childCount > 0 && (
+          <div className="border-t border-border/50 px-3 pb-3 pt-1">
+            {category.children!.map((sub, i) => (
+              <SubCategoryItem
+                key={sub.id}
+                sub={sub}
+                parentSlug={category.slug}
+                index={i}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<ICategory[]>([]);
@@ -22,9 +118,16 @@ export default function CategoriesPage() {
     fetch();
   }, []);
 
-  const filtered = categories.filter((cat) =>
-    cat.name.toLowerCase().includes(search.toLowerCase()),
-  );
+  const filtered = categories.filter((cat) => {
+    const match = cat.name.toLowerCase().includes(search.toLowerCase());
+    if (match) return true;
+    if (cat.children) {
+      return cat.children.some((child) =>
+        child.name.toLowerCase().includes(search.toLowerCase()),
+      );
+    }
+    return false;
+  });
 
   return (
     <div className="min-h-screen bg-muted/20">
@@ -49,10 +152,6 @@ export default function CategoriesPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="inline-flex items-center gap-2 text-sm font-medium text-primary mb-3">
-            <Grid3X3 className="h-4 w-4" />
-            All Categories
-          </div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             Browse All Categories
           </h1>
@@ -62,32 +161,13 @@ export default function CategoriesPage() {
           </p>
         </motion.div>
 
-        {/* Search */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.05 }}
-          className="mb-8 max-w-md"
-        >
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search categories..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-xl border border-border/50 bg-card pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-all"
-            />
-          </div>
-        </motion.div>
-
         {/* Loading */}
         {isLoading ? (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {[...Array(8)].map((_, i) => (
+          <div className="space-y-4">
+            {[...Array(5)].map((_, i) => (
               <div
                 key={i}
-                className="aspect-[4/3] rounded-2xl bg-muted/50 animate-pulse"
+                className="h-24 rounded-2xl bg-muted/50 animate-pulse"
               />
             ))}
           </div>
@@ -101,9 +181,9 @@ export default function CategoriesPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          <div className="space-y-4 md:space-y-6">
             {filtered.map((category, index) => (
-              <CategoryCard
+              <CategoryTreeNode
                 key={category.id}
                 category={category}
                 index={index}

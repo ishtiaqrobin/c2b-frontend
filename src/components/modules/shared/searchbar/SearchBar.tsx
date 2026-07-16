@@ -34,7 +34,7 @@ export default function SearchBar({ initialQuery = "" }: SearchBarProps) {
         />
         <button
           type="submit"
-          className="flex items-center justify-center bg-[#008B8B] hover:bg-[#007070] text-white rounded-full h-10 w-10 transition-colors flex-shrink-0"
+          className="flex items-center justify-center bg-primary/90 hover:bg-primary text-white rounded-full h-10 w-10 transition-colors shrink-0 cursor-pointer"
           aria-label="Search"
         >
           <Search className="w-5 h-5" strokeWidth={2.5} />

@@ -25,12 +25,12 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       disableTransitionOnChange
     >
       <Toaster />
-      {/* {children} */}
-      {isDashboard ? (
+      {children}
+      {/* {isDashboard ? (
         children
       ) : (
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
-      )}
+      )} */}
     </NextThemesProvider>
   );
 }

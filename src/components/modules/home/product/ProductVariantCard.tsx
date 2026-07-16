@@ -127,7 +127,7 @@ export default function ProductVariantCard({
       <motion.div
         viewport={{ once: true }}
         // transition={{ delay: Math.min(index * 0.04, 0.4), duration: 0.35 }}
-        className="group relative flex flex-col rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 hover:shadow-md transition-all duration-300"
+        className="group relative flex flex-col rounded-xl border border-border hover:border-primary/20 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 hover:shadow-md transition-all duration-300"
       >
         {/* Share icon */}
         <button
@@ -157,7 +157,7 @@ export default function ProductVariantCard({
               alt={title}
               height={300}
               width={300}
-              className="object-contain transition-transform duration-500 group-hover:scale-102"
+              className="object-contain transition-all duration-500 group-hover:scale-102"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">

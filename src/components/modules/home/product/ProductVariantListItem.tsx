@@ -121,7 +121,7 @@ export default function ProductVariantListItem({
 
   return (
     <>
-      <div className="group relative flex flex-col lg:flex-row items-start lg:items-center gap-4 bg-card p-4 rounded-lg border border-border transition-all duration-300 hover:shadow-md">
+      <div className="group relative flex flex-col lg:flex-row items-start lg:items-center gap-4 bg-card p-4 rounded-lg border border-border hover:border-primary/20 transition-all duration-300 hover:shadow-md">
         {/* Share button */}
         <button
           type="button"
